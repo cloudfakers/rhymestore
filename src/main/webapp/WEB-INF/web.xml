@@ -3,7 +3,13 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	id="RhymeStore" version="2.5">
 
-	<display-name>Rhyme Store</display-name>
+	<display-name>Rhymestore</display-name>
+	
+	<!-- Rhyme servlet -->
+	<servlet>
+		<servlet-name>RhymeServlet</servlet-name>
+		<servlet-class>com.rhymestore.web.RhymeServlet</servlet-class>
+	</servlet>
 
 	<!-- Wink main servlet -->
 	<servlet>
@@ -24,23 +30,25 @@
 		<servlet-name>WinkAdmin</servlet-name>
 		<servlet-class>org.apache.wink.server.internal.servlet.AdminServlet</servlet-class>
 	</servlet>
-
+	
 	<!-- Servlet mappings -->
-
+	<servlet-mapping>
+		<servlet-name>RhymeServlet</servlet-name>
+		<url-pattern>/rhyme</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>WinkAdmin</servlet-name>
-		<url-pattern>/console</url-pattern>
+		<url-pattern>/api/console</url-pattern>
 	</servlet-mapping>
-
 	<servlet-mapping>
 		<servlet-name>WinkServlet</servlet-name>
-		<url-pattern>/rhyme/*</url-pattern>
+		<url-pattern>/api/*</url-pattern>
 	</servlet-mapping>
 
 	<!-- Main document -->
 
 	<welcome-file-list>
-		<welcome-file>/WEB-INF/jsp/add.jsp</welcome-file>
+		<welcome-file>/jsp/rhymestore.jsp</welcome-file>
 	</welcome-file-list>
 
 </web-app>

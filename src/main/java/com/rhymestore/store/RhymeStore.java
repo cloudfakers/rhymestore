@@ -1,4 +1,3 @@
-
 package com.rhymestore.store;
 
 import java.io.IOException;
@@ -14,31 +13,47 @@ import redis.clients.jedis.Jedis;
 public class RhymeStore
 {
     private final Jedis redis;
+
     private final Keymaker namespace = new Keymaker("rhyme");
+
     private final String encoding = "UTF-8";
 
-    public RhymeStore()
+    public static RhymeStore instance;
+
+    public static RhymeStore getInstance()
+    {
+        if (instance == null)
+        {
+            instance = new RhymeStore();
+        }
+        return instance;
+    }
+
+    private RhymeStore()
     {
         redis = new Jedis("localhost", 6379);
     }
 
-    public RhymeStore(String host, int port)
+    public RhymeStore(final String host, final int port)
     {
         redis = new Jedis(host, port);
     }
 
-    public void add(String sentence) throws IOException
+    public void add(final String sentence) throws IOException
     {
-        List<String> words = Arrays.asList(sentence.split(" "));
+        if (sentence != null && sentence.length() > 0)
+        {
+            List<String> words = Arrays.asList(sentence.split(" "));
 
-        String key = generateToken(words.get(words.size() - 1), true);
-        String value = URLEncoder.encode(sentence, encoding);
+            String key = generateToken(words.get(words.size() - 1), true);
+            String value = URLEncoder.encode(sentence, encoding);
 
-        redis.connect();
+            redis.connect();
 
-        redis.sadd(namespace.build(key).toString(), value);
+            redis.sadd(namespace.build(key).toString(), value);
 
-        redis.disconnect();
+            redis.disconnect();
+        }
     }
 
     public Set<String> search(String search) throws IOException
@@ -62,7 +77,7 @@ public class RhymeStore
         return rhyms;
     }
 
-    private String generateToken(String value, boolean removeWildcards)
+    private String generateToken(final String value, final boolean removeWildcards)
     {
         // To lower case
         String token = value.toLowerCase();
