@@ -11,7 +11,11 @@
 		<servlet-class>org.apache.wink.server.internal.servlet.RestServlet</servlet-class>
 		<init-param>
 			<param-name>applicationConfigLocation</param-name>
-			<param-value>/WEB-INF/application.cfg</param-value>
+			<param-value>/WEB-INF/resources.cfg</param-value>
+		</init-param>
+		<init-param>
+			<param-name>propertiesLocation</param-name>
+			<param-value>/WEB-INF/wink.properties</param-value>
 		</init-param>
 	</servlet>
 
@@ -20,21 +24,21 @@
 		<servlet-name>WinkAdmin</servlet-name>
 		<servlet-class>org.apache.wink.server.internal.servlet.AdminServlet</servlet-class>
 	</servlet>
-	
+
 	<!-- Servlet mappings -->
-	
+
 	<servlet-mapping>
 		<servlet-name>WinkAdmin</servlet-name>
 		<url-pattern>/console</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet-mapping>
 		<servlet-name>WinkServlet</servlet-name>
-		<url-pattern>/rhyme</url-pattern>
+		<url-pattern>/rhyme/*</url-pattern>
 	</servlet-mapping>
-	
+
 	<!-- Main document -->
-	
+
 	<welcome-file-list>
 		<welcome-file>/WEB-INF/jsp/add.jsp</welcome-file>
 	</welcome-file-list>

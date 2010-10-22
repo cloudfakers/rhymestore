@@ -3,12 +3,16 @@ package com.rhymestore.web;
 import java.io.IOException;
 import java.util.Set;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
-import com.rhymestore.botize.BotizeConstants;
+import org.apache.wink.common.annotations.Workspace;
+
 import com.rhymestore.store.RhymeStore;
 
 /**
@@ -16,7 +20,8 @@ import com.rhymestore.store.RhymeStore;
  * 
  * @author Ignasi Barrera
  */
-@Path("/rhyme")
+@Path("/")
+@Workspace(workspaceTitle = "Rhymestore", collectionTitle = "rhymes")
 public class RhymeResource
 {
     /** The name of the parameter used to submit rhymes. */
@@ -40,13 +45,14 @@ public class RhymeResource
      * @return The rhyme for the given sentence.
      */
     @GET
-    public String getRhyme(@FormParam(BotizeConstants.TWEET_PARAM) String sentence)
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getRhyme()
     {
         String rhyme = "";
 
         try
         {
-            Set<String> rhymes = store.search(sentence);
+            Set<String> rhymes = store.search("");
             if (!rhymes.isEmpty())
             {
                 rhyme = rhymes.iterator().next();
@@ -67,17 +73,19 @@ public class RhymeResource
      * @return The added rhyme.
      */
     @POST
-    public String addRhyme(@FormParam(RHYME_PARAM) String rhyme)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.TEXT_PLAIN)
+    public String addRhyme(@FormParam(RHYME_PARAM) final String rhyme)
     {
         try
         {
             store.add(rhyme);
+            return rhyme;
         }
         catch (IOException e)
         {
             // TODO
+            return null;
         }
-
-        return rhyme;
     }
 }
