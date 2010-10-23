@@ -1,8 +1,11 @@
+
 package com.rhymestore.store;
 
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.text.Normalizer;
+import java.text.Normalizer.Form;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -45,7 +48,7 @@ public class RhymeStore
         {
             List<String> words = Arrays.asList(sentence.split(" "));
 
-            String key = generateToken(words.get(words.size() - 1), true);
+            String key = generateToken(words.get(words.size() - 1));
             String value = URLEncoder.encode(sentence, encoding);
 
             redis.connect();
@@ -56,11 +59,12 @@ public class RhymeStore
         }
     }
 
+    // TODO don't use the KEYS command! Use a trie instead.
     public Set<String> search(String search) throws IOException
     {
         Set<String> rhyms = new HashSet<String>();
 
-        search = generateToken(search, false);
+        search = "*".concat(generateToken(search));
 
         redis.connect();
 
@@ -77,27 +81,17 @@ public class RhymeStore
         return rhyms;
     }
 
-    private String generateToken(final String value, final boolean removeWildcards)
+    private String generateToken(final String value)
     {
         // To lower case
         String token = value.toLowerCase();
 
-        // Replace accent letters
-        token = token.replaceAll("[����]", "a");
-        token = token.replaceAll("[����]", "e");
-        token = token.replaceAll("[����]", "i");
-        token = token.replaceAll("[����]", "o");
-        token = token.replaceAll("[����]", "u");
+        // Remove diacritics
+        token = Normalizer.normalize(token, Form.NFD);
+        token = token.replaceAll("[^\\p{ASCII}]", "");
 
         // Remove non alphanumeric characters
-        if (removeWildcards)
-        {
-            token = token.replaceAll("[^a-zA-Z0-9]", "");
-        }
-        else
-        {
-            token = token.replaceAll("[^a-zA-Z0-9\\[\\]\\*\\?]", "");
-        }
+        token = token.replaceAll("[^a-zA-Z0-9]", "");
 
         return token;
     }

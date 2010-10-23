@@ -9,17 +9,18 @@ public class RhymeStoreTest extends TestCase
 {
     public void testSearch()
     {
-        RhymeStore r = RhymeStore.getInstance();
+        RhymeStore store = RhymeStore.getInstance();
 
         try
         {
-            r.add("Nada rima con dos.");
-            r.add("Mi nabo para vos");
-            r.add("Dame dos");
+            store.add("Nada rima con dos.");
+            store.add("Mi nabo para vos");
+            store.add("Dame dos");
 
-            assertEquals(r.search("dos").size(), 2);
-            assertEquals(r.search("*os").size(), 3);
-            assertEquals(r.search("v*").size(), 1);
+            assertEquals(store.search("dos").size(), 2);
+            assertEquals(store.search("os").size(), 3);
+            assertEquals(store.search("vos").size(), 1);
+            assertEquals(store.search("v").size(), 0);
         }
         catch (Exception e)
         {
