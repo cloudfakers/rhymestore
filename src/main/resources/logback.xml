@@ -7,8 +7,8 @@
 		</layout>
 	</appender>
 	
-	<logger name="org.apache.wink">
-		<level value="INFO" />
+	<logger name="com.rhymestore">
+		<level value="DEBUG" />
 	</logger>
 	
 	<logger name="twitter4j">

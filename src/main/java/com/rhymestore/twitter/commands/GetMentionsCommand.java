@@ -1,6 +1,9 @@
-package com.rhymestore.twitter;
+package com.rhymestore.twitter.commands;
 
-import java.util.LinkedList;
+import java.util.Queue;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import twitter4j.ResponseList;
 import twitter4j.Status;
@@ -15,15 +18,19 @@ import twitter4j.TwitterException;
  */
 public class GetMentionsCommand implements TwitterCommand
 {
+	/** The logger. */
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(GetMentionsCommand.class);
+
 	/** The queue with the pending commands. */
-	private LinkedList<TwitterCommand> commandQueue;
+	private Queue<TwitterCommand> commandQueue;
 
 	/**
 	 * Creates a new {@link ReplyCommand} for the given status.
 	 * 
 	 * @param commandQueue The queue with the pending commands.
 	 */
-	public GetMentionsCommand(LinkedList<TwitterCommand> commandQueue)
+	public GetMentionsCommand(Queue<TwitterCommand> commandQueue)
 	{
 		super();
 		this.commandQueue = commandQueue;
@@ -41,5 +48,8 @@ public class GetMentionsCommand implements TwitterCommand
 			ReplyCommand reply = new ReplyCommand(status, commandQueue);
 			commandQueue.add(reply);
 		}
+
+		LOGGER.debug("Added {} mentions to the reply queue.", mentions.size());
+
 	}
 }

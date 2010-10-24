@@ -1,4 +1,4 @@
-package com.rhymestore.twitter;
+package com.rhymestore.twitter.commands;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -11,6 +11,8 @@ import twitter4j.TwitterException;
  */
 public interface TwitterCommand
 {
+	/** Maximum length for the tweets. */
+	public static final int MAX_TWEET_LENGTH = 140;
 
 	/**
 	 * Executes a Twitter API call in the given account.

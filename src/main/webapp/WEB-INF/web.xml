@@ -5,6 +5,11 @@
 
 	<display-name>Rhymestore</display-name>
 	
+	<!-- Startup ContextListener -->
+	<listener>
+		<listener-class>com.rhymestore.web.StartupContextListener</listener-class>
+	</listener>
+	
 	<!-- Rhyme servlet -->
 	<servlet>
 		<servlet-name>RhymeServlet</servlet-name>
