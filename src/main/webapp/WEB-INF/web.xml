@@ -16,42 +16,13 @@
 		<servlet-class>com.rhymestore.web.RhymeServlet</servlet-class>
 	</servlet>
 
-	<!-- Wink main servlet -->
-	<servlet>
-		<servlet-name>WinkServlet</servlet-name>
-		<servlet-class>org.apache.wink.server.internal.servlet.RestServlet</servlet-class>
-		<init-param>
-			<param-name>applicationConfigLocation</param-name>
-			<param-value>/WEB-INF/resources.cfg</param-value>
-		</init-param>
-		<init-param>
-			<param-name>propertiesLocation</param-name>
-			<param-value>/WEB-INF/wink.properties</param-value>
-		</init-param>
-	</servlet>
-
-	<!-- Wink console servlet -->
-	<servlet>
-		<servlet-name>WinkAdmin</servlet-name>
-		<servlet-class>org.apache.wink.server.internal.servlet.AdminServlet</servlet-class>
-	</servlet>
-	
 	<!-- Servlet mappings -->
 	<servlet-mapping>
 		<servlet-name>RhymeServlet</servlet-name>
 		<url-pattern>/rhyme</url-pattern>
 	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>WinkAdmin</servlet-name>
-		<url-pattern>/api/console</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>WinkServlet</servlet-name>
-		<url-pattern>/api/*</url-pattern>
-	</servlet-mapping>
 
 	<!-- Main document -->
-
 	<welcome-file-list>
 		<welcome-file>/jsp/rhymestore.jsp</welcome-file>
 	</welcome-file-list>
