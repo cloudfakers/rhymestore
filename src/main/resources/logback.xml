@@ -8,7 +8,11 @@
 	</appender>
 	
 	<logger name="org.apache.wink">
-		<level value="DEBUG" />
+		<level value="INFO" />
+	</logger>
+	
+	<logger name="twitter4j">
+		<level value="INFO" />
 	</logger>
 
 	<root>
