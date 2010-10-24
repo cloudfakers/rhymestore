@@ -16,7 +16,6 @@ import twitter4j.http.RequestToken;
  */
 public class AccessTokenGenerator
 {
-
 	/**
 	 * Interactive {@link AccessToken} generation.
 	 * 
@@ -42,5 +41,7 @@ public class AccessTokenGenerator
 		System.out.println("AccessToken Key: " + accessToken.getToken());
 		System.out.println("AccessToken Secret: "
 				+ accessToken.getTokenSecret());
+
+		twitter.shutdown();
 	}
 }

@@ -63,24 +63,26 @@ public class ReplyCommand implements TwitterCommand
 			// Do nothing, return the default rhyme
 		}
 
-		// try
-		// {
+		// Build the reply tweet
 		String tweet = "@" + status.getUser().getScreenName() + " " + rhyme;
 		if (tweet.length() > 140)
 		{
 			tweet = tweet.substring(0, MAX_TWEET_LENGTH);
 		}
 
-		LOGGER.debug(tweet);
+		try
+		{
+			LOGGER.debug("Replying to {} with: {}", status.getUser()
+					.getScreenName(), tweet);
 
-		// TODO: Uncomment this when authentication error is fixed.
-		// String tweet = rhyme.substring(0, MAX_TWEET_LENGTH);
-		// twitter.updateStatus(tweet, status.getId());
-		// }
-		// catch (TwitterException ex)
-		// {
-		// Enqueue again the reply to retry later
-		// commandQueue.add(this);
-		// }
+			twitter.updateStatus(tweet, status.getId());
+		}
+		catch (TwitterException ex)
+		{
+			LOGGER.error("Could not send reply to tweet " + status.getId(), ex);
+
+			// Enqueue the API call again, to retry it later
+			commandQueue.add(this);
+		}
 	}
 }

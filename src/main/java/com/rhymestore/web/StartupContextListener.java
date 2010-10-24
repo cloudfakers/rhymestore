@@ -19,7 +19,6 @@ import com.rhymestore.twitter.TwitterScheduler;
  */
 public class StartupContextListener implements ServletContextListener
 {
-
 	/** The logger. */
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(StartupContextListener.class);
@@ -27,13 +26,16 @@ public class StartupContextListener implements ServletContextListener
 	/** The Twitter API call scheduler. */
 	private TwitterScheduler twitterScheduler;
 
+	/** The Twitter API client. */
+	private Twitter twitter;
+
 	@Override
 	public void contextInitialized(ServletContextEvent sce)
 	{
 		LOGGER.info("Starting the Twitter API scheduler");
 
 		// Connects to Twitter and starts the execution of API calls
-		Twitter twitter = new TwitterFactory().getInstance();
+		twitter = new TwitterFactory().getInstance();
 		twitterScheduler = new TwitterScheduler(twitter);
 	}
 
@@ -42,8 +44,8 @@ public class StartupContextListener implements ServletContextListener
 	{
 		LOGGER.info("Shutting down the Twitter API scheduler");
 
-		// Shut down the Twitter scheduler
-		twitterScheduler.shutdown();
+		twitterScheduler.shutdown(); // Stop scheduler
+		twitter.shutdown(); // Disconnect from Twitter
 	}
 
 }
