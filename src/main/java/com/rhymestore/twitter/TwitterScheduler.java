@@ -55,6 +55,8 @@ public class TwitterScheduler implements Runnable
 	{
 		super();
 		this.twitter = twitter;
+
+        // TODO: Store commands in Redis
 		this.commandQueue = new LinkedBlockingDeque<TwitterCommand>(); // Thread-safe
 		this.scheduler = Executors.newSingleThreadScheduledExecutor();
 		this.scheduler.scheduleAtFixedRate(this, 0, CALL_INTERVAL,
