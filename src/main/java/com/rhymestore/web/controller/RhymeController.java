@@ -5,6 +5,9 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.rhymestore.store.RhymeStore;
 
 /**
@@ -14,6 +17,9 @@ import com.rhymestore.store.RhymeStore;
  */
 public class RhymeController extends MethodInvokingController
 {
+    /** The logger. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(RhymeController.class);
+
     /** Name of the attribute that will hold the operation result. */
     public static final String RESULT_ATTR = "RhymeController.Result";
 
@@ -50,10 +56,14 @@ public class RhymeController extends MethodInvokingController
             {
                 store.add(rhyme);
                 result = "Added rhyme: " + rhyme;
+
+                LOGGER.info(result);
             }
             catch (IOException ex)
             {
                 result = "Could not add rhyme: " + ex.getMessage();
+
+                LOGGER.error("Added rhyme: {}", result);
             }
 
             request.setAttribute(RESULT_ATTR, result);
