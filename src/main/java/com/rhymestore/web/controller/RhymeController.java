@@ -1,6 +1,9 @@
 package com.rhymestore.web.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,7 +48,11 @@ public class RhymeController extends MethodInvokingController
         try
         {
             Set<String> rhymes = store.findAll();
-            request.setAttribute("rhymes", rhymes);
+
+            List<String> sortedRhymes = new ArrayList<String>(rhymes);
+            Collections.sort(sortedRhymes, String.CASE_INSENSITIVE_ORDER);
+
+            request.setAttribute("rhymes", sortedRhymes);
         }
         catch (IOException ex)
         {
@@ -72,8 +79,11 @@ public class RhymeController extends MethodInvokingController
         {
             try
             {
-                store.add(rhyme);
-                result = "Added rhyme: " + rhyme;
+                // Capitalize rhyme
+                String capitalized = rhyme.substring(0, 1).toUpperCase() + rhyme.substring(1);
+                store.add(capitalized);
+
+                result = "Added rhyme: " + capitalized;
 
                 LOGGER.info(result);
             }
