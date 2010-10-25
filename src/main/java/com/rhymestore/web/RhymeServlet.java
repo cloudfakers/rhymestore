@@ -3,6 +3,7 @@ package com.rhymestore.web;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import com.rhymestore.web.controller.Controller;
 import com.rhymestore.web.controller.ControllerException;
-import com.rhymestore.web.controller.RhymeController;
 
 /**
  * Process requests performed from the Web UI.
@@ -28,6 +28,9 @@ public class RhymeServlet extends HttpServlet
 
     /** Serial UID. */
     private static final long serialVersionUID = 1L;
+
+    /** The resource that contains the controller mappings. */
+    private static final String MAPPING_RESOURCE = "mapping.properties";
 
     /** The view path. */
     private static final String VIEW_PATH = "/jsp";
@@ -48,8 +51,14 @@ public class RhymeServlet extends HttpServlet
     {
         controllers = new HashMap<String, Controller>();
 
-        // Register controllers
-        register("/rhymes", new RhymeController());
+        try
+        {
+            loadMappings();
+        }
+        catch (Exception ex)
+        {
+            throw new ServletException(ex.getMessage());
+        }
     }
 
     @Override
@@ -84,7 +93,7 @@ public class RhymeServlet extends HttpServlet
             catch (ControllerException e)
             {
                 resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                    "An error occured dirung request handling: " + e.getMessage());
+                    "An error occured during request handling: " + e.getMessage());
             }
         }
         else
@@ -121,15 +130,38 @@ public class RhymeServlet extends HttpServlet
     }
 
     /**
-     * Registers the given controller to handle requests to the given path.
+     * Load configured controller mappings.
      * 
-     * @param path The path.
-     * @param controller The controller.
+     * @throws Exception If mappings cannot be loaded.
      */
-    private void register(final String path, final Controller controller)
+    protected void loadMappings() throws Exception
     {
-        LOGGER.info("Mapping {} to {}", path, controller.getClass().getName());
+        Properties mappings = new Properties();
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        mappings.load(cl.getResourceAsStream(MAPPING_RESOURCE));
 
-        controllers.put(path, controller);
+        LOGGER.debug("Loading controller mappings...");
+
+        for (Object mappingKey : mappings.keySet())
+        {
+            String key = (String) mappingKey;
+
+            if (key.endsWith(".path"))
+            {
+                String path = mappings.getProperty(key);
+                String clazz = mappings.getProperty(key.replace(".path", ".class"));
+
+                if (clazz == null)
+                {
+                    throw new Exception("Missing controller class for path: " + path);
+                }
+
+                Controller controller = (Controller) Class.forName(clazz, true, cl).newInstance();
+                controllers.put(path, controller);
+
+                LOGGER.info("Mapping {} to {}", path, controller.getClass().getName());
+            }
+
+        }
     }
 }
