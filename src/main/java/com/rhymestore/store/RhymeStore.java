@@ -69,7 +69,7 @@ public class RhymeStore
     public String getRhyme(final String sentence) throws IOException
     {
         int lastSpace = sentence.lastIndexOf(" ");
-        String token = sentence.substring(lastSpace < 0 ? 0 : lastSpace);
+        String token = sentence.substring(lastSpace < 0 ? 0 : lastSpace + 1);
 
         Set<String> rhymes = search(token);
         return rhymes.isEmpty() ? DEFAULT_RHYME : rhymes.iterator().next();
@@ -80,7 +80,9 @@ public class RhymeStore
     {
         Set<String> rhyms = new HashSet<String>();
 
-        search = "*".concat(generateToken(search));
+        String token = generateToken(search);
+        String lastChars = token.substring(token.length() > 4 ? token.length() - 4 : 0);
+        search = "*".concat(lastChars);
 
         redis.connect();
 
