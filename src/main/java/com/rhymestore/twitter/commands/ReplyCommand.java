@@ -2,7 +2,6 @@ package com.rhymestore.twitter.commands;
 
 import java.io.IOException;
 import java.util.Queue;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,16 +49,17 @@ public class ReplyCommand implements TwitterCommand
     @Override
     public void execute(final Twitter twitter) throws TwitterException
     {
-        String rhyme = RhymeStore.DEFAULT_RHYME;
+        String rhyme = null;
 
         try
         {
-            Set<String> rhymes = rhymeStore.search(status.getText());
-            rhyme = rhymes.iterator().next();
+            rhyme = rhymeStore.getRhyme(status.getText());
         }
         catch (IOException e)
         {
-            // Do nothing, return the default rhyme
+            LOGGER.error(
+                "An error occured while connecting to the rhyme store. Could not reply to {}",
+                status.getUser().getScreenName());
         }
 
         try
