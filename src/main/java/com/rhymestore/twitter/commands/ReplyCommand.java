@@ -66,7 +66,7 @@ public class ReplyCommand implements TwitterCommand
         {
             String tweet = TwitterUtils.reply(status.getUser().getScreenName(), rhyme);
 
-            LOGGER.debug("Replying to {} with: {}", status.getUser().getScreenName(), tweet);
+            LOGGER.info("Replying to {} with: {}", status.getUser().getScreenName(), tweet);
 
             twitter.updateStatus(tweet, status.getId());
         }

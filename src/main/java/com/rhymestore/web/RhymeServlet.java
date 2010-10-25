@@ -140,7 +140,7 @@ public class RhymeServlet extends HttpServlet
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         mappings.load(cl.getResourceAsStream(MAPPING_RESOURCE));
 
-        LOGGER.debug("Loading controller mappings...");
+        LOGGER.info("Loading controller mappings...");
 
         for (Object mappingKey : mappings.keySet())
         {
