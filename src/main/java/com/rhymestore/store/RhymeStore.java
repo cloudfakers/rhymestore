@@ -81,7 +81,7 @@ public class RhymeStore
         Set<String> rhyms = new HashSet<String>();
 
         String token = generateToken(search);
-        String lastChars = token.substring(token.length() > 2 ? token.length() - 2 : 0);
+        String lastChars = token.substring(token.length() > 3 ? token.length() - 3 : 0);
         search = "*".concat(lastChars);
 
         redis.connect();
