@@ -11,7 +11,7 @@
 <body>
 	<h2>RhymeStore Management</h2>
 	
-	<form action="<c:url value="/web/rhymes/add" />" method="post">
+	<form action="<%=request.getContextPath() %>/web/rhymes/add" method="post">
 		<p>Enter a Rhyme to add it to RymeStore:</p>
 		<input id="ryhme" name="rhyme" type="text" size="100" />
 		<br /><br />
