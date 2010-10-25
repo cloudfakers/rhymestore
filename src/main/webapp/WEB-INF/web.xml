@@ -3,7 +3,13 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	id="RhymeStore" version="2.5">
 
-	<display-name>Rhymestore</display-name>
+	<display-name>The Rhymestore Project</display-name>
+	
+	<!-- Configure if twitter communication is enabled -->
+	<context-param>
+		<param-name>TWITTER_ENABLED</param-name>
+		<param-value>true</param-value>
+	</context-param>
 	
 	<!-- Startup ContextListener -->
 	<listener>
@@ -19,12 +25,12 @@
 	<!-- Servlet mappings -->
 	<servlet-mapping>
 		<servlet-name>RhymeServlet</servlet-name>
-		<url-pattern>/rhyme</url-pattern>
+		<url-pattern>/web/*</url-pattern>
 	</servlet-mapping>
 
 	<!-- Main document -->
 	<welcome-file-list>
-		<welcome-file>/jsp/rhymestore.jsp</welcome-file>
+		<welcome-file>/jsp/rhymes/add.jsp</welcome-file>
 	</welcome-file-list>
 
 </web-app>

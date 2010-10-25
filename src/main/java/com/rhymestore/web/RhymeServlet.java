@@ -1,13 +1,20 @@
 package com.rhymestore.web;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.rhymestore.store.RhymeStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.rhymestore.web.controller.Controller;
+import com.rhymestore.web.controller.ControllerException;
+import com.rhymestore.web.controller.RhymeController;
 
 /**
  * Process requests performed from the Web UI.
@@ -16,20 +23,20 @@ import com.rhymestore.store.RhymeStore;
  */
 public class RhymeServlet extends HttpServlet
 {
+    /** The logger. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(RhymeServlet.class);
+
     /** Serial UID. */
     private static final long serialVersionUID = 1L;
 
-    /** Name of the attribute that will hold the operation result. */
-    public static final String RESULT_ATTR = "RhymeServlet.Result";
+    /** The view path. */
+    private static final String VIEW_PATH = "/jsp";
 
-    /** The name of the parameter used to submit rhymes. */
-    public static final String RHYME_PARAM = "rhyme";
+    /** The view suffix. */
+    private static final String VIEW_SUFFIX = ".jsp";
 
-    /** The Rhyme form JSP. */
-    private static final String RHYME_JSP = "/jsp/rhymestore.jsp";
-
-    /** The Rhyme store. */
-    private RhymeStore store;
+    /** Mappings from request path to {@link Controller} objects. */
+    private Map<String, Controller> controllers;
 
     /**
      * Initializes the servlet.
@@ -39,14 +46,52 @@ public class RhymeServlet extends HttpServlet
     @Override
     public void init() throws ServletException
     {
-        store = RhymeStore.getInstance();
+        controllers = new HashMap<String, Controller>();
+
+        // Register controllers
+        register("/rhymes", new RhymeController());
     }
 
     @Override
     protected void doGet(final HttpServletRequest req, final HttpServletResponse resp)
         throws ServletException, IOException
     {
-        getServletContext().getRequestDispatcher(RHYME_JSP).forward(req, resp);
+        String controllerPath = null;
+        Controller controller = null;
+        String requestedPath = getRequestedPath(req);
+
+        for (String path : controllers.keySet())
+        {
+            if (requestedPath.startsWith(path))
+            {
+                controllerPath = path;
+                controller = controllers.get(path);
+
+                LOGGER.debug("Using {} controller to handle request to: {}", controller.getClass()
+                    .getName(), req.getRequestURI());
+            }
+        }
+
+        if (controller != null)
+        {
+            try
+            {
+                String viewName = controller.execute(req, resp);
+                String viewPath = VIEW_PATH + controllerPath + "/" + viewName + VIEW_SUFFIX;
+
+                getServletContext().getRequestDispatcher(viewPath).forward(req, resp);
+            }
+            catch (ControllerException e)
+            {
+                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    "An error occured dirung request handling: " + e.getMessage());
+            }
+        }
+        else
+        {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND,
+                "No controller was found to handle request to: " + req.getRequestURI());
+        }
     }
 
     /**
@@ -59,24 +104,32 @@ public class RhymeServlet extends HttpServlet
     protected void doPost(final HttpServletRequest req, final HttpServletResponse resp)
         throws ServletException, IOException
     {
-        String result = null;
-        String rhyme = req.getParameter(RHYME_PARAM);
+        doGet(req, resp);
+    }
 
-        if (rhyme != null && rhyme.length() > 0)
-        {
-            try
-            {
-                store.add(rhyme);
-                result = "Added rhyme: " + rhyme;
-            }
-            catch (IOException ex)
-            {
-                result = "Could not add rhyme: " + ex.getMessage();
-            }
+    /**
+     * Get the requested path relative to the servlet path.
+     * 
+     * @param req The request.
+     * @return The requested path.
+     */
+    private String getRequestedPath(final HttpServletRequest req)
+    {
+        return req.getRequestURI().replaceFirst(req.getContextPath(), "").replaceFirst(
+            req.getServletPath(), "");
 
-            req.setAttribute(RESULT_ATTR, result);
-        }
+    }
 
-        getServletContext().getRequestDispatcher(RHYME_JSP).forward(req, resp);
+    /**
+     * Registers the given controller to handle requests to the given path.
+     * 
+     * @param path The path.
+     * @param controller The controller.
+     */
+    private void register(final String path, final Controller controller)
+    {
+        LOGGER.info("Mapping {} to {}", path, controller.getClass().getName());
+
+        controllers.put(path, controller);
     }
 }

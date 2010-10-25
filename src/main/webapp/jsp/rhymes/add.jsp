@@ -1,4 +1,4 @@
-<%@page import="com.rhymestore.web.RhymeServlet"%>
+<%@page import="com.rhymestore.web.controller.RhymeController"%>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
@@ -11,15 +11,15 @@
 <body>
 	<h2>RhymeStore Management</h2>
 	
-	<form action="<%=request.getContextPath()%>/rhyme" method="post">
+	<form action="<%=request.getContextPath()%>/web/rhymes/add" method="post">
 		<p>Enter a Rhyme to add it to RymeStore:</p>
-		<input id="ryhme" name="<%=RhymeServlet.RHYME_PARAM%>" type="text" size="100" />
+		<input id="ryhme" name="<%=RhymeController.RHYME_PARAM%>" type="text" size="100" />
 		<br /><br />
 		<input type="submit" value="Add it!" />
 	</form>
 	
 	<%
-		String result = (String) request.getAttribute(RhymeServlet.RESULT_ATTR);
+		String result = (String) request.getAttribute(RhymeController.RESULT_ATTR);
 		if (result != null) {
 	%>
 	
