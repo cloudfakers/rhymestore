@@ -21,12 +21,6 @@ public class RhymeController extends MethodInvokingController
     /** The logger. */
     private static final Logger LOGGER = LoggerFactory.getLogger(RhymeController.class);
 
-    /** Name of the attribute that will hold the operation result. */
-    public static final String RESULT_ATTR = "RhymeController.Result";
-
-    /** The name of the parameter used to submit rhymes. */
-    public static final String RHYME_PARAM = "rhyme";
-
     /** The Rhyme store. */
     private RhymeStore store;
 
@@ -51,11 +45,13 @@ public class RhymeController extends MethodInvokingController
         try
         {
             Set<String> rhymes = store.findAll();
-            request.setAttribute(RESULT_ATTR, rhymes);
+            request.setAttribute("rhymes", rhymes);
         }
         catch (IOException ex)
         {
-            LOGGER.error("Could get rhymes: " + ex.getMessage());
+            String result = "Could get rhymes: " + ex.getMessage();
+            LOGGER.error(result);
+            request.setAttribute("result", result);
         }
     }
 
@@ -70,7 +66,7 @@ public class RhymeController extends MethodInvokingController
         throws ControllerException
     {
         String result = null;
-        String rhyme = request.getParameter(RHYME_PARAM);
+        String rhyme = request.getParameter("rhyme");
 
         if (rhyme != null && rhyme.length() > 0)
         {
@@ -87,7 +83,7 @@ public class RhymeController extends MethodInvokingController
                 LOGGER.error(result);
             }
 
-            request.setAttribute(RESULT_ATTR, result);
+            request.setAttribute("result", result);
         }
     }
 

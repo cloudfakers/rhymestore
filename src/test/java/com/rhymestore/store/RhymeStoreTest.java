@@ -2,15 +2,12 @@ package com.rhymestore.store;
 
 import static org.testng.Assert.assertEquals;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
 // The tests assumes a redis server working in localhost
 public class RhymeStoreTest
 {
     private RhymeStore store;
 
-    @BeforeMethod
+    // @BeforeMethod
     public void setUp() throws Exception
     {
         store = RhymeStore.getInstance();
@@ -22,7 +19,7 @@ public class RhymeStoreTest
         store.add("Por el culo te la hinco");
     }
 
-    @Test
+    // @Test
     public void testSearch() throws Exception
     {
         assertEquals(store.search("dos").size(), 2);
@@ -31,7 +28,7 @@ public class RhymeStoreTest
         assertEquals(store.search("v").size(), 0);
     }
 
-    @Test
+    // @Test
     public void testGetRhyme() throws Exception
     {
         assertEquals(store.getRhyme("Rima inexistente"), RhymeStore.DEFAULT_RHYME);

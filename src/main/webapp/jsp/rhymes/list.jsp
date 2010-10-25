@@ -1,5 +1,4 @@
-<%@page import="com.rhymestore.web.controller.RhymeController"%>
-<%@page import="java.util.Set"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 
@@ -7,39 +6,29 @@
 
 <head>
 	<title>RhymeStore Management</title>
-	<link type="text/css" href="<%=request.getContextPath()%>/css/rhymestore.css" rel="stylesheet" />
+	<link type="text/css" href="<c:url value="/css/rhymestore.css" />" rel="stylesheet" />
 </head>
 
 <body>
+
 	<h2>RhymeStore Stored Rhymes</h2>
 	
-	<%
-		Set<String> result = (Set<String>) request.getAttribute(RhymeController.RESULT_ATTR);
-		if (result == null) {
-	%>
+	<c:if test="${not empty result}">
+		<p class="result">
+			<c:out value="${result}" />
+		</p>
+	</c:if>
 	
-	<p class="result">Could not get stored rhymes</p>
+	<c:if test="${not empty rhymes}">
+		<table>
+			<c:forEach var="rhyme" items="${rhymes}">
+				<tr><td align="left"><c:out value="${rhyme}" /></td></tr>
+			</c:forEach>
+		</table>
+	</c:if>
 	
-	<%
-		} else {
-	%>
-	
-	<table>
-		<%
-		for (String rhyme : result) {
-		%>
-			<tr><td align="left"><%=rhyme %></td></tr>
-		<%
-			}
-		%>
-	</table>
-	
-	<%
-		}
-	%>
-
 	<p>
-		<a href="<%=request.getContextPath()%>/web/rhymes/add">Add a rhyme</a>
+		<a href="<c:url value="/web/rhymes/add" />">Add a rhyme</a>
 	</p>
 	
 </body>
