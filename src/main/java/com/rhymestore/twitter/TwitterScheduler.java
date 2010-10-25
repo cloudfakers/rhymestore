@@ -14,88 +14,92 @@ import twitter4j.TwitterException;
 
 import com.rhymestore.twitter.commands.GetMentionsCommand;
 import com.rhymestore.twitter.commands.TwitterCommand;
+import com.rhymestore.twitter.util.TwitterUtils;
 
 /**
  * Schedules Twitter API calls to execute them in order.
  * <p>
- * Twitter only allows 150 calls per hour. This class will enqueue and run all
- * requested API calls when possible.
+ * Twitter only allows 150 calls per hour. This class will enqueue and run all requested API calls
+ * when possible.
  * 
  * @author Ignasi Barrera
- * 
  */
 public class TwitterScheduler implements Runnable
 {
-	/** The logger. */
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(TwitterScheduler.class);
+    /** The logger. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(TwitterScheduler.class);
 
-	/**
-	 * The call interval between Twitter API calls per hour.
-	 * <p>
-	 * 150 calls per hour = 2.5 calls per minute => Execute each 30 seconds.
-	 */
-	private static final long CALL_INTERVAL = 30;
+    /** The scheduler service. */
+    private ScheduledExecutorService scheduler;
 
-	/** The scheduler service. */
-	private ScheduledExecutorService scheduler;
+    /** The queue with the pending commands. */
+    private Queue<TwitterCommand> commandQueue;
 
-	/** The queue with the pending commands. */
-	private Queue<TwitterCommand> commandQueue;
+    /** The Twitter account where the API calls will be performed. */
+    private Twitter twitter;
 
-	/** The Twitter account where the API calls will be performed. */
-	private Twitter twitter;
+    /** The command used to get mentions, */
+    private TwitterCommand getMentionsCommand;
 
-	/**
-	 * Creates a new {@link TwitterScheduler}.
-	 * 
-	 * @param twitter The Twitter account where the API calls will be performed.
-	 */
-	public TwitterScheduler(Twitter twitter)
-	{
-		super();
-		this.twitter = twitter;
+    /**
+     * Creates a new {@link TwitterScheduler}.
+     * 
+     * @param twitter The Twitter account where the API calls will be performed.
+     */
+    public TwitterScheduler(final Twitter twitter)
+    {
+        super();
 
-        // TODO: Store commands in Redis
-		this.commandQueue = new LinkedBlockingDeque<TwitterCommand>(); // Thread-safe
-		this.scheduler = Executors.newSingleThreadScheduledExecutor();
-		this.scheduler.scheduleAtFixedRate(this, 0, CALL_INTERVAL,
-				TimeUnit.SECONDS);
-	}
+        this.twitter = twitter;
+        commandQueue = new LinkedBlockingDeque<TwitterCommand>(); // Thread-safe
+        getMentionsCommand = new GetMentionsCommand(commandQueue);
+        scheduler = Executors.newSingleThreadScheduledExecutor();
+    }
 
-	/**
-	 * Shuts down the scheduler.
-	 */
-	public void shutdown()
-	{
-		this.scheduler.shutdown();
-	}
+    /**
+     * Starts down the scheduler.
+     */
+    public void start()
+    {
+        double callsPerMinute = Math.floor(TwitterUtils.MAX_API_CALLS_PER_HOUR / 60);
+        long interval = (long) Math.ceil(60 / callsPerMinute);
 
-	/**
-	 * Executes the enqueued Twitter API calls.
-	 */
-	@Override
-	public void run()
-	{
-		try
-		{
-			if (commandQueue.isEmpty())
-			{
-				LOGGER.debug("Running GetMentions API call...");
+        scheduler.scheduleAtFixedRate(this, 0, interval, TimeUnit.SECONDS);
+    }
 
-				new GetMentionsCommand(commandQueue).execute(twitter);
-			}
-			else
-			{
-				LOGGER.debug("Running Reply API call...");
+    /**
+     * Shuts down the scheduler.
+     */
+    public void shutdown()
+    {
+        scheduler.shutdown();
+    }
 
-				TwitterCommand cmd = commandQueue.poll();
-				cmd.execute(twitter);
-			}
-		}
-		catch (TwitterException ex)
-		{
-			LOGGER.error("Could not execute the Twitter API call", ex);
-		}
-	}
+    /**
+     * Executes the enqueued Twitter API calls.
+     */
+    @Override
+    public void run()
+    {
+        try
+        {
+            if (commandQueue.isEmpty())
+            {
+                LOGGER.debug("Running GetMentions API call...");
+
+                getMentionsCommand.execute(twitter);
+            }
+            else
+            {
+                LOGGER.debug("Running Reply API call...");
+
+                TwitterCommand cmd = commandQueue.poll();
+                cmd.execute(twitter);
+            }
+        }
+        catch (TwitterException ex)
+        {
+            LOGGER.error("Could not execute the Twitter API call", ex);
+        }
+    }
 }

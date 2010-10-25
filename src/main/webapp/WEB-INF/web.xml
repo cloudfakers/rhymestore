@@ -7,7 +7,7 @@
 	
 	<!-- Startup ContextListener -->
 	<listener>
-		<listener-class>com.rhymestore.web.StartupContextListener</listener-class>
+		<listener-class>com.rhymestore.web.RhymestoreContextListener</listener-class>
 	</listener>
 	
 	<!-- Rhyme servlet -->
