@@ -20,7 +20,7 @@
 package com.rhymestore.lang;
 
 /**
- * Spanish {@link WordParser}.
+ * Parses words to identify the part that is used to conform a consonant rhyme.
  * 
  * @author Ignasi Barrera
  * 
