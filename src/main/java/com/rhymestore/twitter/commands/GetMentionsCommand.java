@@ -12,7 +12,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 /**
- * Gets the list of mentions
+ * Gets the list of mentions.
  * 
  * @author Ignasi Barrera
  */
