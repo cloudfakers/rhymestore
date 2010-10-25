@@ -6,7 +6,7 @@
 
 <head>
 	<title>RhymeStore Management</title>
-	<link type="text/css" href="<c:url value="/css/rhymestore.css" />" rel="stylesheet" />
+	<link type="text/css" href="<%=request.getContextPath() %>/css/rhymestore.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -28,7 +28,7 @@
 	</c:if>
 	
 	<p>
-		<a href="<c:url value="/web/rhymes/add" />">Add a rhyme</a>
+		<a href="<%=request.getContextPath() %>/web/rhymes/add">Add a rhyme</a>
 	</p>
 	
 </body>
