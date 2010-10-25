@@ -60,6 +60,24 @@ public class RhymeStore
         }
     }
 
+    public Set<String> findAll() throws IOException
+    {
+        Set<String> rhymes = new HashSet<String>();
+        redis.connect();
+
+        for (String key : redis.keys(namespace.build("*").toString()))
+        {
+            for (String sentence : redis.smembers(key))
+            {
+                rhymes.add(URLDecoder.decode(sentence, encoding));
+            }
+        }
+
+        redis.disconnect();
+
+        return rhymes;
+    }
+
     /**
      * Gets a rhyme for the given sentence.
      * 
@@ -78,7 +96,7 @@ public class RhymeStore
     // TODO don't use the KEYS command! Use a trie instead.
     protected Set<String> search(String search) throws IOException
     {
-        Set<String> rhyms = new HashSet<String>();
+        Set<String> rhymes = new HashSet<String>();
 
         String token = generateToken(search);
         String lastChars = token.substring(token.length() > 3 ? token.length() - 3 : 0);
@@ -90,13 +108,13 @@ public class RhymeStore
         {
             for (String sentence : redis.smembers(key))
             {
-                rhyms.add(URLDecoder.decode(sentence, encoding));
+                rhymes.add(URLDecoder.decode(sentence, encoding));
             }
         }
 
         redis.disconnect();
 
-        return rhyms;
+        return rhymes;
     }
 
     private String generateToken(final String value)

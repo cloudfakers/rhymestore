@@ -29,6 +29,10 @@
 		}
 	%>
 	
+	<p>
+		<a href="<%=request.getContextPath()%>/web/rhymes/list">View stored rhymes</a>
+	</p>
+	
 </body>
 
 </html>

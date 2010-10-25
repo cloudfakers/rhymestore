@@ -1,6 +1,7 @@
 package com.rhymestore.web.controller;
 
 import java.io.IOException;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,6 +39,27 @@ public class RhymeController extends MethodInvokingController
     }
 
     /**
+     * Lists all rhymes in the the store.
+     * 
+     * @param request The request.
+     * @param response The response.
+     * @throws ControllerException If the rhyme cannot be added.
+     */
+    public void list(final HttpServletRequest request, final HttpServletResponse response)
+        throws ControllerException
+    {
+        try
+        {
+            Set<String> rhymes = store.findAll();
+            request.setAttribute(RESULT_ATTR, rhymes);
+        }
+        catch (IOException ex)
+        {
+            LOGGER.error("Could get rhymes: " + ex.getMessage());
+        }
+    }
+
+    /**
      * Adds a new rhyme to the store.
      * 
      * @param request The request.
@@ -62,8 +84,7 @@ public class RhymeController extends MethodInvokingController
             catch (IOException ex)
             {
                 result = "Could not add rhyme: " + ex.getMessage();
-
-                LOGGER.error("Added rhyme: {}", result);
+                LOGGER.error(result);
             }
 
             request.setAttribute(RESULT_ATTR, result);
