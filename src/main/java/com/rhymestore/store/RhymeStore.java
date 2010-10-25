@@ -31,123 +31,128 @@ import java.util.Set;
 
 import redis.clients.jedis.Jedis;
 
+import com.rhymestore.lang.WordParser;
+
 public class RhymeStore
 {
-    public static final String DEFAULT_RHYME = "Patada en los cojones";
+	public static final String DEFAULT_RHYME = "Patada en los cojones";
 
-    private final Jedis redis;
+	private final Jedis redis;
 
-    private final Keymaker namespace = new Keymaker("rhyme");
+	private final Keymaker namespace = new Keymaker("rhyme");
 
-    private final String encoding = "UTF-8";
+	private final String encoding = "UTF-8";
 
-    public static RhymeStore instance;
+	public static RhymeStore instance;
 
-    public static RhymeStore getInstance()
-    {
-        if (instance == null)
-        {
-            instance = new RhymeStore();
-        }
-        return instance;
-    }
+	/** Parses the words to get the part used to rhyme. */
+	private WordParser wordParser;
 
-    private RhymeStore()
-    {
-        redis = new Jedis("localhost", 6379);
-    }
+	public static RhymeStore getInstance()
+	{
+		if (instance == null)
+		{
+			instance = new RhymeStore();
+		}
+		return instance;
+	}
 
-    public RhymeStore(final String host, final int port)
-    {
-        redis = new Jedis(host, port);
-    }
+	private RhymeStore()
+	{
+		redis = new Jedis("localhost", 6379);
+		wordParser = new WordParser();
+	}
 
-    public void add(final String sentence) throws IOException
-    {
-        if (sentence != null && sentence.length() > 0)
-        {
-            List<String> words = Arrays.asList(sentence.split(" "));
+	public RhymeStore(final String host, final int port)
+	{
+		redis = new Jedis(host, port);
+	}
 
-            String key = generateToken(words.get(words.size() - 1));
-            String value = URLEncoder.encode(sentence, encoding);
+	public void add(final String sentence) throws IOException
+	{
+		if (sentence != null && sentence.length() > 0)
+		{
+			List<String> words = Arrays.asList(sentence.split(" "));
 
-            redis.connect();
+			String key = generateToken(words.get(words.size() - 1));
+			String value = URLEncoder.encode(sentence, encoding);
 
-            redis.sadd(namespace.build(key).toString(), value);
+			redis.connect();
 
-            redis.disconnect();
-        }
-    }
+			redis.sadd(namespace.build(key).toString(), value);
 
-    public Set<String> findAll() throws IOException
-    {
-        Set<String> rhymes = new HashSet<String>();
-        redis.connect();
+			redis.disconnect();
+		}
+	}
 
-        for (String key : redis.keys(namespace.build("*").toString()))
-        {
-            for (String sentence : redis.smembers(key))
-            {
-                rhymes.add(URLDecoder.decode(sentence, encoding));
-            }
-        }
+	public Set<String> findAll() throws IOException
+	{
+		Set<String> rhymes = new HashSet<String>();
+		redis.connect();
 
-        redis.disconnect();
+		for (String key : redis.keys(namespace.build("*").toString()))
+		{
+			for (String sentence : redis.smembers(key))
+			{
+				rhymes.add(URLDecoder.decode(sentence, encoding));
+			}
+		}
 
-        return rhymes;
-    }
+		redis.disconnect();
 
-    /**
-     * Gets a rhyme for the given sentence.
-     * 
-     * @param sentence The sentence to rhyme.
-     * @return The rhyme.
-     */
-    public String getRhyme(final String sentence) throws IOException
-    {
-        int lastSpace = sentence.lastIndexOf(" ");
-        String token = sentence.substring(lastSpace < 0 ? 0 : lastSpace + 1);
+		return rhymes;
+	}
 
-        Set<String> rhymes = search(token);
-        return rhymes.isEmpty() ? DEFAULT_RHYME : rhymes.iterator().next();
-    }
+	/**
+	 * Gets a rhyme for the given sentence.
+	 * 
+	 * @param sentence The sentence to rhyme.
+	 * @return The rhyme.
+	 */
+	public String getRhyme(final String sentence) throws IOException
+	{
+		int lastSpace = sentence.lastIndexOf(" ");
+		String token = sentence.substring(lastSpace < 0 ? 0 : lastSpace + 1);
+		String rhymepart = wordParser.getRhymeText(token);
 
-    // TODO don't use the KEYS command! Use a trie instead.
-    protected Set<String> search(String search) throws IOException
-    {
-        Set<String> rhymes = new HashSet<String>();
+		Set<String> rhymes = search(rhymepart);
+		return rhymes.isEmpty() ? DEFAULT_RHYME : rhymes.iterator().next();
+	}
 
-        String token = generateToken(search);
-        String lastChars = token.substring(token.length() > 3 ? token.length() - 3 : 0);
-        search = "*".concat(lastChars);
+	// TODO don't use the KEYS command! Use a trie instead.
+	protected Set<String> search(String search) throws IOException
+	{
+		Set<String> rhymes = new HashSet<String>();
 
-        redis.connect();
+		search = "*".concat(generateToken(search));
 
-        for (String key : redis.keys(namespace.build(search).toString()))
-        {
-            for (String sentence : redis.smembers(key))
-            {
-                rhymes.add(URLDecoder.decode(sentence, encoding));
-            }
-        }
+		redis.connect();
 
-        redis.disconnect();
+		for (String key : redis.keys(namespace.build(search).toString()))
+		{
+			for (String sentence : redis.smembers(key))
+			{
+				rhymes.add(URLDecoder.decode(sentence, encoding));
+			}
+		}
 
-        return rhymes;
-    }
+		redis.disconnect();
 
-    private String generateToken(final String value)
-    {
-        // To lower case
-        String token = value.toLowerCase();
+		return rhymes;
+	}
 
-        // Remove diacritics
-        token = Normalizer.normalize(token, Form.NFD);
-        token = token.replaceAll("[^\\p{ASCII}]", "");
+	private String generateToken(final String value)
+	{
+		// To lower case
+		String token = value.toLowerCase();
 
-        // Remove non alphanumeric characters
-        token = token.replaceAll("[^a-zA-Z0-9]", "");
+		// Remove diacritics
+		token = Normalizer.normalize(token, Form.NFD);
+		token = token.replaceAll("[^\\p{ASCII}]", "");
 
-        return token;
-    }
+		// Remove non alphanumeric characters
+		token = token.replaceAll("[^a-zA-Z0-9]", "");
+
+		return token;
+	}
 }
