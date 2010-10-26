@@ -28,40 +28,40 @@ import org.testng.annotations.Test;
  * Unit tests for the {@link WordParser}.
  * 
  * @author Ignasi Barrera
- * 
  */
 public class WordParserTest
 {
-	/** The word parser. */
-	private WordParser wordParser;
+    /** The word parser. */
+    private WordParser wordParser;
 
-	@BeforeMethod
-	public void setUp()
-	{
-		wordParser = new WordParser();
-	}
+    @BeforeMethod
+    public void setUp()
+    {
+        wordParser = new WordParser();
+    }
 
-	@Test
-	public void testGetRhymeTest()
-	{
-		assertEquals(wordParser.getRhymeText(""), "");
+    @Test
+    public void testGetRhymeTest()
+    {
+        assertEquals(wordParser.getRhymeText(""), "");
 
-		// Monosilabos
-		assertEquals(wordParser.getRhymeText("pez"), "ez");
+        // Monosilabos
+        assertEquals(wordParser.getRhymeText("pez"), "ez");
 
-		// Agudas
-		assertEquals(wordParser.getRhymeText("correr"), "er");
-		assertEquals(wordParser.getRhymeText("melón"), "ón");
+        // Agudas
+        assertEquals(wordParser.getRhymeText("correr"), "er");
+        assertEquals(wordParser.getRhymeText("melón"), "ón");
 
-		// Llanas
-		assertEquals(wordParser.getRhymeText("lío"), "ío");
-		assertEquals(wordParser.getRhymeText("carromato"), "ato");
-		assertEquals(wordParser.getRhymeText("Telecinco"), "inco");
-		assertEquals(wordParser.getRhymeText("abogado"), "ado");
+        // Llanas
+        assertEquals(wordParser.getRhymeText("lío"), "ío");
+        assertEquals(wordParser.getRhymeText("carromato"), "ato");
+        assertEquals(wordParser.getRhymeText("Telecinco"), "inco");
+        assertEquals(wordParser.getRhymeText("abogado"), "ado");
+        assertEquals(wordParser.getRhymeText("auriculares"), "ares");
 
-		// Esdrújulcas y sobreesdrújulas
-		assertEquals(wordParser.getRhymeText("cáspita"), "áspita");
-		assertEquals(wordParser.getRhymeText("recuérdamelo"), "érdamelo");
-	}
+        // Esdrújulcas y sobreesdrújulas
+        assertEquals(wordParser.getRhymeText("cáspita"), "áspita");
+        assertEquals(wordParser.getRhymeText("recuérdamelo"), "érdamelo");
+    }
 
 }

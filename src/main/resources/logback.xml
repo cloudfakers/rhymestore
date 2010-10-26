@@ -8,7 +8,7 @@
 	</appender>
 	
 	<logger name="com.rhymestore">
-		<level value="DEBUG" />
+		<level value="INFO" />
 	</logger>
 	
 	<logger name="twitter4j">
