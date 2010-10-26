@@ -70,11 +70,18 @@ public class GetMentionsCommand implements TwitterCommand
             // Enqueue a reply to each mention
             for (Status status : mentions)
             {
-                LOGGER.debug("Adding tweet {} from {}", status.getId(), status.getUser()
-                    .getScreenName());
+                if (!status.getUser().getScreenName().equalsIgnoreCase(twitter.getScreenName()))
+                {
+                    LOGGER.debug("Adding tweet {} from {}", status.getId(), status.getUser()
+                        .getScreenName());
 
-                ReplyCommand reply = new ReplyCommand(status, commandQueue);
-                commandQueue.add(reply);
+                    ReplyCommand reply = new ReplyCommand(status, commandQueue);
+                    commandQueue.add(reply);
+                }
+                else
+                {
+                    LOGGER.debug("Ignoring mention from the current user: {}", status.getText());
+                }
             }
 
             if (!mentions.isEmpty())
