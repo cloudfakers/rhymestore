@@ -6,19 +6,33 @@ The Rhymestore Project provides Twitter integration to
 to access the rhyme knowledge base. 
 
 
- 1. Compiling Rhymestore
--------------------------
+  0. Prerequisites
 
-  Rhymestore can be compiled as a standard Maven project:
-  
-  $ mvn clean package
-  
-  That will generate the rhymestore.war file in the target/ folder.
-  
-  
- 2. Deploying
---------------
+The Rhymestore project uses Redis to store the rhymes. You
+can download it from: http://code.google.com/p/redis/
 
-  Once you have the rhymjestore.war file, you can deploy it to any
-  servlet container.
+Refer to Redis installation instructions if you need any
+help installing it.
 
+
+  1. Compiling Rhymestore
+
+Rhymestore can be compiled as a standard Maven project:
+
+$ mvn clean package
+  
+That will generate the rhymestore.war file in the target/
+folder.
+  
+
+  2. Deploying
+
+Once you have the rhymjestore.war file, you can deploy it to
+any servlet container.
+
+You need to have a running Redis instance.
+
+If you want to use the example db, just copy the db/redis.rdb
+file and rename/move it to the location your Redis will use.
+The location and filename of the database file can be configured
+in your Redis redis.conf file.
