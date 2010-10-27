@@ -24,6 +24,8 @@ import java.lang.reflect.Method;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.rhymestore.web.RhymestoreContextListener;
+
 /**
  * Controller that delegates execution to a specific method based on the request path.
  * 
@@ -77,5 +79,19 @@ public class MethodInvokingController implements Controller
 
         // The view name is the same than the method
         return methodName;
+    }
+
+    /**
+     * Gets the Twitter user.
+     * 
+     * @param request The request.
+     * @param response The response.
+     * @return The Twitter user name.
+     */
+    protected String getTwitterUser(final HttpServletRequest request,
+        final HttpServletResponse response)
+    {
+        return (String) request.getSession().getServletContext().getAttribute(
+            RhymestoreContextListener.TWITTER_USER_NAME);
     }
 }

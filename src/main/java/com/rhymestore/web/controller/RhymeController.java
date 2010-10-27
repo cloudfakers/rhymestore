@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.rhymestore.store.RhymeStore;
+import com.rhymestore.twitter.util.TwitterUtils;
 
 /**
  * Controller to manage stored rhymes.
@@ -98,11 +99,19 @@ public class RhymeController extends MethodInvokingController
         {
             try
             {
-                // Capitalize rhyme
-                String capitalized = rhyme.substring(0, 1).toUpperCase() + rhyme.substring(1);
-                store.add(capitalized);
+                String twitterUser = getTwitterUser(request, response);
+                if (rhyme.contains(TwitterUtils.user(twitterUser)))
+                {
+                    result = "Cannot add a rhyme that contains the Twitter user name";
+                }
+                else
+                {
+                    // Capitalize rhyme
+                    String capitalized = rhyme.substring(0, 1).toUpperCase() + rhyme.substring(1);
+                    store.add(capitalized);
 
-                result = "Added rhyme: " + capitalized;
+                    result = "Added rhyme: " + capitalized;
+                }
 
                 LOGGER.info(result);
             }
@@ -115,5 +124,4 @@ public class RhymeController extends MethodInvokingController
             request.setAttribute("result", result);
         }
     }
-
 }

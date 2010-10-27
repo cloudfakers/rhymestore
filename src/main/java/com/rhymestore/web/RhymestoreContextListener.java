@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import twitter4j.Twitter;
+import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 
 import com.rhymestore.twitter.TwitterScheduler;
@@ -40,6 +41,9 @@ public class RhymestoreContextListener implements ServletContextListener
     /** The logger. */
     private static final Logger LOGGER = LoggerFactory.getLogger(RhymestoreContextListener.class);
 
+    /** Context attribute name used to store the Twitter user. */
+    public static final String TWITTER_USER_NAME = "TWITTER_USER_NAME";
+
     /** Context parameter name used to enable or disable twitter communication. */
     private static final String TWITTER_ENABLE_PARAM_NAME = "TWITTER_ENABLED";
 
@@ -52,12 +56,24 @@ public class RhymestoreContextListener implements ServletContextListener
     @Override
     public void contextInitialized(final ServletContextEvent sce)
     {
+        // Connects to Twitter and starts the execution of API calls
+        twitter = new TwitterFactory().getInstance();
+
+        // Store the user name in the Servlet Context to make it available to Controllers
+        try
+        {
+            sce.getServletContext().setAttribute(TWITTER_USER_NAME, twitter.getScreenName());
+        }
+        catch (TwitterException ex)
+        {
+            LOGGER.error("Could not get the Twitter username", ex);
+        }
+
+        // Starts the Twitter scheduler
         if (twitterEnabled(sce))
         {
             LOGGER.info("Starting the Twitter API scheduler");
 
-            // Connects to Twitter and starts the execution of API calls
-            twitter = new TwitterFactory().getInstance();
             twitterScheduler = new TwitterScheduler(twitter);
             twitterScheduler.start();
         }
@@ -75,8 +91,9 @@ public class RhymestoreContextListener implements ServletContextListener
             LOGGER.info("Shutting down the Twitter API scheduler");
 
             twitterScheduler.shutdown(); // Stop scheduler
-            twitter.shutdown(); // Disconnect from Twitter
         }
+
+        twitter.shutdown(); // Disconnect from Twitter
     }
 
     /**

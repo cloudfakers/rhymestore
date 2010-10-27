@@ -44,7 +44,7 @@ public class TwitterUtils
      * @param sentence The sentence to tweet.
      * @return The valid tweet.
      */
-    public static String toTweet(final String sentence)
+    public static String tweet(final String sentence)
     {
         return sentence.length() > MAX_TWEET_LENGTH ? sentence.substring(0, MAX_TWEET_LENGTH)
             : sentence;
@@ -59,7 +59,18 @@ public class TwitterUtils
      */
     public static String reply(final String user, final String tweet)
     {
-        return toTweet("@" + user + " " + tweet);
+        return tweet(user(user) + " " + tweet);
+    }
+
+    /**
+     * Builds Twitter user name.
+     * 
+     * @param user The user name.
+     * @return The Twitter user name.
+     */
+    public static String user(final String user)
+    {
+        return "@" + user;
     }
 
     /**
