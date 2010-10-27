@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 
 import com.rhymestore.lang.WordParser;
+import com.rhymestore.lang.SpanishWordParser;
 
 public class RhymeStore
 {
@@ -66,7 +67,7 @@ public class RhymeStore
     private RhymeStore()
     {
         redis = new Jedis("localhost", 6379);
-        wordParser = new WordParser();
+        wordParser = new SpanishWordParser();
     }
 
     public RhymeStore(final String host, final int port)
@@ -119,7 +120,7 @@ public class RhymeStore
     {
         int lastSpace = sentence.lastIndexOf(" ");
         String lastWord = sentence.substring(lastSpace < 0 ? 0 : lastSpace + 1);
-        String rhymepart = wordParser.getRhymeText(lastWord);
+        String rhymepart = wordParser.rhymePart(lastWord);
 
         LOGGER.debug("Finding rhymes ending with {}", rhymepart);
 

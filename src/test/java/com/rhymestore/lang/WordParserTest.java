@@ -25,7 +25,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for the {@link WordParser}.
+ * Unit tests for the {@link SpanishWordParser}.
  * 
  * @author Ignasi Barrera
  */
@@ -37,42 +37,42 @@ public class WordParserTest
     @BeforeMethod
     public void setUp()
     {
-        wordParser = new WordParser();
+        wordParser = new SpanishWordParser();
     }
 
     @Test
     public void testGetRhymeTest()
     {
-        assertEquals(wordParser.getRhymeText(""), "");
+        assertEquals(wordParser.rhymePart(""), "");
 
         // Monosilabos
-        assertEquals(wordParser.getRhymeText("pez"), "ez");
+        assertEquals(wordParser.rhymePart("pez"), "ez");
 
         // Agudas
-        assertEquals(wordParser.getRhymeText("correr"), "er");
-        assertEquals(wordParser.getRhymeText("melón"), "ón");
+        assertEquals(wordParser.rhymePart("correr"), "er");
+        assertEquals(wordParser.rhymePart("melón"), "ón");
 
         // Llanas
-        assertEquals(wordParser.getRhymeText("lío"), "ío");
-        assertEquals(wordParser.getRhymeText("carromato"), "ato");
-        assertEquals(wordParser.getRhymeText("Telecinco"), "inco");
-        assertEquals(wordParser.getRhymeText("abogado"), "ado");
-        assertEquals(wordParser.getRhymeText("auriculares"), "ares");
+        assertEquals(wordParser.rhymePart("lío"), "ío");
+        assertEquals(wordParser.rhymePart("carromato"), "ato");
+        assertEquals(wordParser.rhymePart("Telecinco"), "inco");
+        assertEquals(wordParser.rhymePart("abogado"), "ado");
+        assertEquals(wordParser.rhymePart("auriculares"), "ares");
 
         // Esdrújulcas y sobreesdrújulas
-        assertEquals(wordParser.getRhymeText("cáspita"), "áspita");
-        assertEquals(wordParser.getRhymeText("recuérdamelo"), "érdamelo");
+        assertEquals(wordParser.rhymePart("cáspita"), "áspita");
+        assertEquals(wordParser.rhymePart("recuérdamelo"), "érdamelo");
     }
 
     @Test
     public void testWordType()
     {
-        assertEquals(wordParser.wordType("pez"), WordType.AGUDA);
-        assertEquals(wordParser.wordType("correr"), WordType.AGUDA);
-        assertEquals(wordParser.wordType("lío"), WordType.LLANA);
-        assertEquals(wordParser.wordType("carromato"), WordType.LLANA);
-        assertEquals(wordParser.wordType("cáspita"), WordType.ESDRUJULA);
-        assertEquals(wordParser.wordType("recuérdamelo"), WordType.SOBREESDRUJULA);
+        assertEquals(wordParser.stressType("pez"), StressType.LAST);
+        assertEquals(wordParser.stressType("correr"), StressType.LAST);
+        assertEquals(wordParser.stressType("lío"), StressType.SECOND_LAST);
+        assertEquals(wordParser.stressType("carromato"), StressType.SECOND_LAST);
+        assertEquals(wordParser.stressType("cáspita"), StressType.THIRD_LAST);
+        assertEquals(wordParser.stressType("recuérdamelo"), StressType.FOURTH_LAST);
     }
 
 }

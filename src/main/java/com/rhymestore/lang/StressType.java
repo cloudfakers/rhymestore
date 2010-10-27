@@ -20,11 +20,21 @@
 package com.rhymestore.lang;
 
 /**
- * Identifies the type of word based on syllables info.
+ * Identifies the type stress type of a word based on the syllables.
  * 
  * @author Ignasi Barrera
  */
-public enum WordType
+public enum StressType
 {
-    AGUDA, LLANA, ESDRUJULA, SOBREESDRUJULA;
+    /** Stress is in the last syllable. */
+    LAST,
+
+    /** Stress is in the second-last syllable. */
+    SECOND_LAST,
+
+    /** Stress is in the third-last syllable. */
+    THIRD_LAST,
+
+    /** Stress is in the fourth-last syllable. */
+    FOURTH_LAST;
 }
