@@ -64,4 +64,15 @@ public class WordParserTest
         assertEquals(wordParser.getRhymeText("recuérdamelo"), "érdamelo");
     }
 
+    @Test
+    public void testWordType()
+    {
+        assertEquals(wordParser.wordType("pez"), WordType.AGUDA);
+        assertEquals(wordParser.wordType("correr"), WordType.AGUDA);
+        assertEquals(wordParser.wordType("lío"), WordType.LLANA);
+        assertEquals(wordParser.wordType("carromato"), WordType.LLANA);
+        assertEquals(wordParser.wordType("cáspita"), WordType.ESDRUJULA);
+        assertEquals(wordParser.wordType("recuérdamelo"), WordType.SOBREESDRUJULA);
+    }
+
 }
