@@ -415,8 +415,7 @@ public class SpanishWordParser implements WordParser
         return s.split("-");
     }
 
-    @Override
-    public String rhymePart(final String word)
+    private String rhymePart(final String word)
     {
         if (word.length() == 0)
         {
@@ -585,12 +584,6 @@ public class SpanishWordParser implements WordParser
         return i == silabas.length - 3;
     }
 
-    private static String withoutAccents(final String word)
-    {
-        return word.replace('á', 'a').replace('é', 'e').replace('í', 'i').replace('ó', 'o')
-            .replace('ú', 'u');
-    }
-
     @Override
     public StressType stressType(final String word)
     {
@@ -617,10 +610,79 @@ public class SpanishWordParser implements WordParser
     @Override
     public boolean rhyme(final String word1, final String word2)
     {
-        String rhyme1 = rhymePart(word1);
-        String rhyme2 = rhymePart(word2);
+        String rhyme1 = phoneticRhymePart(word1);
+        String rhyme2 = phoneticRhymePart(word2);
 
-        return withoutAccents(rhyme1).equalsIgnoreCase(withoutAccents(rhyme2));
+        return rhyme1.equalsIgnoreCase(rhyme2);
     }
 
+    @Override
+    public String phoneticRhymePart(final String word)
+    {
+        String rhymePart = rhymePart(word);
+
+        StringBuilder result = new StringBuilder();
+        char[] letters = rhymePart.toCharArray();
+
+        for (int i = 0; i < letters.length; i++)
+        {
+            switch (letters[i])
+            {
+                // Vocales
+                case 'á':
+                    result.append('a');
+                    break;
+                case 'é':
+                    result.append('e');
+                    break;
+                case 'í':
+                    result.append('i');
+                    break;
+                case 'ó':
+                    result.append('o');
+                    break;
+                case 'ú':
+                    result.append('u');
+                    break;
+                case 'ü':
+                    result.append('u');
+                    break;
+
+                // Consonantes
+                case 'b':
+                    result.append('v');
+                    break;
+                case 'y':
+                    result.append("ll");
+                    break;
+
+                // h => añadirla solo si es una 'ch'
+                case 'h':
+                    if (i > 0 && letters[i - 1] == 'c')
+                    {
+                        result.append('h');
+                    }
+                    break;
+
+                // g => transformarla en 'j' si va antes de 'e' o 'i'
+                case 'g':
+                    if (i + 1 < letters.length && (letters[i + 1] == 'e' || letters[i + 1] == 'i'))
+                    {
+                        result.append('j');
+                    }
+                    else
+                    {
+                        result.append('g');
+                    }
+                    break;
+
+                // Otros
+                default:
+                    result.append(letters[i]);
+                    break;
+            }
+        }
+
+        return result.toString();
+    }
 }

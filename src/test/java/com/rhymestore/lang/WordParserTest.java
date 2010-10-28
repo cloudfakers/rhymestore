@@ -20,6 +20,7 @@
 package com.rhymestore.lang;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -41,31 +42,45 @@ public class WordParserTest
     }
 
     @Test
-    public void testGetRhymeTest()
+    public void testPhoneticRhymePart()
     {
-        assertEquals(wordParser.rhymePart(""), "");
+        assertEquals(wordParser.phoneticRhymePart(""), "");
 
         // Monosilabos
-        assertEquals(wordParser.rhymePart("pez"), "ez");
+        assertEquals(wordParser.phoneticRhymePart("pez"), "ez");
 
         // Agudas
-        assertEquals(wordParser.rhymePart("correr"), "er");
-        assertEquals(wordParser.rhymePart("melón"), "ón");
+        assertEquals(wordParser.phoneticRhymePart("correr"), "er");
+        assertEquals(wordParser.phoneticRhymePart("melón"), "on");
 
         // Llanas
-        assertEquals(wordParser.rhymePart("lío"), "ío");
-        assertEquals(wordParser.rhymePart("carromato"), "ato");
-        assertEquals(wordParser.rhymePart("Telecinco"), "inco");
-        assertEquals(wordParser.rhymePart("abogado"), "ado");
-        assertEquals(wordParser.rhymePart("auriculares"), "ares");
+        assertEquals(wordParser.phoneticRhymePart("lío"), "io");
+        assertEquals(wordParser.phoneticRhymePart("carromato"), "ato");
+        assertEquals(wordParser.phoneticRhymePart("Telecinco"), "inco");
+        assertEquals(wordParser.phoneticRhymePart("abogado"), "ado");
+        assertEquals(wordParser.phoneticRhymePart("auriculares"), "ares");
+        assertEquals(wordParser.phoneticRhymePart("canoa"), "oa");
 
         // Esdrújulcas y sobreesdrújulas
-        assertEquals(wordParser.rhymePart("cáspita"), "áspita");
-        assertEquals(wordParser.rhymePart("recuérdamelo"), "érdamelo");
+        assertEquals(wordParser.phoneticRhymePart("cáspita"), "aspita");
+        assertEquals(wordParser.phoneticRhymePart("recuérdamelo"), "erdamelo");
+
+        // Casos foneticos especiales => sustitucion de consonantes
+        assertEquals(wordParser.phoneticRhymePart("suyo"), "ullo");
+        assertEquals(wordParser.phoneticRhymePart("barullo"), "ullo");
+        assertEquals(wordParser.phoneticRhymePart("barba"), "arva");
+        assertEquals(wordParser.phoneticRhymePart("parva"), "arva");
+        assertEquals(wordParser.phoneticRhymePart("gong"), "ong");
+        assertEquals(wordParser.phoneticRhymePart("falange"), "anje");
+        assertEquals(wordParser.phoneticRhymePart("alfanje"), "anje");
+        assertEquals(wordParser.phoneticRhymePart("cacho"), "acho");
+        assertEquals(wordParser.phoneticRhymePart("gargáreha"), "area"); // Palabra imposible pero
+                                                                         // caso
+        // contemplado
     }
 
     @Test
-    public void testWordType()
+    public void testStressType()
     {
         assertEquals(wordParser.stressType("pez"), StressType.LAST);
         assertEquals(wordParser.stressType("correr"), StressType.LAST);
@@ -73,6 +88,18 @@ public class WordParserTest
         assertEquals(wordParser.stressType("carromato"), StressType.SECOND_LAST);
         assertEquals(wordParser.stressType("cáspita"), StressType.THIRD_LAST);
         assertEquals(wordParser.stressType("recuérdamelo"), StressType.FOURTH_LAST);
+    }
+
+    @Test
+    public void testRhyme()
+    {
+        assertTrue(wordParser.rhyme("pez", "hez"));
+        assertTrue(wordParser.rhyme("tres", "revés"));
+        assertTrue(wordParser.rhyme("Telecinco", "hinco"));
+        assertTrue(wordParser.rhyme("nabo", "centavo"));
+        assertTrue(wordParser.rhyme("falange", "alfanje"));
+        assertTrue(wordParser.rhyme("parva", "escarba"));
+        assertTrue(wordParser.rhyme("tuyo", "murmullo"));
     }
 
 }

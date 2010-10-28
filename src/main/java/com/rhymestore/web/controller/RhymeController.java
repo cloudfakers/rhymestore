@@ -124,4 +124,15 @@ public class RhymeController extends MethodInvokingController
             request.setAttribute("result", result);
         }
     }
+
+    /**
+     * Parses the rhyme and prepares it to be stored.
+     * 
+     * @param rhyme The rhyme to parse.
+     * @return The rhyme prepared to be stored.
+     */
+    private String parseRhyme(final String rhyme)
+    {
+        String capitalized = rhyme.substring(0, 1).toUpperCase() + rhyme.substring(1);
+    }
 }

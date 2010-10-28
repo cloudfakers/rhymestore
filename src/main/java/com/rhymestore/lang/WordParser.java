@@ -32,7 +32,7 @@ public interface WordParser
      * @param word The word.
      * @return The part of the word that is used to create the rhyme.
      */
-    public String rhymePart(final String word);
+    public String phoneticRhymePart(final String word);
 
     /**
      * Gets the {@link StressType} of the word based on the syllables.
