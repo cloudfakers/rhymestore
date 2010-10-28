@@ -51,4 +51,12 @@ public interface WordParser
      */
     public boolean rhyme(String word1, String word2);
 
+    /**
+     * Checks if the specified character is a valid letter.
+     * 
+     * @param letter The character to check.
+     * @return Boolean indicating if the specified character is a valid letter.
+     */
+    public boolean isLetter(final char letter);
+
 }

@@ -20,6 +20,7 @@
 package com.rhymestore.lang;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 import org.testng.annotations.BeforeMethod;
@@ -30,7 +31,7 @@ import org.testng.annotations.Test;
  * 
  * @author Ignasi Barrera
  */
-public class WordParserTest
+public class SpanishWordParserTest
 {
     /** The word parser. */
     private WordParser wordParser;
@@ -75,7 +76,7 @@ public class WordParserTest
         assertEquals(wordParser.phoneticRhymePart("alfanje"), "anje");
         assertEquals(wordParser.phoneticRhymePart("cacho"), "acho");
         assertEquals(wordParser.phoneticRhymePart("gargáreha"), "area"); // Palabra imposible pero
-                                                                         // caso
+        // caso
         // contemplado
     }
 
@@ -93,6 +94,7 @@ public class WordParserTest
     @Test
     public void testRhyme()
     {
+        assertTrue(wordParser.rhyme("", ""));
         assertTrue(wordParser.rhyme("pez", "hez"));
         assertTrue(wordParser.rhyme("tres", "revés"));
         assertTrue(wordParser.rhyme("Telecinco", "hinco"));
@@ -100,6 +102,49 @@ public class WordParserTest
         assertTrue(wordParser.rhyme("falange", "alfanje"));
         assertTrue(wordParser.rhyme("parva", "escarba"));
         assertTrue(wordParser.rhyme("tuyo", "murmullo"));
+
+        // Rhymes with punctuation
+
+        assertTrue(wordParser.rhyme("cantar.", "pescar"));
+        assertTrue(wordParser.rhyme("calor!", "motor?"));
+        assertTrue(wordParser.rhyme("calor  ", "motor&;'?="));
+    }
+
+    @Test
+    public void testIsLetter()
+    {
+        // Valid letters
+
+        assertTrue(wordParser.isLetter('a'));
+        assertTrue(wordParser.isLetter('A'));
+        assertTrue(wordParser.isLetter('z'));
+        assertTrue(wordParser.isLetter('Z'));
+        assertTrue(wordParser.isLetter('m'));
+        assertTrue(wordParser.isLetter('M'));
+
+        assertTrue(wordParser.isLetter('á'));
+        assertTrue(wordParser.isLetter('é'));
+        assertTrue(wordParser.isLetter('í'));
+        assertTrue(wordParser.isLetter('ó'));
+        assertTrue(wordParser.isLetter('ú'));
+        assertTrue(wordParser.isLetter('ü'));
+
+        assertTrue(wordParser.isLetter('Á'));
+        assertTrue(wordParser.isLetter('É'));
+        assertTrue(wordParser.isLetter('Í'));
+        assertTrue(wordParser.isLetter('Ó'));
+        assertTrue(wordParser.isLetter('Ú'));
+        assertTrue(wordParser.isLetter('Ü'));
+
+        // Invalid Letters
+
+        assertFalse(wordParser.isLetter(';'));
+        assertFalse(wordParser.isLetter(' '));
+        assertFalse(wordParser.isLetter('&'));
+        assertFalse(wordParser.isLetter('.'));
+        assertFalse(wordParser.isLetter(','));
+        assertFalse(wordParser.isLetter(';'));
+        assertFalse(wordParser.isLetter('-'));
     }
 
 }

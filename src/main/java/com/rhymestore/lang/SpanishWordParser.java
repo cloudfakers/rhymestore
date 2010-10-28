@@ -584,6 +584,35 @@ public class SpanishWordParser implements WordParser
         return i == silabas.length - 3;
     }
 
+    /**
+     * Removes the trailing punctuation from the given string
+     * 
+     * @param str The String to parse.
+     * @return The String without the trailing punctuation
+     */
+    private String removeTrailingPunctuation(final String str)
+    {
+        if (str.length() == 0)
+        {
+            return str;
+        }
+
+        char[] chars = str.toCharArray();
+
+        int i = chars.length - 1;
+        while (i >= 0)
+        {
+            if (isLetter(chars[i]))
+            {
+                break;
+            }
+            i--;
+        }
+
+        // variable 'i' holds the last letter index
+        return str.substring(0, i + 1);
+    }
+
     @Override
     public StressType stressType(final String word)
     {
@@ -619,7 +648,8 @@ public class SpanishWordParser implements WordParser
     @Override
     public String phoneticRhymePart(final String word)
     {
-        String rhymePart = rhymePart(word);
+        String withoutPunctuation = removeTrailingPunctuation(word);
+        String rhymePart = rhymePart(withoutPunctuation);
 
         StringBuilder result = new StringBuilder();
         char[] letters = rhymePart.toCharArray();
@@ -685,4 +715,38 @@ public class SpanishWordParser implements WordParser
 
         return result.toString();
     }
+
+    @Override
+    public boolean isLetter(final char letter)
+    {
+        boolean isLetter = letter >= 97 && letter <= 122; // a-z
+        isLetter = isLetter || letter >= 65 && letter <= 90; // A-Z
+
+        if (isLetter)
+        {
+            return true;
+        }
+
+        // others: check extended ascii codes specific letters
+
+        switch (letter)
+        {
+            case 193: // Á
+            case 201: // É
+            case 205: // Í
+            case 211: // Ó
+            case 218: // Ú
+            case 220: // Ü
+            case 225: // á
+            case 233: // é
+            case 237: // í
+            case 243: // ó
+            case 250: // ú
+            case 252: // ü
+                return true;
+            default:
+                return false;
+        }
+    }
+
 }
