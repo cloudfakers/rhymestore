@@ -75,9 +75,9 @@ public class SpanishWordParserTest
         assertEquals(wordParser.phoneticRhymePart("falange"), "anje");
         assertEquals(wordParser.phoneticRhymePart("alfanje"), "anje");
         assertEquals(wordParser.phoneticRhymePart("cacho"), "acho");
-        assertEquals(wordParser.phoneticRhymePart("gargáreha"), "area"); // Palabra imposible pero
-        // caso
-        // contemplado
+
+        // Palabra imposible pero caso contemplado
+        assertEquals(wordParser.phoneticRhymePart("gargáreha"), "area");
     }
 
     @Test
