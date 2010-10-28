@@ -585,6 +585,12 @@ public class SpanishWordParser implements WordParser
         return i == silabas.length - 3;
     }
 
+    private static String withoutAccents(final String word)
+    {
+        return word.replace('á', 'a').replace('é', 'e').replace('í', 'i').replace('ó', 'o')
+            .replace('ú', 'u');
+    }
+
     @Override
     public StressType stressType(final String word)
     {
@@ -607,4 +613,14 @@ public class SpanishWordParser implements WordParser
             return StressType.FOURTH_LAST;
         }
     }
+
+    @Override
+    public boolean rhyme(final String word1, final String word2)
+    {
+        String rhyme1 = rhymePart(word1);
+        String rhyme2 = rhymePart(word2);
+
+        return withoutAccents(rhyme1).equalsIgnoreCase(withoutAccents(rhyme2));
+    }
+
 }

@@ -42,4 +42,13 @@ public interface WordParser
      */
     public StressType stressType(final String word);
 
+    /**
+     * Checks if the given words rhyme between them.
+     * 
+     * @param word1 The first word.
+     * @param word2 The second word.
+     * @return Boolean indicating if the given words rhyme between them.
+     */
+    public boolean rhyme(String word1, String word2);
+
 }
