@@ -36,6 +36,8 @@ import org.slf4j.LoggerFactory;
 
 import redis.clients.jedis.Jedis;
 
+import com.rhymestore.lang.SpanishWordParser;
+import com.rhymestore.lang.StressType;
 import com.rhymestore.lang.WordParser;
 
 public class RhymeStore
@@ -72,13 +74,13 @@ public class RhymeStore
     private RhymeStore()
     {
         redis = new Jedis("localhost", 6379);
-        wordParser = new WordParser();
+        wordParser = new SpanishWordParser();
     }
 
     public RhymeStore(final String host, final int port)
     {
         redis = new Jedis(host, port);
-        wordParser = new WordParser();
+        wordParser = new SpanishWordParser();
     }
 
     public void add(final String sentence) throws IOException
@@ -105,76 +107,38 @@ public class RhymeStore
         redis.set(sentenceId, URLEncoder.encode(sentence, encoding));
 
         // Index sentence
-        String token = reverseString(word);
-        String tokenId = getUniqueId(indexns, URLEncoder.encode(token, encoding));
-        String lastTokenId = indexns.build(tokenId).toString();
+        String rhyme = wordParser.phoneticRhymePart(word);
+        StressType type = wordParser.stressType(word);
+        Keymaker ns = indexns.build(type.name());
 
-        redis.sadd(lastTokenId, sentenceId);
-        token = token.substring(0, token.length() - 1);
+        String indexId = getUniqueId(ns, normalizeString(rhyme));
+        indexId = ns.build(indexId).toString();
 
-        while (token.length() > 0)
-        {
-            tokenId = getUniqueId(indexns, URLEncoder.encode(token, encoding));
-            redis.sadd(indexns.build(tokenId).toString(), lastTokenId);
-
-            token = token.substring(0, token.length() - 1);
-            lastTokenId = indexns.build(tokenId).toString();
-        }
+        redis.sadd(indexId, sentenceId);
 
         disconnect();
     }
 
-    // TODO accents! insertar cada token amb un urlencode pero no fer el -1 de l'encoded!
-    protected Set<String> search(String search) throws IOException
+    protected Set<String> search(String rhyme, StressType type)
     {
         Set<String> rhymes = new HashSet<String>();
 
-        String token = reverseString(search);
-        String indexId = null;
-        boolean found = false;
+        Keymaker ns = indexns.build(type.name());
 
-        while (token.length() > 0 && !found)
+        if (redis.exists(ns.build("id").toString()) == 1)
         {
-            String key = indexns.build(sum(token), "id").toString();
+            String indexId = getUniqueId(ns, normalizeString(rhyme));
+            indexId = ns.build(indexId).toString();
 
-            if (redis.exists(key) == 1)
+            if (redis.exists(indexId) == 1)
             {
-                String id = redis.get(key);
-
-                if (redis.exists(indexns.build(id).toString()) == 1)
+                for (String id : redis.smembers(indexId))
                 {
-                    indexId = indexns.build(id).toString();
-                    found = true;
-                    continue;
+                    if (redis.exists(id) == 1)
+                    {
+                        rhymes.add(redis.get(id));
+                    }
                 }
-            }
-
-            token = token.substring(0, token.length() - 1);
-        }
-
-        if (indexId == null)
-        {
-            return rhymes;
-        }
-
-        rhymes.addAll(getSentencesFromIndex(indexId));
-        return rhymes;
-    }
-
-    protected Set<String> getSentencesFromIndex(final String indexKey) throws IOException
-    {
-        Set<String> rhymes = new HashSet<String>();
-
-        for (String key : redis.smembers(indexKey))
-        {
-            if (key.startsWith(indexns.toString()))
-            {
-                rhymes.addAll(getSentencesFromIndex(key));
-            }
-            else
-            {
-                // TODO no existeix
-                rhymes.add(URLDecoder.decode(redis.get(key), encoding));
             }
         }
 
@@ -304,13 +268,19 @@ public class RhymeStore
      */
     public String getRhyme(final String sentence) throws IOException
     {
-        int lastSpace = sentence.lastIndexOf(" ");
-        String lastWord = sentence.substring(lastSpace < 0 ? 0 : lastSpace + 1);
-        String rhymepart = wordParser.getRhymeText(lastWord);
+        String lastWord = getLastWord(sentence);
 
-        LOGGER.debug("Finding rhymes ending with {}", rhymepart);
+        String rhymepart = wordParser.phoneticRhymePart(lastWord);
+        StressType type = wordParser.stressType(lastWord);
 
-        Set<String> rhymes = search(rhymepart);
+        LOGGER.debug("Finding rhymes for {}", sentence);
+
+        redis.connect();
+
+        Set<String> rhymes = search(rhymepart, type);
+
+        redis.disconnect();
+
         return rhymes.isEmpty() ? DEFAULT_RHYME : rhymes.iterator().next();
     }
 }

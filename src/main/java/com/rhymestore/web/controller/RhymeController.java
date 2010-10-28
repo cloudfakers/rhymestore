@@ -107,7 +107,7 @@ public class RhymeController extends MethodInvokingController
                 else
                 {
                     // Capitalize rhyme
-                    String capitalized = rhyme.substring(0, 1).toUpperCase() + rhyme.substring(1);
+                    String capitalized = capitalize(rhyme);
                     store.add(capitalized);
 
                     result = "Added rhyme: " + capitalized;
@@ -122,6 +122,25 @@ public class RhymeController extends MethodInvokingController
             }
 
             request.setAttribute("result", result);
+        }
+    }
+
+    /**
+     * Capitalizes the given String.
+     * 
+     * @param str The String to capitalize.
+     * @return The capitalized String.
+     */
+    private static String capitalize(final String str)
+    {
+        switch (str.length())
+        {
+            case 0:
+                return str;
+            case 1:
+                return str.toUpperCase();
+            default:
+                return str.substring(0, 1).toUpperCase() + str.substring(1);
         }
     }
 }

@@ -21,6 +21,10 @@ package com.rhymestore.store;
 
 import static org.testng.Assert.assertEquals;
 
+import java.io.IOException;
+
+import org.testng.annotations.Test;
+
 // The tests assumes a redis server working in localhost
 public class RhymeStoreTest
 {
@@ -38,16 +42,19 @@ public class RhymeStoreTest
         store.add("Por el culo te la hinco");
     }
 
-    // @Test
-    public void testSearch() throws Exception
+    @Test
+    public void t() throws IOException
     {
-        assertEquals(store.search("dos").size(), 2);
-        assertEquals(store.search("os").size(), 3);
-        assertEquals(store.search("vos").size(), 1);
-        assertEquals(store.search("v").size(), 0);
+        store = RhymeStore.getInstance();
+
+        store.add("Mi nabo para vos");
+
+        System.out.println(store.getRhyme("Nada rima con dos."));
+
+        assertEquals(store.findAll().size(), 2);
     }
 
-    // @Test
+    @Test(enabled = false)
     public void testGetRhyme() throws Exception
     {
         assertEquals(store.getRhyme("Rima inexistente"), RhymeStore.DEFAULT_RHYME);
