@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.rhymestore.config.RhymestoreConfig;
 import com.rhymestore.web.controller.Controller;
 import com.rhymestore.web.controller.ControllerException;
 
@@ -42,145 +43,157 @@ import com.rhymestore.web.controller.ControllerException;
  */
 public class RhymeServlet extends HttpServlet
 {
-    /** The logger. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(RhymeServlet.class);
+	/** The logger. */
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(RhymeServlet.class);
 
-    /** Serial UID. */
-    private static final long serialVersionUID = 1L;
+	/** Serial UID. */
+	private static final long serialVersionUID = 1L;
 
-    /** The resource that contains the controller mappings. */
-    private static final String MAPPING_RESOURCE = "mapping.properties";
+	/** The view path. */
+	private static final String VIEW_PATH = "/jsp";
 
-    /** The view path. */
-    private static final String VIEW_PATH = "/jsp";
+	/** The view suffix. */
+	private static final String VIEW_SUFFIX = ".jsp";
 
-    /** The view suffix. */
-    private static final String VIEW_SUFFIX = ".jsp";
+	/** Mappings from request path to {@link Controller} objects. */
+	private Map<String, Controller> controllers;
 
-    /** Mappings from request path to {@link Controller} objects. */
-    private Map<String, Controller> controllers;
+	/**
+	 * Initializes the servlet.
+	 * 
+	 * @throws If the servlet cannog be initialized.
+	 */
+	@Override
+	public void init() throws ServletException
+	{
+		controllers = new HashMap<String, Controller>();
 
-    /**
-     * Initializes the servlet.
-     * 
-     * @throws If the servlet cannog be initialized.
-     */
-    @Override
-    public void init() throws ServletException
-    {
-        controllers = new HashMap<String, Controller>();
+		try
+		{
+			loadMappings();
+		}
+		catch (Exception ex)
+		{
+			throw new ServletException(ex.getMessage());
+		}
+	}
 
-        try
-        {
-            loadMappings();
-        }
-        catch (Exception ex)
-        {
-            throw new ServletException(ex.getMessage());
-        }
-    }
+	@Override
+	protected void doGet(final HttpServletRequest req,
+			final HttpServletResponse resp) throws ServletException,
+			IOException
+	{
+		String controllerPath = null;
+		Controller controller = null;
+		String requestedPath = getRequestedPath(req);
 
-    @Override
-    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp)
-        throws ServletException, IOException
-    {
-        String controllerPath = null;
-        Controller controller = null;
-        String requestedPath = getRequestedPath(req);
+		for (String path : controllers.keySet())
+		{
+			if (requestedPath.startsWith(path))
+			{
+				controllerPath = path;
+				controller = controllers.get(path);
 
-        for (String path : controllers.keySet())
-        {
-            if (requestedPath.startsWith(path))
-            {
-                controllerPath = path;
-                controller = controllers.get(path);
+				LOGGER.debug("Using {} controller to handle request to: {}",
+						controller.getClass().getName(), req.getRequestURI());
+			}
+		}
 
-                LOGGER.debug("Using {} controller to handle request to: {}", controller.getClass()
-                    .getName(), req.getRequestURI());
-            }
-        }
+		if (controller != null)
+		{
+			try
+			{
+				String viewName = controller.execute(req, resp);
+				String viewPath = VIEW_PATH + controllerPath + "/" + viewName
+						+ VIEW_SUFFIX;
 
-        if (controller != null)
-        {
-            try
-            {
-                String viewName = controller.execute(req, resp);
-                String viewPath = VIEW_PATH + controllerPath + "/" + viewName + VIEW_SUFFIX;
+				getServletContext().getRequestDispatcher(viewPath).forward(req,
+						resp);
+			}
+			catch (ControllerException ex)
+			{
+				String errorMessage = "An error occured during request handling: "
+						+ ex.getMessage();
 
-                getServletContext().getRequestDispatcher(viewPath).forward(req, resp);
-            }
-            catch (ControllerException e)
-            {
-                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                    "An error occured during request handling: " + e.getMessage());
-            }
-        }
-        else
-        {
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND,
-                "No controller was found to handle request to: " + req.getRequestURI());
-        }
-    }
+				LOGGER.error(errorMessage, ex);
 
-    /**
-     * Calls the API to store the Rhyme.
-     * 
-     * @param req The request.
-     * @param resp The response.
-     */
-    @Override
-    protected void doPost(final HttpServletRequest req, final HttpServletResponse resp)
-        throws ServletException, IOException
-    {
-        doGet(req, resp);
-    }
+				resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+						errorMessage);
+			}
+		}
+		else
+		{
+			resp.sendError(
+					HttpServletResponse.SC_NOT_FOUND,
+					"No controller was found to handle request to: "
+							+ req.getRequestURI());
+		}
+	}
 
-    /**
-     * Get the requested path relative to the servlet path.
-     * 
-     * @param req The request.
-     * @return The requested path.
-     */
-    private String getRequestedPath(final HttpServletRequest req)
-    {
-        return req.getRequestURI().replaceFirst(req.getContextPath(), "").replaceFirst(
-            req.getServletPath(), "");
+	/**
+	 * Calls the API to store the Rhyme.
+	 * 
+	 * @param req The request.
+	 * @param resp The response.
+	 */
+	@Override
+	protected void doPost(final HttpServletRequest req,
+			final HttpServletResponse resp) throws ServletException,
+			IOException
+	{
+		doGet(req, resp);
+	}
 
-    }
+	/**
+	 * Get the requested path relative to the servlet path.
+	 * 
+	 * @param req The request.
+	 * @return The requested path.
+	 */
+	private String getRequestedPath(final HttpServletRequest req)
+	{
+		return req.getRequestURI().replaceFirst(req.getContextPath(), "")
+				.replaceFirst(req.getServletPath(), "");
+	}
 
-    /**
-     * Load configured controller mappings.
-     * 
-     * @throws Exception If mappings cannot be loaded.
-     */
-    protected void loadMappings() throws Exception
-    {
-        Properties mappings = new Properties();
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        mappings.load(cl.getResourceAsStream(MAPPING_RESOURCE));
+	/**
+	 * Load configured controller mappings.
+	 * 
+	 * @throws Exception If mappings cannot be loaded.
+	 */
+	protected void loadMappings() throws Exception
+	{
+		Properties mappings = new Properties();
+		ClassLoader cl = Thread.currentThread().getContextClassLoader();
+		mappings.load(cl.getResourceAsStream(RhymestoreConfig.CONFIG_FILE));
 
-        LOGGER.info("Loading controller mappings...");
+		LOGGER.info("Loading controller mappings...");
 
-        for (Object mappingKey : mappings.keySet())
-        {
-            String key = (String) mappingKey;
+		for (Object mappingKey : mappings.keySet())
+		{
+			String key = (String) mappingKey;
 
-            if (key.endsWith(".path"))
-            {
-                String path = mappings.getProperty(key);
-                String clazz = mappings.getProperty(key.replace(".path", ".class"));
+			if (RhymestoreConfig.isControllerProperty(key))
+			{
+				String path = mappings.getProperty(key);
+				String clazz = mappings.getProperty(key.replace(
+						RhymestoreConfig.CONTROLLER_PATH_SUFFIX,
+						RhymestoreConfig.CONTROLLER_CLASS_SUFFIX));
 
-                if (clazz == null)
-                {
-                    throw new Exception("Missing controller class for path: " + path);
-                }
+				if (clazz == null)
+				{
+					throw new Exception("Missing controller class for path: "
+							+ path);
+				}
 
-                Controller controller = (Controller) Class.forName(clazz, true, cl).newInstance();
-                controllers.put(path, controller);
+				Controller controller = (Controller) Class.forName(clazz, true,
+						cl).newInstance();
+				controllers.put(path, controller);
 
-                LOGGER.info("Mapping {} to {}", path, controller.getClass().getName());
-            }
-
-        }
-    }
+				LOGGER.info("Mapping {} to {}", path, controller.getClass()
+						.getName());
+			}
+		}
+	}
 }

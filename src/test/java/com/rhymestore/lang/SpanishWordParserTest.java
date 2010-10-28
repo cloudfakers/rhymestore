@@ -33,118 +33,121 @@ import org.testng.annotations.Test;
  */
 public class SpanishWordParserTest
 {
-    /** The word parser. */
-    private WordParser wordParser;
+	/** The word parser. */
+	private WordParser wordParser;
 
-    @BeforeMethod
-    public void setUp()
-    {
-        wordParser = new SpanishWordParser();
-    }
+	@BeforeMethod
+	public void setUp()
+	{
+		wordParser = WordParserFactory.getWordParser();
+	}
 
-    @Test
-    public void testPhoneticRhymePart()
-    {
-        assertEquals(wordParser.phoneticRhymePart(""), "");
+	@Test
+	public void testPhoneticRhymePart()
+	{
+		assertEquals(wordParser.phoneticRhymePart(""), "");
 
-        // Monosilabos
-        assertEquals(wordParser.phoneticRhymePart("pez"), "ez");
+		// Monosilabos
+		assertEquals(wordParser.phoneticRhymePart("pez"), "ez");
 
-        // Agudas
-        assertEquals(wordParser.phoneticRhymePart("correr"), "er");
-        assertEquals(wordParser.phoneticRhymePart("melón"), "on");
+		// Agudas
+		assertEquals(wordParser.phoneticRhymePart("correr"), "er");
+		assertEquals(wordParser.phoneticRhymePart("melón"), "on");
 
-        // Llanas
-        assertEquals(wordParser.phoneticRhymePart("lío"), "io");
-        assertEquals(wordParser.phoneticRhymePart("carromato"), "ato");
-        assertEquals(wordParser.phoneticRhymePart("Telecinco"), "inco");
-        assertEquals(wordParser.phoneticRhymePart("abogado"), "ado");
-        assertEquals(wordParser.phoneticRhymePart("auriculares"), "ares");
-        assertEquals(wordParser.phoneticRhymePart("canoa"), "oa");
+		// Llanas
+		assertEquals(wordParser.phoneticRhymePart("lío"), "io");
+		assertEquals(wordParser.phoneticRhymePart("carromato"), "ato");
+		assertEquals(wordParser.phoneticRhymePart("Telecinco"), "inco");
+		assertEquals(wordParser.phoneticRhymePart("abogado"), "ado");
+		assertEquals(wordParser.phoneticRhymePart("auriculares"), "ares");
+		assertEquals(wordParser.phoneticRhymePart("canoa"), "oa");
 
-        // Esdrújulcas y sobreesdrújulas
-        assertEquals(wordParser.phoneticRhymePart("cáspita"), "aspita");
-        assertEquals(wordParser.phoneticRhymePart("recuérdamelo"), "erdamelo");
+		// Esdrújulcas y sobreesdrújulas
+		assertEquals(wordParser.phoneticRhymePart("cáspita"), "aspita");
+		assertEquals(wordParser.phoneticRhymePart("recuérdamelo"), "erdamelo");
 
-        // Casos foneticos especiales => sustitucion de consonantes
-        assertEquals(wordParser.phoneticRhymePart("suyo"), "ullo");
-        assertEquals(wordParser.phoneticRhymePart("barullo"), "ullo");
-        assertEquals(wordParser.phoneticRhymePart("barba"), "arva");
-        assertEquals(wordParser.phoneticRhymePart("parva"), "arva");
-        assertEquals(wordParser.phoneticRhymePart("gong"), "ong");
-        assertEquals(wordParser.phoneticRhymePart("falange"), "anje");
-        assertEquals(wordParser.phoneticRhymePart("alfanje"), "anje");
-        assertEquals(wordParser.phoneticRhymePart("cacho"), "acho");
-        assertEquals(wordParser.phoneticRhymePart("gargáreha"), "area"); // Palabra imposible pero
-        // caso
-        // contemplado
-    }
+		// Casos foneticos especiales => sustitucion de consonantes
+		assertEquals(wordParser.phoneticRhymePart("suyo"), "ullo");
+		assertEquals(wordParser.phoneticRhymePart("barullo"), "ullo");
+		assertEquals(wordParser.phoneticRhymePart("barba"), "arva");
+		assertEquals(wordParser.phoneticRhymePart("parva"), "arva");
+		assertEquals(wordParser.phoneticRhymePart("gong"), "ong");
+		assertEquals(wordParser.phoneticRhymePart("falange"), "anje");
+		assertEquals(wordParser.phoneticRhymePart("alfanje"), "anje");
+		assertEquals(wordParser.phoneticRhymePart("cacho"), "acho");
+		assertEquals(wordParser.phoneticRhymePart("gargáreha"), "area"); // Palabra
+																			// imposible
+																			// pero
+		// caso
+		// contemplado
+	}
 
-    @Test
-    public void testStressType()
-    {
-        assertEquals(wordParser.stressType("pez"), StressType.LAST);
-        assertEquals(wordParser.stressType("correr"), StressType.LAST);
-        assertEquals(wordParser.stressType("lío"), StressType.SECOND_LAST);
-        assertEquals(wordParser.stressType("carromato"), StressType.SECOND_LAST);
-        assertEquals(wordParser.stressType("cáspita"), StressType.THIRD_LAST);
-        assertEquals(wordParser.stressType("recuérdamelo"), StressType.FOURTH_LAST);
-    }
+	@Test
+	public void testStressType()
+	{
+		assertEquals(wordParser.stressType("pez"), StressType.LAST);
+		assertEquals(wordParser.stressType("correr"), StressType.LAST);
+		assertEquals(wordParser.stressType("lío"), StressType.SECOND_LAST);
+		assertEquals(wordParser.stressType("carromato"), StressType.SECOND_LAST);
+		assertEquals(wordParser.stressType("cáspita"), StressType.THIRD_LAST);
+		assertEquals(wordParser.stressType("recuérdamelo"),
+				StressType.FOURTH_LAST);
+	}
 
-    @Test
-    public void testRhyme()
-    {
-        assertTrue(wordParser.rhyme("", ""));
-        assertTrue(wordParser.rhyme("pez", "hez"));
-        assertTrue(wordParser.rhyme("tres", "revés"));
-        assertTrue(wordParser.rhyme("Telecinco", "hinco"));
-        assertTrue(wordParser.rhyme("nabo", "centavo"));
-        assertTrue(wordParser.rhyme("falange", "alfanje"));
-        assertTrue(wordParser.rhyme("parva", "escarba"));
-        assertTrue(wordParser.rhyme("tuyo", "murmullo"));
+	@Test
+	public void testRhyme()
+	{
+		assertTrue(wordParser.rhyme("", ""));
+		assertTrue(wordParser.rhyme("pez", "hez"));
+		assertTrue(wordParser.rhyme("tres", "revés"));
+		assertTrue(wordParser.rhyme("Telecinco", "hinco"));
+		assertTrue(wordParser.rhyme("nabo", "centavo"));
+		assertTrue(wordParser.rhyme("falange", "alfanje"));
+		assertTrue(wordParser.rhyme("parva", "escarba"));
+		assertTrue(wordParser.rhyme("tuyo", "murmullo"));
 
-        // Rhymes with punctuation
+		// Rhymes with punctuation
 
-        assertTrue(wordParser.rhyme("cantar.", "pescar"));
-        assertTrue(wordParser.rhyme("calor!", "motor?"));
-        assertTrue(wordParser.rhyme("calor  ", "motor&;'?="));
-    }
+		assertTrue(wordParser.rhyme("cantar.", "pescar"));
+		assertTrue(wordParser.rhyme("calor!", "motor?"));
+		assertTrue(wordParser.rhyme("calor  ", "motor&;'?="));
+	}
 
-    @Test
-    public void testIsLetter()
-    {
-        // Valid letters
+	@Test
+	public void testIsLetter()
+	{
+		// Valid letters
 
-        assertTrue(wordParser.isLetter('a'));
-        assertTrue(wordParser.isLetter('A'));
-        assertTrue(wordParser.isLetter('z'));
-        assertTrue(wordParser.isLetter('Z'));
-        assertTrue(wordParser.isLetter('m'));
-        assertTrue(wordParser.isLetter('M'));
+		assertTrue(wordParser.isLetter('a'));
+		assertTrue(wordParser.isLetter('A'));
+		assertTrue(wordParser.isLetter('z'));
+		assertTrue(wordParser.isLetter('Z'));
+		assertTrue(wordParser.isLetter('m'));
+		assertTrue(wordParser.isLetter('M'));
 
-        assertTrue(wordParser.isLetter('á'));
-        assertTrue(wordParser.isLetter('é'));
-        assertTrue(wordParser.isLetter('í'));
-        assertTrue(wordParser.isLetter('ó'));
-        assertTrue(wordParser.isLetter('ú'));
-        assertTrue(wordParser.isLetter('ü'));
+		assertTrue(wordParser.isLetter('á'));
+		assertTrue(wordParser.isLetter('é'));
+		assertTrue(wordParser.isLetter('í'));
+		assertTrue(wordParser.isLetter('ó'));
+		assertTrue(wordParser.isLetter('ú'));
+		assertTrue(wordParser.isLetter('ü'));
 
-        assertTrue(wordParser.isLetter('Á'));
-        assertTrue(wordParser.isLetter('É'));
-        assertTrue(wordParser.isLetter('Í'));
-        assertTrue(wordParser.isLetter('Ó'));
-        assertTrue(wordParser.isLetter('Ú'));
-        assertTrue(wordParser.isLetter('Ü'));
+		assertTrue(wordParser.isLetter('Á'));
+		assertTrue(wordParser.isLetter('É'));
+		assertTrue(wordParser.isLetter('Í'));
+		assertTrue(wordParser.isLetter('Ó'));
+		assertTrue(wordParser.isLetter('Ú'));
+		assertTrue(wordParser.isLetter('Ü'));
 
-        // Invalid Letters
+		// Invalid Letters
 
-        assertFalse(wordParser.isLetter(';'));
-        assertFalse(wordParser.isLetter(' '));
-        assertFalse(wordParser.isLetter('&'));
-        assertFalse(wordParser.isLetter('.'));
-        assertFalse(wordParser.isLetter(','));
-        assertFalse(wordParser.isLetter(';'));
-        assertFalse(wordParser.isLetter('-'));
-    }
+		assertFalse(wordParser.isLetter(';'));
+		assertFalse(wordParser.isLetter(' '));
+		assertFalse(wordParser.isLetter('&'));
+		assertFalse(wordParser.isLetter('.'));
+		assertFalse(wordParser.isLetter(','));
+		assertFalse(wordParser.isLetter(';'));
+		assertFalse(wordParser.isLetter('-'));
+	}
 
 }
