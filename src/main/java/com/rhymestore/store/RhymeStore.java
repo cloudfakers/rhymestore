@@ -204,19 +204,6 @@ public class RhymeStore
         return word;
     }
 
-    public static String reverseString(final String value)
-    {
-        int i, len = value.length();
-        StringBuffer dest = new StringBuffer(len);
-
-        for (i = (len - 1); i >= 0; i--)
-        {
-            dest.append(value.charAt(i));
-        }
-
-        return dest.toString();
-    }
-
     protected void connect() throws UnknownHostException, IOException
     {
         if (!redis.isConnected())
