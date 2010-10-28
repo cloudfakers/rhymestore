@@ -49,7 +49,7 @@ public class RhymeServlet extends HttpServlet
     private static final long serialVersionUID = 1L;
 
     /** The resource that contains the controller mappings. */
-    private static final String MAPPING_RESOURCE = "mapping.properties";
+    private static final String MAPPING_RESOURCE = "rhymestore.properties";
 
     /** The view path. */
     private static final String VIEW_PATH = "/jsp";
@@ -165,7 +165,7 @@ public class RhymeServlet extends HttpServlet
         {
             String key = (String) mappingKey;
 
-            if (key.endsWith(".path"))
+            if (key.startsWith("controller") && key.endsWith(".path"))
             {
                 String path = mappings.getProperty(key);
                 String clazz = mappings.getProperty(key.replace(".path", ".class"));
@@ -180,7 +180,6 @@ public class RhymeServlet extends HttpServlet
 
                 LOGGER.info("Mapping {} to {}", path, controller.getClass().getName());
             }
-
         }
     }
 }
