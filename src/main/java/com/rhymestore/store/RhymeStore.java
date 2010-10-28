@@ -107,28 +107,28 @@ public class RhymeStore
         redis.set(sentenceId, URLEncoder.encode(sentence, encoding));
 
         // Index sentence
-        String rhyme = wordParser.phoneticRhymePart(word);
+        String rhyme = normalizeString(wordParser.phoneticRhymePart(word));
         StressType type = wordParser.stressType(word);
-        Keymaker ns = indexns.build(type.name());
 
-        String indexId = getUniqueId(ns, normalizeString(rhyme));
-        indexId = ns.build(indexId).toString();
+        String indexId = getUniqueId(indexns, buildUniqueToken(rhyme, type));
+        indexId = indexns.build(indexId).toString();
 
         redis.sadd(indexId, sentenceId);
 
         disconnect();
     }
 
-    protected Set<String> search(String rhyme, StressType type)
+    protected Set<String> search(final String rhyme, final StressType type) throws IOException
     {
         Set<String> rhymes = new HashSet<String>();
+        String norm = normalizeString(rhyme);
 
-        Keymaker ns = indexns.build(type.name());
+        String uniqueId = getUniqueIdKey(indexns, buildUniqueToken(norm, type));
 
-        if (redis.exists(ns.build("id").toString()) == 1)
+        if (redis.exists(uniqueId) == 1)
         {
-            String indexId = getUniqueId(ns, normalizeString(rhyme));
-            indexId = ns.build(indexId).toString();
+            String indexId = redis.get(uniqueId);
+            indexId = indexns.build(indexId).toString();
 
             if (redis.exists(indexId) == 1)
             {
@@ -136,7 +136,7 @@ public class RhymeStore
                 {
                     if (redis.exists(id) == 1)
                     {
-                        rhymes.add(redis.get(id));
+                        rhymes.add(URLDecoder.decode(redis.get(id), encoding));
                     }
                 }
             }
@@ -145,10 +145,21 @@ public class RhymeStore
         return rhymes;
     }
 
-    protected String getUniqueId(final Keymaker ns, final String token)
+    protected String buildUniqueToken(final String rhyme, final StressType type)
+    {
+        return sum(type.name().concat(rhyme));
+    }
+
+    protected String getUniqueIdKey(final Keymaker ns, final String token)
     {
         String md = sum(token);
-        String id = redis.get(ns.build(md, "id").toString());
+        return ns.build(md, "id").toString();
+    }
+
+    protected String getUniqueId(final Keymaker ns, final String token)
+    {
+        String key = getUniqueIdKey(ns, token);
+        String id = redis.get(key);
 
         if (id != null)
         {
@@ -158,9 +169,9 @@ public class RhymeStore
         Integer next = redis.incr(ns.build("next.id").toString());
         id = next.toString();
 
-        if (redis.setnx(ns.build(md, "id").toString(), id) == 0)
+        if (redis.setnx(key, id) == 0)
         {
-            id = redis.get(ns.build(md, "id").toString());
+            id = redis.get(key);
         }
 
         return id;

@@ -616,9 +616,13 @@ public class SpanishWordParser implements WordParser
     @Override
     public StressType stressType(final String word)
     {
-        String[] silabas = silabas(word);
+        String[] silabas = silabas(removeTrailingPunctuation(word));
 
-        if (esdrujula(silabas))
+        if (silabas.length == 1)
+        {
+            return StressType.LAST;
+        }
+        else if (esdrujula(silabas))
         {
             return StressType.THIRD_LAST;
         }
