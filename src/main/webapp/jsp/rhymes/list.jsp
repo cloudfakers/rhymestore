@@ -24,7 +24,7 @@
 	</c:if>
 	
 	<form action="<%=request.getContextPath() %>/web/rhymes/list" method="post">
-		<p>Enter a Rhyme to add it to RymeStore:</p>
+		<p>Enter the rhyme to add:</p>
 		<input id="ryhme" name="rhyme" type="text" size="100" class="input" />
 		<input type="submit" value="Add it!" class="button" />
 	</form>
