@@ -22,6 +22,7 @@ package com.rhymestore.store;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
 import java.util.Arrays;
@@ -29,139 +30,262 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import redis.clients.jedis.Jedis;
 
-import com.rhymestore.lang.SpanishWordParser;
+import com.rhymestore.lang.StressType;
 import com.rhymestore.lang.WordParser;
+import com.rhymestore.lang.WordParserFactory;
 
 public class RhymeStore
 {
-    /** The logger. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(RhymeStore.class);
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(RhymeStore.class);
 
-    public static final String DEFAULT_RHYME = "Patada en los cojones";
+	public static final String DEFAULT_RHYME = "Patada en los cojones";
 
-    private final Jedis redis;
+	private final Jedis redis;
 
-    private final Keymaker namespace = new Keymaker("rhyme");
+	/** redis namespace for sentences. */
+	private final Keymaker sentencens = new Keymaker("sentence");
 
-    private final String encoding = "UTF-8";
+	/** redis namespace for index. */
+	private final Keymaker indexns = new Keymaker("index");
 
-    public static RhymeStore instance;
+	private final String encoding = "UTF-8";
 
-    /** Parses the words to get the part used to rhyme. */
-    private WordParser wordParser;
+	public static RhymeStore instance;
 
-    public static RhymeStore getInstance()
-    {
-        if (instance == null)
-        {
-            instance = new RhymeStore();
-        }
-        return instance;
-    }
+	/** Parses the words to get the part used to rhyme. */
+	private WordParser wordParser;
 
-    private RhymeStore()
-    {
-        redis = new Jedis("localhost", 6379);
-        wordParser = new SpanishWordParser();
-    }
+	public static RhymeStore getInstance()
+	{
+		if (instance == null)
+		{
+			instance = new RhymeStore();
+		}
 
-    public RhymeStore(final String host, final int port)
-    {
-        redis = new Jedis(host, port);
-    }
+		return instance;
+	}
 
-    public void add(final String sentence) throws IOException
-    {
-        if (sentence != null && sentence.length() > 0)
-        {
-            List<String> words = Arrays.asList(sentence.split(" "));
+	private RhymeStore()
+	{
+		redis = new Jedis("localhost", 6379);
+		wordParser = WordParserFactory.getWordParser();
+	}
 
-            String key = generateToken(words.get(words.size() - 1));
-            String value = URLEncoder.encode(sentence, encoding);
+	public RhymeStore(final String host, final int port)
+	{
+		redis = new Jedis(host, port);
+		wordParser = WordParserFactory.getWordParser();
+	}
 
-            redis.connect();
+	public void add(final String sentence) throws IOException
+	{
+		String word = getLastWord(sentence);
 
-            redis.sadd(namespace.build(key).toString(), value);
+		if (word.isEmpty())
+		{
+			return;
+		}
 
-            redis.disconnect();
-        }
-    }
+		connect();
 
-    public Set<String> findAll() throws IOException
-    {
-        Set<String> rhymes = new HashSet<String>();
-        redis.connect();
+		String sentenceId = getUniqueId(sentencens, normalizeString(sentence));
+		sentenceId = sentencens.build(sentenceId).toString();
 
-        for (String key : redis.keys(namespace.build("*").toString()))
-        {
-            for (String sentence : redis.smembers(key))
-            {
-                rhymes.add(URLDecoder.decode(sentence, encoding));
-            }
-        }
+		if (redis.exists(sentenceId) == 1)
+		{
+			disconnect();
+			return;
+		}
 
-        redis.disconnect();
+		// Insert sentence
+		redis.set(sentenceId, URLEncoder.encode(sentence, encoding));
 
-        return rhymes;
-    }
+		// Index sentence
+		String rhyme = normalizeString(wordParser.phoneticRhymePart(word));
+		StressType type = wordParser.stressType(word);
 
-    /**
-     * Gets a rhyme for the given sentence.
-     * 
-     * @param sentence The sentence to rhyme.
-     * @return The rhyme.
-     */
-    public String getRhyme(final String sentence) throws IOException
-    {
-        int lastSpace = sentence.lastIndexOf(" ");
-        String lastWord = sentence.substring(lastSpace < 0 ? 0 : lastSpace + 1);
-        String rhymepart = wordParser.phoneticRhymePart(lastWord);
+		String indexId = getUniqueId(indexns, buildUniqueToken(rhyme, type));
+		indexId = indexns.build(indexId).toString();
 
-        LOGGER.debug("Finding rhymes ending with {}", rhymepart);
+		redis.sadd(indexId, sentenceId);
 
-        Set<String> rhymes = search(rhymepart);
-        return rhymes.isEmpty() ? DEFAULT_RHYME : rhymes.iterator().next();
-    }
+		disconnect();
+	}
 
-    // TODO don't use the KEYS command! Use a trie instead.
-    protected Set<String> search(String search) throws IOException
-    {
-        Set<String> rhymes = new HashSet<String>();
+	protected Set<String> search(final String rhyme, final StressType type)
+			throws IOException
+	{
+		Set<String> rhymes = new HashSet<String>();
+		String norm = normalizeString(rhyme);
 
-        search = "*".concat(generateToken(search));
+		String uniqueId = getUniqueIdKey(indexns, buildUniqueToken(norm, type));
 
-        redis.connect();
+		if (redis.exists(uniqueId) == 1)
+		{
+			String indexId = redis.get(uniqueId);
+			indexId = indexns.build(indexId).toString();
 
-        for (String key : redis.keys(namespace.build(search).toString()))
-        {
-            for (String sentence : redis.smembers(key))
-            {
-                rhymes.add(URLDecoder.decode(sentence, encoding));
-            }
-        }
+			if (redis.exists(indexId) == 1)
+			{
+				for (String id : redis.smembers(indexId))
+				{
+					if (redis.exists(id) == 1)
+					{
+						rhymes.add(URLDecoder.decode(redis.get(id), encoding));
+					}
+				}
+			}
+		}
 
-        redis.disconnect();
+		return rhymes;
+	}
 
-        return rhymes;
-    }
+	protected String buildUniqueToken(final String rhyme, final StressType type)
+	{
+		return sum(type.name().concat(rhyme));
+	}
 
-    private String generateToken(final String value)
-    {
-        // To lower case
-        String token = value.toLowerCase();
+	protected String getUniqueIdKey(final Keymaker ns, final String token)
+	{
+		String md = sum(token);
+		return ns.build(md, "id").toString();
+	}
 
-        // Remove diacritics
-        token = Normalizer.normalize(token, Form.NFD);
-        token = token.replaceAll("[^\\p{ASCII}]", "");
+	protected String getUniqueId(final Keymaker ns, final String token)
+	{
+		String key = getUniqueIdKey(ns, token);
+		String id = redis.get(key);
 
-        // Remove non alphanumeric characters
-        token = token.replaceAll("[^a-zA-Z0-9]", "");
+		if (id != null)
+		{
+			return id;
+		}
 
-        return token;
-    }
+		Integer next = redis.incr(ns.build("next.id").toString());
+		id = next.toString();
+
+		if (redis.setnx(key, id) == 0)
+		{
+			id = redis.get(key);
+		}
+
+		return id;
+	}
+
+	protected String getLastId(final Keymaker ns)
+	{
+		return redis.get(ns.build("next.id").toString());
+	}
+
+	protected String sum(final String value)
+	{
+		return DigestUtils.md5Hex(value.getBytes());
+	}
+
+	protected String getLastWord(final String sentence)
+	{
+		String word = "";
+
+		if (sentence != null)
+		{
+			List<String> words = Arrays.asList(sentence.split(" "));
+
+			if (words.size() > 0)
+			{
+				word = words.get(words.size() - 1);
+			}
+		}
+
+		return word;
+	}
+
+	protected void connect() throws UnknownHostException, IOException
+	{
+		if (!redis.isConnected())
+		{
+			redis.connect();
+		}
+	}
+
+	protected void disconnect() throws IOException
+	{
+		if (redis.isConnected())
+		{
+			redis.disconnect();
+		}
+	}
+
+	protected String normalizeString(final String value)
+	{
+		// To lower case
+		String token = value.toLowerCase();
+
+		// Remove diacritics
+		token = Normalizer.normalize(token, Form.NFD);
+		token = token.replaceAll("[^\\p{ASCII}]", "");
+
+		// Remove non alphanumeric characters
+		token = token.replaceAll("[^a-zA-Z0-9]", "");
+
+		return token;
+	}
+
+	public Set<String> findAll() throws IOException
+	{
+		Set<String> rhymes = new HashSet<String>();
+
+		redis.connect();
+
+		String lastId = getLastId(sentencens);
+
+		if (lastId != null)
+		{
+			Integer n = Integer.parseInt(getLastId(sentencens));
+
+			for (int i = 1; i <= n; i++)
+			{
+				String id = sentencens.build(String.valueOf(i)).toString();
+
+				if (redis.exists(id) == 1)
+				{
+					rhymes.add(URLDecoder.decode(redis.get(id), encoding));
+				}
+			}
+		}
+
+		redis.disconnect();
+
+		return rhymes;
+	}
+
+	/**
+	 * Gets a rhyme for the given sentence.
+	 * 
+	 * @param sentence The sentence to rhyme.
+	 * @return The rhyme.
+	 */
+	public String getRhyme(final String sentence) throws IOException
+	{
+		String lastWord = getLastWord(sentence);
+
+		String rhymepart = wordParser.phoneticRhymePart(lastWord);
+		StressType type = wordParser.stressType(lastWord);
+
+		LOGGER.debug("Finding rhymes for {}", sentence);
+
+		redis.connect();
+
+		Set<String> rhymes = search(rhymepart, type);
+
+		redis.disconnect();
+
+		return rhymes.isEmpty() ? DEFAULT_RHYME : rhymes.iterator().next();
+	}
 }

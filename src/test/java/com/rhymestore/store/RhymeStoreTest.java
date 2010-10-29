@@ -21,38 +21,26 @@ package com.rhymestore.store;
 
 import static org.testng.Assert.assertEquals;
 
-// The tests assumes a redis server working in localhost
+import java.io.IOException;
+
+import org.testng.annotations.Test;
+
+// The tests assumes a redis server working in localhost!
 public class RhymeStoreTest
 {
     private RhymeStore store;
 
-    // @BeforeMethod
-    public void setUp() throws Exception
+    @Test(enabled = false)
+    public void basicTest() throws IOException
     {
         store = RhymeStore.getInstance();
 
-        store.add("Nada rima con dos.");
         store.add("Mi nabo para vos");
-        store.add("Dame dos");
-        store.add("El que tengo aquí colgado");
-        store.add("Por el culo te la hinco");
-    }
+        store.add("Te la meto del revés!!");
 
-    // @Test
-    public void testSearch() throws Exception
-    {
-        assertEquals(store.search("dos").size(), 2);
-        assertEquals(store.search("os").size(), 3);
-        assertEquals(store.search("vos").size(), 1);
-        assertEquals(store.search("v").size(), 0);
+        assertEquals(store.getRhyme("¿Hay algo que rime con tres?"), "Te la meto del revés!!");
+        assertEquals(store.getRhyme("Nada rima con dos."), "Mi nabo para vos");
+        assertEquals(store.getRhyme("Nada rima con be"), RhymeStore.DEFAULT_RHYME);
+        assertEquals(store.findAll().size(), 2);
     }
-
-    // @Test
-    public void testGetRhyme() throws Exception
-    {
-        assertEquals(store.getRhyme("Rima inexistente"), RhymeStore.DEFAULT_RHYME);
-        assertEquals(store.getRhyme("Llama al abogado"), "El que tengo aquí colgado");
-        assertEquals(store.getRhyme("Pon telecinco"), "Por el culo te la hinco");
-    }
-
 }

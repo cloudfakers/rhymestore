@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.rhymestore.config.RhymestoreConfig;
 import com.rhymestore.web.controller.Controller;
 import com.rhymestore.web.controller.ControllerException;
 
@@ -47,9 +48,6 @@ public class RhymeServlet extends HttpServlet
 
     /** Serial UID. */
     private static final long serialVersionUID = 1L;
-
-    /** The resource that contains the controller mappings. */
-    private static final String MAPPING_RESOURCE = "rhymestore.properties";
 
     /** The view path. */
     private static final String VIEW_PATH = "/jsp";
@@ -109,10 +107,14 @@ public class RhymeServlet extends HttpServlet
 
                 getServletContext().getRequestDispatcher(viewPath).forward(req, resp);
             }
-            catch (ControllerException e)
+            catch (ControllerException ex)
             {
-                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                    "An error occured during request handling: " + e.getMessage());
+                String errorMessage =
+                    "An error occured during request handling: " + ex.getMessage();
+
+                LOGGER.error(errorMessage, ex);
+
+                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, errorMessage);
             }
         }
         else
@@ -145,7 +147,6 @@ public class RhymeServlet extends HttpServlet
     {
         return req.getRequestURI().replaceFirst(req.getContextPath(), "").replaceFirst(
             req.getServletPath(), "");
-
     }
 
     /**
@@ -157,7 +158,7 @@ public class RhymeServlet extends HttpServlet
     {
         Properties mappings = new Properties();
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        mappings.load(cl.getResourceAsStream(MAPPING_RESOURCE));
+        mappings.load(cl.getResourceAsStream(RhymestoreConfig.CONFIG_FILE));
 
         LOGGER.info("Loading controller mappings...");
 
@@ -165,10 +166,12 @@ public class RhymeServlet extends HttpServlet
         {
             String key = (String) mappingKey;
 
-            if (key.startsWith("controller") && key.endsWith(".path"))
+            if (RhymestoreConfig.isControllerProperty(key))
             {
                 String path = mappings.getProperty(key);
-                String clazz = mappings.getProperty(key.replace(".path", ".class"));
+                String clazz =
+                    mappings.getProperty(key.replace(RhymestoreConfig.CONTROLLER_PATH_SUFFIX,
+                        RhymestoreConfig.CONTROLLER_CLASS_SUFFIX));
 
                 if (clazz == null)
                 {
