@@ -1,9 +1,61 @@
 body {
-	background-color: #99CC66;
-	font-family: Verdana, Arial, sans-serif;
+	background-color: #eaf2d3;
+	font-family: verdana,helvetica,arial,sans-serif;
 	font-size: 1em;
+	color: #617A61;
 }
 
-.result {
+h2 {
+	color: #295429;
+}
+
+.input {
+	border: 1px solid #98bf21;
+	color: #617A61;
+}
+
+.button {
+	color: white;
+	border: 1px solid #98bf21;
+	background-color: #a7c942;
+}
+
+.errors {
+	width: 800px;
 	color: maroon;
+}
+
+.button:hover {
+	background-color: #99BA3D;
+}
+
+#rhymes {
+	border-collapse:collapse;
+	text-align: left;
+	width: 800px;
+}
+
+th, td {
+	border: 1px solid #98bf21;
+	padding: 3px 7px 2px 7px;
+}
+
+td.empty {
+	text-align: center;
+}
+
+th {
+	font-size: 1.1em;
+	color: white;
+	background-color: #a7c942;
+}
+
+tr.tr0 td 
+{
+	background-color: #eaf2d3;
+}
+
+tr.tr1 td 
+{
+	background-color: white;
 }

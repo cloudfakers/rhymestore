@@ -4,31 +4,46 @@
 <html>
 
 <head>
-	<title>RhymeStore Management</title>
+	<title>The Rhymestore Project</title>
 	<link type="text/css" href="<%=request.getContextPath() %>/css/rhymestore.css" rel="stylesheet" />
 </head>
 
 <body>
 
-	<h2>RhymeStore Stored Rhymes</h2>
+	<h2>The Rhymestore Project</h2>
 	
-	<c:if test="${not empty result}">
-		<p class="result">
-			<c:out value="${result}" />
-		</p>
+	<c:if test="${not empty errors}">
+		<div class="errors">
+			The following errors occured:
+			<ul>
+				<c:forEach var="error" items="${errors}">
+					<li><c:out value="${error}" /></li>
+				</c:forEach>
+			</ul>
+		</div>
 	</c:if>
 	
-	<c:if test="${not empty rhymes}">
-		<table>
-			<c:forEach var="rhyme" items="${rhymes}">
-				<tr><td align="left"><c:out value="${rhyme}" /></td></tr>
-			</c:forEach>
-		</table>
-	</c:if>
+	<form action="<%=request.getContextPath() %>/web/rhymes/list" method="post">
+		<p>Enter a Rhyme to add it to RymeStore:</p>
+		<input id="ryhme" name="rhyme" type="text" size="100" class="input" />
+		<input type="submit" value="Add it!" class="button" />
+	</form>
 	
-	<p>
-		<a href="<%=request.getContextPath() %>/web/rhymes/add">Add a rhyme</a>
-	</p>
+	<br />
+
+	<table id="rhymes">
+		<thead>
+			<tr><th>Rhyme</th></tr>
+		</thead>
+		<c:forEach var="rhyme" items="${rhymes}" varStatus="status">
+			<tr class="tr<c:out value="${status.count % 2}"/>">
+				<td align="left"><c:out value="${rhyme}" /></td>
+			</tr>
+		</c:forEach>
+		<c:if test="${empty rhymes}">
+			<tr class="tr1"><td class="empty">There are no rimes yet</td></tr>
+		</c:if>
+	</table>
 	
 </body>
 

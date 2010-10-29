@@ -20,82 +20,115 @@
 package com.rhymestore.web.controller;
 
 import java.lang.reflect.Method;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.rhymestore.web.RhymestoreContextListener;
 
 /**
- * Controller that delegates execution to a specific method based on the request
- * path.
+ * Controller that delegates execution to a specific method based on the request path.
  * 
  * @author Ignasi Barrera
  */
 public class MethodInvokingController implements Controller
 {
+    /** The logger. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(MethodInvokingController.class);
 
-	@Override
-	public String execute(final HttpServletRequest request,
-			final HttpServletResponse response) throws ControllerException
-	{
-		// Get the name of the method
-		int lastSlash = request.getRequestURI().lastIndexOf("/");
-		String methodName = request.getRequestURI().substring(lastSlash + 1);
+    /** List of errors produced during method execution. */
+    private List<String> errors = new LinkedList<String>();
 
-		// Find the target method
-		Method targetMethod = null;
+    @Override
+    public String execute(final HttpServletRequest request, final HttpServletResponse response)
+        throws ControllerException
+    {
+        // Get the name of the method
+        int lastSlash = request.getRequestURI().lastIndexOf("/");
+        String methodName = request.getRequestURI().substring(lastSlash + 1);
 
-		for (Method method : this.getClass().getMethods())
-		{
-			if (method.getName().equals(methodName))
-			{
-				targetMethod = method;
-				break;
-			}
-		}
+        // Find the target method
+        Method targetMethod = null;
 
-		if (targetMethod == null)
-		{
-			throw new ControllerException(
-					"Could not find a Controller method with name "
-							+ methodName + " in class "
-							+ this.getClass().getName());
-		}
+        for (Method method : this.getClass().getMethods())
+        {
+            if (method.getName().equals(methodName))
+            {
+                targetMethod = method;
+                break;
+            }
+        }
 
-		// Execute the target method
-		try
-		{
-			targetMethod.invoke(this, request, response);
-		}
-		catch (Exception ex)
-		{
-			if (ex.getCause() instanceof ControllerException)
-			{
-				// If it is a Controller exception, just propagate it
-				throw (ControllerException) ex.getCause();
-			}
+        if (targetMethod == null)
+        {
+            throw new ControllerException("Could not find a Controller method with name "
+                + methodName + " in class " + this.getClass().getName());
+        }
 
-			throw new ControllerException(
-					"Could not execute the Controller method " + methodName
-							+ " from class " + this.getClass().getName(), ex);
-		}
+        // Execute the target method
+        try
+        {
+            errors.clear();
 
-		// The view name is the same than the method
-		return methodName;
-	}
+            targetMethod.invoke(this, request, response);
 
-	/**
-	 * Gets the Twitter user.
-	 * 
-	 * @param request The request.
-	 * @param response The response.
-	 * @return The Twitter user name.
-	 */
-	protected String getTwitterUser(final HttpServletRequest request,
-			final HttpServletResponse response)
-	{
-		return (String) request.getSession().getServletContext()
-				.getAttribute(RhymestoreContextListener.TWITTER_USER_NAME);
-	}
+            request.setAttribute("errors", errors);
+        }
+        catch (Exception ex)
+        {
+            if (ex.getCause() instanceof ControllerException)
+            {
+                // If it is a Controller exception, just propagate it
+                throw (ControllerException) ex.getCause();
+            }
+
+            throw new ControllerException("Could not execute the Controller method " + methodName
+                + " from class " + this.getClass().getName(), ex);
+        }
+
+        // The view name is the same than the method
+        return methodName;
+    }
+
+    /**
+     * Gets the Twitter user.
+     * 
+     * @param request The request.
+     * @param response The response.
+     * @return The Twitter user name.
+     */
+    protected String getTwitterUser(final HttpServletRequest request,
+        final HttpServletResponse response)
+    {
+        return (String) request.getSession().getServletContext().getAttribute(
+            RhymestoreContextListener.TWITTER_USER_NAME);
+    }
+
+    /**
+     * Adds the given error to the {@link #errors} list.
+     * 
+     * @param error The error to add.
+     */
+    protected void error(final String error)
+    {
+        errors.add(error);
+        LOGGER.error(error);
+    }
+
+    /**
+     * Adds the given error to the {@link #errors} list.
+     * 
+     * @param error The error to add.
+     * @param cause The error cause.
+     */
+    protected void error(final String error, final Exception cause)
+    {
+        errors.add(error);
+        LOGGER.error(error, cause);
+    }
 }

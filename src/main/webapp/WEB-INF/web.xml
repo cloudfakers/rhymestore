@@ -8,7 +8,7 @@
 	<!-- Configure if twitter communication is enabled -->
 	<context-param>
 		<param-name>TWITTER_ENABLED</param-name>
-		<param-value>true</param-value>
+		<param-value>false</param-value>
 	</context-param>
 	
 	<!-- Startup ContextListener -->
@@ -30,7 +30,7 @@
 
 	<!-- Main document -->
 	<welcome-file-list>
-		<welcome-file>/jsp/rhymes/add.jsp</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
 
 </web-app>
