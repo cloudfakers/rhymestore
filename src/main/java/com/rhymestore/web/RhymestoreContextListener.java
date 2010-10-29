@@ -56,12 +56,12 @@ public class RhymestoreContextListener implements ServletContextListener
     @Override
     public void contextInitialized(final ServletContextEvent sce)
     {
-        // Connects to Twitter and starts the execution of API calls
+        // Connects to Twitter
         twitter = new TwitterFactory().getInstance();
 
-        // Store the user name in the Servlet Context to make it available to Controllers
         try
         {
+            // Store the user name in the servlet context to make it available to Controllers
             sce.getServletContext().setAttribute(TWITTER_USER_NAME, twitter.getScreenName());
         }
         catch (TwitterException ex)

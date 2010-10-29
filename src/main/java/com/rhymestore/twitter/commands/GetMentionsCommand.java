@@ -43,7 +43,7 @@ public class GetMentionsCommand implements TwitterCommand
     /** The queue with the pending commands. */
     private Queue<TwitterCommand> commandQueue;
 
-    /** The id of the last tweet redponded. */
+    /** The id of the last tweet responded. */
     private long lastTweetId = -1L;
 
     /**
@@ -64,12 +64,13 @@ public class GetMentionsCommand implements TwitterCommand
         Paging paging = lastTweetId < 0 ? new Paging() : new Paging(lastTweetId);
         ResponseList<Status> mentions = twitter.getMentions(paging);
 
-        // Reply only if the lastTweetId existed before calling this method
+        // Reply only if the lastTweetId existed before calling this method (only reply to mentions
+        // made since the application is running)
         if (lastTweetId > 0)
         {
-            // Enqueue a reply to each mention
             for (Status status : mentions)
             {
+                // Enqueue a reply to the mention if it is not from the current Twitter user
                 if (!status.getUser().getScreenName().equalsIgnoreCase(twitter.getScreenName()))
                 {
                     LOGGER.debug("Adding tweet {} from {}", status.getId(), status.getUser()

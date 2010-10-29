@@ -74,7 +74,7 @@ public class RhymeServlet extends HttpServlet
         }
         catch (Exception ex)
         {
-            throw new ServletException(ex.getMessage());
+            throw new ServletException("Could not load controllers: " + ex.getMessage(), ex);
         }
     }
 
