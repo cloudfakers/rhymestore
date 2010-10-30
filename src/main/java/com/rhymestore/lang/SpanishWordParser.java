@@ -526,7 +526,7 @@ public class SpanishWordParser implements WordParser
 		}
 
 		throw new IllegalArgumentException(
-				"It is impossible to have a syllable without vowels");
+				"It is impossible to have a word without vowels");
 	}
 
 	private static boolean aguda(final String[] silabas)
