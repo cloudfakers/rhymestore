@@ -14,7 +14,7 @@
 
 	<div id="content">
 		<h2>The Rhymestore Project</h2>
-		<p class="subtitle">(&eth;&#601; raymst&#596;r pr&#593;&#496;&#603;kt)</p>
+		<p class="subtitle">&#47;&eth;&#601; &#39;raymst&#596;r &#39;pr&#593;&#496;&#603;kt&#47;</p>
 		
 		<hr />
 		
