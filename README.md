@@ -21,7 +21,7 @@ Compiling Rhymestore
 
 Rhymestore can be compiled as a standard Maven project:
 
-    mvn clean package
+  mvn clean package
   
 That will generate the rhymestore.war file in the target/
 folder.
@@ -40,4 +40,15 @@ If you want to use the example db, just copy the db/redis.rdb
 file and rename/move it to the location your Redis will use.
 The location and filename of the database file can be configured
 in your Redis redis.conf file.
+
+
+Contributing
+------------
+
+Any contribution to the project is welcome. Feel free to check
+it out and play with it.
+
+Currently, there is only support for the Spanish language.
+Support for rhymes in other languages can be added by implementing
+the `com.rhymestore.lang.WordParser` interface.
 
