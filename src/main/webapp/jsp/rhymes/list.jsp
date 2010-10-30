@@ -5,7 +5,8 @@
 <html>
 
 <head>
-	<title>The Rhymestore Project</title>
+    <title>The Rhymestore Project</title>
+    <link type="image/png" href="<%= request.getContextPath() %>/img/favicon.png" rel="icon" />
 	<link type="text/css" href="<%= request.getContextPath() %>/css/rhymestore.css" rel="stylesheet" />
 </head>
 
