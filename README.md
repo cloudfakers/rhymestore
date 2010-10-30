@@ -22,7 +22,7 @@ Compiling Rhymestore
 
 Rhymestore can be compiled as a standard Maven project:
 
-  mvn clean package
+    mvn clean package
   
 That will generate the rhymestore.war file in the target/
 folder.
