@@ -58,10 +58,4 @@ public class TwitterTest
 		User user = twitter.verifyCredentials();
 		Assert.assertEquals("rimamelo", user.getScreenName());
 	}
-
-	@Test(enabled = false)
-	public void testUpdateStatus() throws Exception
-	{
-		twitter.updateStatus("Rhymestore tests passed!");
-	}
 }
