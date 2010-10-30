@@ -1,30 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	id="RhymeStore" version="2.5">
+	id="Rhymestore" version="2.5">
 
 	<display-name>The Rhymestore Project</display-name>
 	
 	<!-- Configure if twitter communication is enabled -->
 	<context-param>
 		<param-name>TWITTER_ENABLED</param-name>
-		<param-value>true</param-value>
+		<param-value>false</param-value>
 	</context-param>
 	
 	<!-- Startup ContextListener -->
 	<listener>
-		<listener-class>com.rhymestore.web.RhymestoreContextListener</listener-class>
+		<listener-class>com.rhymestore.web.ContextListener</listener-class>
 	</listener>
 	
 	<!-- Rhyme servlet -->
 	<servlet>
-		<servlet-name>RhymeServlet</servlet-name>
-		<servlet-class>com.rhymestore.web.RhymeServlet</servlet-class>
+		<servlet-name>DownloadServlet</servlet-name>
+		<servlet-class>com.rhymestore.web.DownloadServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>MVCServlet</servlet-name>
+		<servlet-class>com.rhymestore.web.MVCServlet</servlet-class>
 	</servlet>
 
 	<!-- Servlet mappings -->
 	<servlet-mapping>
-		<servlet-name>RhymeServlet</servlet-name>
+		<servlet-name>DownloadServlet</servlet-name>
+		<url-pattern>/download</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>MVCServlet</servlet-name>
 		<url-pattern>/web/*</url-pattern>
 	</servlet-mapping>
 

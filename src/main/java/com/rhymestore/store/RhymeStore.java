@@ -93,6 +93,11 @@ public class RhymeStore
 			return;
 		}
 
+		// Get the rhyme and type (and check that the word is valid before
+		// adding)
+		String rhyme = normalizeString(wordParser.phoneticRhymePart(word));
+		StressType type = wordParser.stressType(word);
+
 		connect();
 
 		String sentenceId = getUniqueId(sentencens, normalizeString(sentence));
@@ -108,9 +113,6 @@ public class RhymeStore
 		redis.set(sentenceId, URLEncoder.encode(sentence, encoding));
 
 		// Index sentence
-		String rhyme = normalizeString(wordParser.phoneticRhymePart(word));
-		StressType type = wordParser.stressType(word);
-
 		String indexId = getUniqueId(indexns, buildUniqueToken(rhyme, type));
 		indexId = indexns.build(indexId).toString();
 

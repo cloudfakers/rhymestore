@@ -5,45 +5,58 @@
 
 <head>
 	<title>The Rhymestore Project</title>
-	<link type="text/css" href="<%=request.getContextPath() %>/css/rhymestore.css" rel="stylesheet" />
+	<link type="text/css" href="<%= request.getContextPath() %>/css/rhymestore.css" rel="stylesheet" />
 </head>
 
 <body>
 
-	<h2>The Rhymestore Project</h2>
-	
-	<c:if test="${not empty errors}">
-		<div class="errors">
-			The following errors occured:
-			<ul>
-				<c:forEach var="error" items="${errors}">
-					<li><c:out value="${error}" /></li>
-				</c:forEach>
-			</ul>
-		</div>
-	</c:if>
-	
-	<form action="<%=request.getContextPath() %>/web/rhymes/list" method="post">
-		<p>Enter the rhyme to add:</p>
-		<input id="ryhme" name="rhyme" type="text" size="100" class="input" />
-		<input type="submit" value="Add it!" class="button" />
-	</form>
-	
-	<br />
-
-	<table id="rhymes">
-		<thead>
-			<tr><th>Rhyme</th></tr>
-		</thead>
-		<c:forEach var="rhyme" items="${rhymes}" varStatus="status">
-			<tr class="tr<c:out value="${status.count % 2}"/>">
-				<td align="left"><c:out value="${rhyme}" /></td>
-			</tr>
-		</c:forEach>
-		<c:if test="${empty rhymes}">
-			<tr class="tr1"><td class="empty">There are no rimes yet</td></tr>
+	<div id="content">
+		<h2>The Rhymestore Project</h2>
+		
+		<hr />
+		
+		<c:if test="${not empty errors}">
+			<div class="errors">
+				<ul>
+					<c:forEach var="error" items="${errors}">
+						<li><c:out value="${error}" /></li>
+					</c:forEach>
+				</ul>
+			</div>
 		</c:if>
-	</table>
+
+		<p>		
+			<form action="<%= request.getContextPath() %>/web/rhymes/list" method="post">
+				<input id="ryhme" name="rhyme" type="text" size="110" class="input" />
+				<input type="submit" value="Add it!" class="add" />
+			</form>
+		</p>
+		
+		<table id="rhymes">
+			<thead>
+				<tr>
+					<th>Stored rhymes</th>
+					<c:if test="${not empty rhymes}">
+						<th align="right">
+							<form action="<%= request.getContextPath() %>/download" method="post">
+								<input type="submit" value="Download" class="download" />
+							</form>
+						</th>
+					</c:if>
+				</tr>
+			</thead>
+			<c:forEach var="rhyme" items="${rhymes}" varStatus="status">
+				<tr class="tr<c:out value="${status.count % 2}"/>">
+					<td colspan="2"><c:out value="${rhyme}" /></td>
+				</tr>
+			</c:forEach>
+			<c:if test="${empty rhymes}">
+				<tr class="tr1"><td class="empty">There are no rimes yet</td></tr>
+			</c:if>
+		</table>
+		
+		<a href="http://twitter.com/rimamelo" title="Follow us on Twitter"><img src="<%= request.getContextPath() %>/img/twitter.png" alt="Follow us on Twitter" /></a>
+	</div>
 	
 </body>
 

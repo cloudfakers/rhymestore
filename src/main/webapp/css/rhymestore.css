@@ -1,12 +1,24 @@
 body {
-	background-color: #eaf2d3;
+	background-color: #DAF58C;
 	font-family: verdana,helvetica,arial,sans-serif;
 	font-size: 1em;
-	color: #617A61;
+}
+
+#content {
+	width: 760px;
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+hr {
+	border: 0px;
+	background-color: #98bf21;
+	height: 1px;	
 }
 
 h2 {
-	color: #295429;
+	color: #5D7A07;
 }
 
 .input {
@@ -14,30 +26,40 @@ h2 {
 	color: #617A61;
 }
 
-.button {
+.add {
 	color: white;
 	border: 1px solid #98bf21;
-	background-color: #a7c942;
+	background-color: #C5ED4C;
 }
 
-.errors {
-	width: 800px;
-	color: maroon;
+.download {
+	color: white;
+	border: 1px solid white;
+	background-color: #C5ED4C;
 }
 
-.button:hover {
+.add:hover, .download:hover {
 	background-color: #99BA3D;
 }
 
-#rhymes {
-	border-collapse:collapse;
+.errors {
+	color: maroon;
 	text-align: left;
-	width: 800px;
+	font-size: 0.8em;
 }
 
-th, td {
+#rhymes {
+	color: #617A61;
+	border-collapse:collapse;
+	text-align: left;
+	width: 758px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+td {
 	border: 1px solid #98bf21;
-	padding: 3px 7px 2px 7px;
+	padding: 3px 7px 3px 7px;
 }
 
 td.empty {
@@ -48,6 +70,8 @@ th {
 	font-size: 1.1em;
 	color: white;
 	background-color: #a7c942;
+	border: 1px solid #98bf21;
+	padding: 0px 4px 0px 7px;
 }
 
 tr.tr0 td 

@@ -36,10 +36,10 @@ import com.rhymestore.twitter.TwitterScheduler;
  * 
  * @author Ignasi Barrera
  */
-public class RhymestoreContextListener implements ServletContextListener
+public class ContextListener implements ServletContextListener
 {
     /** The logger. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(RhymestoreContextListener.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ContextListener.class);
 
     /** Context attribute name used to store the Twitter user. */
     public static final String TWITTER_USER_NAME = "TWITTER_USER_NAME";

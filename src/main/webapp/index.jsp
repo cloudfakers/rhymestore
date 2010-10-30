@@ -1,3 +1,9 @@
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
-<c:redirect url="/web/rhymes/list" />
+<html>
+<head>
+<script type="text/javascript">
+<!--
+location.replace("<%= request.getContextPath() %>/web/rhymes/list");
+//-->
+</script>
+</head>
+</html>

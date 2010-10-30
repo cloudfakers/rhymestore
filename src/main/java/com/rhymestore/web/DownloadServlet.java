@@ -1,3 +1,22 @@
+/**
+ * The Rhymestore project.
+ *
+ * This application is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU LESSER GENERAL PUBLIC
+ * LICENSE as published by the Free Software Foundation under
+ * version 3 of the License
+ *
+ * This application is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * LESSER GENERAL PUBLIC LICENSE v.3 for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
 package com.rhymestore.web;
 
 import java.io.IOException;
@@ -18,15 +37,19 @@ import org.slf4j.LoggerFactory;
 import com.rhymestore.store.RhymeStore;
 
 /**
- * Servlet to export stored rhymes to a text file.
+ * Creates a text file with all stored rhymes and serves it as a file to
+ * download.
  * 
  * @author Ignasi Barrera
  */
-public class ExportServlet extends HttpServlet
+public class DownloadServlet extends HttpServlet
 {
 	/** The logger. */
 	private static final Logger LOGGER = LoggerFactory
-			.getLogger(ExportServlet.class);
+			.getLogger(DownloadServlet.class);
+
+	/** The name of the download file. */
+	private static final String DOWNLOAD_FILE_NAME = "rhymes.txt";
 
 	/** Serial UID. */
 	private static final long serialVersionUID = 1L;
@@ -46,7 +69,7 @@ public class ExportServlet extends HttpServlet
 	}
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException
 	{
 		// Get all stored rhymes
@@ -59,7 +82,8 @@ public class ExportServlet extends HttpServlet
 
 		// Set response headers
 		resp.setContentType("text/plain");
-		resp.setHeader("Content-Disposition", "attachment; filename=rhymes.txt");
+		resp.setHeader("Content-Disposition", "attachment; filename="
+				+ DOWNLOAD_FILE_NAME);
 
 		// Write output
 		PrintWriter pw = new PrintWriter(resp.getOutputStream());
@@ -74,9 +98,9 @@ public class ExportServlet extends HttpServlet
 	}
 
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException
 	{
-		doGet(req, resp);
+		doPost(req, resp);
 	}
 }

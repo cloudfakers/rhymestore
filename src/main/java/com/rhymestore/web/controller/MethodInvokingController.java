@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.rhymestore.web.RhymestoreContextListener;
+import com.rhymestore.web.ContextListener;
 
 /**
  * Controller that delegates execution to a specific method based on the request path.
@@ -106,7 +106,7 @@ public class MethodInvokingController implements Controller
         final HttpServletResponse response)
     {
         return (String) request.getSession().getServletContext().getAttribute(
-            RhymestoreContextListener.TWITTER_USER_NAME);
+            ContextListener.TWITTER_USER_NAME);
     }
 
     /**

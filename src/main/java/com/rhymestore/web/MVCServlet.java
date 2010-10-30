@@ -41,11 +41,11 @@ import com.rhymestore.web.controller.ControllerException;
  * 
  * @author ibarrera
  */
-public class RhymeServlet extends HttpServlet
+public class MVCServlet extends HttpServlet
 {
 	/** The logger. */
 	private static final Logger LOGGER = LoggerFactory
-			.getLogger(RhymeServlet.class);
+			.getLogger(MVCServlet.class);
 
 	/** Serial UID. */
 	private static final long serialVersionUID = 1L;
