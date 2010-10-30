@@ -57,7 +57,7 @@
 			</c:if>
 		</table>
 		
-		<a href="http://twitter.com/rimamelo" title="Follow on Twitter"><img src="<%= request.getContextPath() %>/img/twitter.png" alt="Follow us on Twitter" /></a>
+		<a href="http://twitter.com/rimamelo" title="Follow on Twitter"><img src="<%= request.getContextPath() %>/img/twitter.png" alt="Follow on Twitter" /></a>
 	</div>
 	
 </body>
