@@ -73,17 +73,19 @@ public class RhymeController extends MethodInvokingController
 		{
 			try
 			{
+				if (rhyme.length() > TwitterUtils.MAX_TWEET_LENGTH)
+				{
+					error("Rhymes must have less than or "
+							+ TwitterUtils.MAX_TWEET_LENGTH + " characters");
+				}
+
 				String twitterUser = getTwitterUser(request, response);
 				if (rhyme.contains(TwitterUtils.user(twitterUser)))
 				{
 					error("Cannot add a rhyme that contains the Twitter user name");
 				}
-				else if (rhyme.length() > TwitterUtils.MAX_TWEET_LENGTH)
-				{
-					error("Rhymes must have less than or "
-							+ TwitterUtils.MAX_TWEET_LENGTH + " characters");
-				}
-				else
+
+				if (!errors())
 				{
 					String capitalized = capitalize(rhyme);
 					store.add(capitalized);
