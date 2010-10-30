@@ -1,9 +1,10 @@
 THE RHYMESTORE PROJECT
 ======================
        
-The Rhymestore Project provides Twitter integration to
-"El Hombre de la rima fácil" and a management interface
-to access the rhyme knowledge base. 
+The Rhymestore Project provides an easy way to create Twitter
+bots that respond to user mentions with a sentence that rhymes
+perfectly with the received message. It also provides a
+management interface to access the rhyme knowledge base. 
 
 
 Prerequisites
