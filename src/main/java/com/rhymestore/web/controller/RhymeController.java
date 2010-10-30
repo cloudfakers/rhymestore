@@ -41,88 +41,88 @@ import com.rhymestore.twitter.util.TwitterUtils;
  */
 public class RhymeController extends MethodInvokingController
 {
-    /** The logger. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(RhymeController.class);
+	/** The logger. */
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(RhymeController.class);
 
-    /** The Rhyme store. */
-    private RhymeStore store;
+	/** The Rhyme store. */
+	private RhymeStore store;
 
-    /**
-     * Default constructor
-     */
-    public RhymeController()
-    {
-        store = RhymeStore.getInstance();
-    }
+	/**
+	 * Default constructor
+	 */
+	public RhymeController()
+	{
+		store = RhymeStore.getInstance();
+	}
 
-    /**
-     * Lists all rhymes in the the store.
-     * 
-     * @param request The request.
-     * @param response The response.
-     * @throws ControllerException If the rhyme cannot be added.
-     */
-    public void list(final HttpServletRequest request, final HttpServletResponse response)
-        throws ControllerException
-    {
-        // Add the rhyme if present
-        String rhyme = request.getParameter("rhyme");
+	/**
+	 * Lists all rhymes in the the store.
+	 * 
+	 * @param request The request.
+	 * @param response The response.
+	 * @throws ControllerException If the rhyme cannot be added.
+	 */
+	public void list(final HttpServletRequest request,
+			final HttpServletResponse response) throws ControllerException
+	{
+		// Add the rhyme if present
+		String rhyme = request.getParameter("rhyme");
 
-        if (rhyme != null && rhyme.length() > 0)
-        {
-            try
-            {
-                String twitterUser = getTwitterUser(request, response);
-                if (rhyme.contains(TwitterUtils.user(twitterUser)))
-                {
-                    error("Cannot add a rhyme that contains the Twitter user name");
-                }
-                else
-                {
-                    String capitalized = capitalize(rhyme);
-                    store.add(capitalized);
+		if (rhyme != null && rhyme.length() > 0)
+		{
+			try
+			{
+				String twitterUser = getTwitterUser(request, response);
+				if (rhyme.contains(TwitterUtils.user(twitterUser)))
+				{
+					error("Cannot add a rhyme that contains the Twitter user name");
+				}
+				else
+				{
+					String capitalized = capitalize(rhyme);
+					store.add(capitalized);
 
-                    LOGGER.info("Added rhyme: {}", capitalized);
-                }
-            }
-            catch (Exception ex)
-            {
-                error("Could not add rhyme: " + ex.getMessage(), ex);
-            }
-        }
+					LOGGER.info("Added rhyme: {}", capitalized);
+				}
+			}
+			catch (Exception ex)
+			{
+				error("Could not add rhyme: " + ex.getMessage(), ex);
+			}
+		}
 
-        // List all rhymes
-        try
-        {
-            Set<String> rhymes = store.findAll();
+		// List all rhymes
+		try
+		{
+			Set<String> rhymes = store.findAll();
 
-            List<String> sortedRhymes = new ArrayList<String>(rhymes);
-            Collections.sort(sortedRhymes, String.CASE_INSENSITIVE_ORDER);
+			List<String> sortedRhymes = new ArrayList<String>(rhymes);
+			Collections.sort(sortedRhymes, String.CASE_INSENSITIVE_ORDER);
 
-            request.setAttribute("rhymes", sortedRhymes);
-        }
-        catch (IOException ex)
-        {
-            error("Could not get rhymes: " + ex.getMessage(), ex);
-        }
-    }
+			request.setAttribute("rhymes", sortedRhymes);
+		}
+		catch (IOException ex)
+		{
+			error("Could not get rhymes: " + ex.getMessage(), ex);
+		}
+	}
 
-    /**
-     * Capitalizes the given String.
-     * 
-     * @param str The String to capitalize.
-     * @return The capitalized String.
-     */
-    private static String capitalize(final String str)
-    {
-        switch (str.length())
-        {
-            case 0:
-                return str;
-            case 1:
-                return str.toUpperCase();
-            default:
-                return str.substring(0, 1).toUpperCase() + str.substring(1);
-        }
-    }
+	/**
+	 * Capitalizes the given String.
+	 * 
+	 * @param str The String to capitalize.
+	 * @return The capitalized String.
+	 */
+	private static String capitalize(final String str)
+	{
+		switch (str.length()) {
+		case 0:
+			return str;
+		case 1:
+			return str.toUpperCase();
+		default:
+			return str.substring(0, 1).toUpperCase() + str.substring(1);
+		}
+	}
 }
