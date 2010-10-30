@@ -75,7 +75,7 @@ public class RhymeController extends MethodInvokingController
 			{
 				if (rhyme.length() > TwitterUtils.MAX_TWEET_LENGTH)
 				{
-					error("Rhymes must have less than or "
+					error("Rhymes should have maximum "
 							+ TwitterUtils.MAX_TWEET_LENGTH + " characters");
 				}
 
