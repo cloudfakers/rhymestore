@@ -13,6 +13,7 @@
 
 	<div id="content">
 		<h2>The Rhymestore Project</h2>
+		<p class="subtitle">(&eth;&#601; raymst&#596;r pr&#593;&#496;&#603;kt)</p>
 		
 		<hr />
 		

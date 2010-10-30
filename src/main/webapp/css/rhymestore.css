@@ -19,6 +19,16 @@ hr {
 
 h2 {
 	color: #5D7A07;
+	margin-bottom: 4px;
+}
+
+.subtitle {
+	color: #88AB1F;
+	margin-top: 0px;
+}
+
+.subtitle {
+	color: #5D7A07;
 }
 
 .input {
