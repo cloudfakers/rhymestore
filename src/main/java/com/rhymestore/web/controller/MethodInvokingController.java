@@ -144,6 +144,6 @@ public class MethodInvokingController implements Controller
 	 */
 	protected boolean errors()
 	{
-		return errors.isEmpty();
+		return !errors.isEmpty();
 	}
 }
