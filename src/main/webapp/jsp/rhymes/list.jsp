@@ -1,4 +1,5 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@page import="com.rhymestore.twitter.util.TwitterUtils" %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
@@ -27,7 +28,7 @@
 
 		<p>		
 			<form action="<%= request.getContextPath() %>/web/rhymes/list" method="post">
-				<input id="ryhme" name="rhyme" type="text" size="110" class="input" />
+				<input id="ryhme" name="rhyme" type="text" class="input" size="110" maxlength="<%= TwitterUtils.MAX_TWEET_LENGTH %>" />
 				<input type="submit" value="Add it!" class="add" />
 			</form>
 		</p>
