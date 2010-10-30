@@ -41,6 +41,8 @@ import com.rhymestore.store.RhymeStore;
  * download.
  * 
  * @author Ignasi Barrera
+ * 
+ * @see RhymeStore
  */
 public class DownloadServlet extends HttpServlet
 {

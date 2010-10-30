@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Ignasi Barrera
  * 
+ * @see RhymeStore
  */
 public class RhymeLoader
 {

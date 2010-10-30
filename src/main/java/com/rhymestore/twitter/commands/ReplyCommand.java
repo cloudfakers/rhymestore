@@ -30,12 +30,16 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 import com.rhymestore.store.RhymeStore;
+import com.rhymestore.twitter.TwitterScheduler;
 import com.rhymestore.twitter.util.TwitterUtils;
 
 /**
  * Executes a reply to a user's tweet.
  * 
  * @author Ignasi Barrera
+ * 
+ * @see Twitter
+ * @see TwitterScheduler
  */
 public class ReplyCommand implements TwitterCommand
 {

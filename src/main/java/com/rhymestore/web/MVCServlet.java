@@ -40,6 +40,8 @@ import com.rhymestore.web.controller.ControllerException;
  * Process requests performed from the Web UI.
  * 
  * @author Ignasi Barrera
+ * 
+ * @see Controller
  */
 public class MVCServlet extends HttpServlet
 {

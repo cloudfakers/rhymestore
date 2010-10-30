@@ -33,6 +33,7 @@ import com.rhymestore.config.RhymestoreConfig;
  * 
  * @author Ignasi Barrera
  * 
+ * @see WordParser
  */
 public class WordParserFactory
 {

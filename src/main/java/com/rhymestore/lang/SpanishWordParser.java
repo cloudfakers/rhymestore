@@ -23,6 +23,9 @@ package com.rhymestore.lang;
  * Parses words to identify the part that is used to conform a consonant rhyme.
  * 
  * @author Ignasi Barrera
+ * 
+ * @see WordParser
+ * @see StressType
  */
 public class SpanishWordParser implements WordParser
 {
