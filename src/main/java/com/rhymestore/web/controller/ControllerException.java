@@ -1,20 +1,23 @@
 /**
- * The Rhymestore project.
+ * Copyright (c) 2010 Enric Ruiz, Ignasi Barrera
  *
- * This application is free software; you can redistribute it and/or
- * modify it under the terms of the GNU LESSER GENERAL PUBLIC
- * LICENSE as published by the Free Software Foundation under
- * version 3 of the License
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * This application is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * LESSER GENERAL PUBLIC LICENSE v.3 for more details.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 
 package com.rhymestore.web.controller;
@@ -26,38 +29,39 @@ package com.rhymestore.web.controller;
  */
 public class ControllerException extends Exception
 {
-    /** Serial UID. */
-    private static final long serialVersionUID = 1L;
+	/** Serial UID. */
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * Creates a new <code>ControllerException</code> with the given message and cause.
-     * 
-     * @param msg The exception message.
-     * @param cause The exception cause.
-     */
-    public ControllerException(final String msg, final Throwable cause)
-    {
-        super(msg, cause);
-    }
+	/**
+	 * Creates a new <code>ControllerException</code> with the given message and
+	 * cause.
+	 * 
+	 * @param msg The exception message.
+	 * @param cause The exception cause.
+	 */
+	public ControllerException(final String msg, final Throwable cause)
+	{
+		super(msg, cause);
+	}
 
-    /**
-     * Creates a new <code>ControllerException</code> with the given message.
-     * 
-     * @param msg The exception message.
-     */
-    public ControllerException(final String msg)
-    {
-        super(msg);
-    }
+	/**
+	 * Creates a new <code>ControllerException</code> with the given message.
+	 * 
+	 * @param msg The exception message.
+	 */
+	public ControllerException(final String msg)
+	{
+		super(msg);
+	}
 
-    /**
-     * Creates a new <code>ControllerException</code> with the given cause.
-     * 
-     * @param cause The exception cause.
-     */
-    public ControllerException(final Throwable cause)
-    {
-        super(cause);
-    }
+	/**
+	 * Creates a new <code>ControllerException</code> with the given cause.
+	 * 
+	 * @param cause The exception cause.
+	 */
+	public ControllerException(final Throwable cause)
+	{
+		super(cause);
+	}
 
 }

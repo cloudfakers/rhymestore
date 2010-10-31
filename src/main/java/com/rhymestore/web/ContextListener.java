@@ -1,20 +1,23 @@
 /**
- * The Rhymestore project.
+ * Copyright (c) 2010 Enric Ruiz, Ignasi Barrera
  *
- * This application is free software; you can redistribute it and/or
- * modify it under the terms of the GNU LESSER GENERAL PUBLIC
- * LICENSE as published by the Free Software Foundation under
- * version 3 of the License
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * This application is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * LESSER GENERAL PUBLIC LICENSE v.3 for more details.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 
 package com.rhymestore.web;
@@ -38,74 +41,78 @@ import com.rhymestore.twitter.TwitterScheduler;
  */
 public class ContextListener implements ServletContextListener
 {
-    /** The logger. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(ContextListener.class);
+	/** The logger. */
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(ContextListener.class);
 
-    /** Context attribute name used to store the Twitter user. */
-    public static final String TWITTER_USER_NAME = "TWITTER_USER_NAME";
+	/** Context attribute name used to store the Twitter user. */
+	public static final String TWITTER_USER_NAME = "TWITTER_USER_NAME";
 
-    /** Context parameter name used to enable or disable twitter communication. */
-    private static final String TWITTER_ENABLE_PARAM_NAME = "TWITTER_ENABLED";
+	/** Context parameter name used to enable or disable twitter communication. */
+	private static final String TWITTER_ENABLE_PARAM_NAME = "TWITTER_ENABLED";
 
-    /** The Twitter API call scheduler. */
-    private TwitterScheduler twitterScheduler;
+	/** The Twitter API call scheduler. */
+	private TwitterScheduler twitterScheduler;
 
-    /** The Twitter API client. */
-    private Twitter twitter;
+	/** The Twitter API client. */
+	private Twitter twitter;
 
-    @Override
-    public void contextInitialized(final ServletContextEvent sce)
-    {
-        // Connects to Twitter
-        twitter = new TwitterFactory().getInstance();
+	@Override
+	public void contextInitialized(final ServletContextEvent sce)
+	{
+		// Connects to Twitter
+		twitter = new TwitterFactory().getInstance();
 
-        try
-        {
-            // Store the user name in the servlet context to make it available to Controllers
-            sce.getServletContext().setAttribute(TWITTER_USER_NAME, twitter.getScreenName());
-        }
-        catch (TwitterException ex)
-        {
-            LOGGER.error("Could not get the Twitter username", ex);
-        }
+		try
+		{
+			// Store the user name in the servlet context to make it available
+			// to Controllers
+			sce.getServletContext().setAttribute(TWITTER_USER_NAME,
+					twitter.getScreenName());
+		}
+		catch (TwitterException ex)
+		{
+			LOGGER.error("Could not get the Twitter username", ex);
+		}
 
-        // Starts the Twitter scheduler
-        if (twitterEnabled(sce))
-        {
-            LOGGER.info("Starting the Twitter API scheduler");
+		// Starts the Twitter scheduler
+		if (twitterEnabled(sce))
+		{
+			LOGGER.info("Starting the Twitter API scheduler");
 
-            twitterScheduler = new TwitterScheduler(twitter);
-            twitterScheduler.start();
-        }
-        else
-        {
-            LOGGER.info("Twitter communication is disabled");
-        }
-    }
+			twitterScheduler = new TwitterScheduler(twitter);
+			twitterScheduler.start();
+		}
+		else
+		{
+			LOGGER.info("Twitter communication is disabled");
+		}
+	}
 
-    @Override
-    public void contextDestroyed(final ServletContextEvent sce)
-    {
-        if (twitterEnabled(sce))
-        {
-            LOGGER.info("Shutting down the Twitter API scheduler");
+	@Override
+	public void contextDestroyed(final ServletContextEvent sce)
+	{
+		if (twitterEnabled(sce))
+		{
+			LOGGER.info("Shutting down the Twitter API scheduler");
 
-            twitterScheduler.shutdown(); // Stop scheduler
-        }
+			twitterScheduler.shutdown(); // Stop scheduler
+		}
 
-        twitter.shutdown(); // Disconnect from Twitter
-    }
+		twitter.shutdown(); // Disconnect from Twitter
+	}
 
-    /**
-     * Checks if Twitter communication is enabled.
-     * 
-     * @param sce The <code>ServletContextEvent</code>.
-     * @return A boolean indicating if Twitter communication is enabled.
-     */
-    private boolean twitterEnabled(final ServletContextEvent sce)
-    {
-        String enableTwitter = sce.getServletContext().getInitParameter(TWITTER_ENABLE_PARAM_NAME);
-        return enableTwitter == null || enableTwitter.equals("true");
-    }
+	/**
+	 * Checks if Twitter communication is enabled.
+	 * 
+	 * @param sce The <code>ServletContextEvent</code>.
+	 * @return A boolean indicating if Twitter communication is enabled.
+	 */
+	private boolean twitterEnabled(final ServletContextEvent sce)
+	{
+		String enableTwitter = sce.getServletContext().getInitParameter(
+				TWITTER_ENABLE_PARAM_NAME);
+		return enableTwitter == null || enableTwitter.equals("true");
+	}
 
 }

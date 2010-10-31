@@ -48,3 +48,9 @@ Currently, there is only support for the Spanish language.
 Support for rhymes in other languages can be added by implementing
 the `com.rhymestore.lang.WordParser` interface.
 
+
+License
+-------
+
+See LICENSE file.
+

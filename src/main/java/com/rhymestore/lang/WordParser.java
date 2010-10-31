@@ -1,20 +1,23 @@
 /**
- * The Rhymestore project.
+ * Copyright (c) 2010 Enric Ruiz, Ignasi Barrera
  *
- * This application is free software; you can redistribute it and/or
- * modify it under the terms of the GNU LESSER GENERAL PUBLIC
- * LICENSE as published by the Free Software Foundation under
- * version 3 of the License
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * This application is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * LESSER GENERAL PUBLIC LICENSE v.3 for more details.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 
 package com.rhymestore.lang;
@@ -26,37 +29,37 @@ package com.rhymestore.lang;
  */
 public interface WordParser
 {
-    /**
-     * Gets the part of the word that is used to create the rhyme.
-     * 
-     * @param word The word.
-     * @return The part of the word that is used to create the rhyme.
-     */
-    public String phoneticRhymePart(final String word);
+	/**
+	 * Gets the part of the word that is used to create the rhyme.
+	 * 
+	 * @param word The word.
+	 * @return The part of the word that is used to create the rhyme.
+	 */
+	public String phoneticRhymePart(final String word);
 
-    /**
-     * Gets the {@link StressType} of the word based on the syllables.
-     * 
-     * @param word The word.
-     * @return The <code>StressType</code>.
-     */
-    public StressType stressType(final String word);
+	/**
+	 * Gets the {@link StressType} of the word based on the syllables.
+	 * 
+	 * @param word The word.
+	 * @return The <code>StressType</code>.
+	 */
+	public StressType stressType(final String word);
 
-    /**
-     * Checks if the given words rhyme between them.
-     * 
-     * @param word1 The first word.
-     * @param word2 The second word.
-     * @return Boolean indicating if the given words rhyme between them.
-     */
-    public boolean rhyme(String word1, String word2);
+	/**
+	 * Checks if the given words rhyme between them.
+	 * 
+	 * @param word1 The first word.
+	 * @param word2 The second word.
+	 * @return Boolean indicating if the given words rhyme between them.
+	 */
+	public boolean rhyme(String word1, String word2);
 
-    /**
-     * Checks if the specified character is a valid letter.
-     * 
-     * @param letter The character to check.
-     * @return Boolean indicating if the specified character is a valid letter.
-     */
-    public boolean isLetter(final char letter);
+	/**
+	 * Checks if the specified character is a valid letter.
+	 * 
+	 * @param letter The character to check.
+	 * @return Boolean indicating if the specified character is a valid letter.
+	 */
+	public boolean isLetter(final char letter);
 
 }
