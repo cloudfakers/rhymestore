@@ -65,6 +65,8 @@ public class ContextListener implements ServletContextListener
 
 		try
 		{
+			LOGGER.info("Connected to Twitter as: {}", twitter.getScreenName());
+
 			// Store the user name in the servlet context to make it available
 			// to Controllers
 			sce.getServletContext().setAttribute(TWITTER_USER_NAME,
@@ -98,6 +100,8 @@ public class ContextListener implements ServletContextListener
 
 			twitterScheduler.shutdown(); // Stop scheduler
 		}
+
+		LOGGER.info("Disconnecting from Twitter");
 
 		twitter.shutdown(); // Disconnect from Twitter
 	}

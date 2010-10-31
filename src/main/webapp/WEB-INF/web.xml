@@ -16,7 +16,7 @@
 		<listener-class>com.rhymestore.web.ContextListener</listener-class>
 	</listener>
 	
-	<!-- Rhyme servlet -->
+	<!-- Servlets -->
 	<servlet>
 		<servlet-name>DownloadServlet</servlet-name>
 		<servlet-class>com.rhymestore.web.DownloadServlet</servlet-class>
@@ -38,7 +38,7 @@
 
 	<!-- Main document -->
 	<welcome-file-list>
-		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>jsp/index.jsp</welcome-file>
 	</welcome-file-list>
 
 </web-app>
