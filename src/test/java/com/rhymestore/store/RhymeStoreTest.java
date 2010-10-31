@@ -33,7 +33,7 @@ public class RhymeStoreTest
 {
 	private RhymeStore store;
 
-	@Test
+	@Test(enabled = false)
 	public void basicTest() throws IOException
 	{
 		store = RhymeStore.getInstance();
