@@ -31,16 +31,11 @@ folder.
 Deploying
 ---------
 
-Once you have the rhymjestore.war file, you can deploy it to
+Once you have the rhymestore.war file, you can deploy it to
 any servlet container.
 
 Once the application is started, you need to have a running
 Redis instance.
-
-If you want to use the example db, just copy the db/redis.rdb
-file and rename/move it to the location your Redis will use.
-The location and filename of the database file can be configured
-in your Redis redis.conf file.
 
 
 Contributing
