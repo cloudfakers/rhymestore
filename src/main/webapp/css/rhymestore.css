@@ -1,5 +1,5 @@
 body {
-	background-color: #DAF58C;
+	background-color: #C5DE7E;
 	font-family: verdana,helvetica,arial,sans-serif;
 	font-size: 1em;
 }
@@ -39,13 +39,13 @@ h2 {
 .add {
 	color: white;
 	border: 1px solid #98bf21;
-	background-color: #C5ED4C;
+	background-color: #BEE34F;
 }
 
 .download {
 	color: white;
 	border: 1px solid white;
-	background-color: #C5ED4C;
+	background-color: #BEE34F;
 }
 
 .add:hover, .download:hover {

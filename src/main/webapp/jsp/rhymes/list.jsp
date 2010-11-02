@@ -30,7 +30,7 @@
 
 		<p>		
 			<form action="<%= request.getContextPath() %>/web/rhymes/list" method="post">
-				<input id="ryhme" name="rhyme" type="text" class="input" size="110" maxlength="<%= TwitterUtils.MAX_TWEET_LENGTH %>" />
+				<input id="ryhme" name="rhyme" type="text" class="input" size="90" maxlength="<%= TwitterUtils.MAX_TWEET_LENGTH %>" />
 				<input type="submit" value="Add it!" class="add" />
 			</form>
 		</p>
