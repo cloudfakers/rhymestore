@@ -28,19 +28,17 @@
 			</div>
 		</c:if>
 
-		<p>		
-			<form action="<%= request.getContextPath() %>/web/rhymes/list" method="post">
-				<input id="ryhme" name="rhyme" type="text" class="input" size="90" maxlength="<%= TwitterUtils.MAX_TWEET_LENGTH %>" />
-				<input type="submit" value="Add it!" class="add" />
-			</form>
-		</p>
+		<form action="<%= request.getContextPath() %>/web/rhymes/list" method="post">
+			<input id="ryhme" name="rhyme" type="text" class="input" size="80" maxlength="<%= TwitterUtils.MAX_TWEET_LENGTH %>" />
+			<input type="submit" value="Add it!" class="add" />
+		</form>
 		
 		<table id="rhymes">
 			<thead>
 				<tr>
-					<th>Stored rhymes</th>
+					<th style="border-right: 0px;">Stored rhymes</th>
 					<c:if test="${not empty rhymes}">
-						<th align="right">
+						<th style="text-align: right; border-left: 0px;">
 							<form action="<%= request.getContextPath() %>/download" method="post">
 								<input type="submit" value="Download" class="download" />
 							</form>
@@ -58,7 +56,7 @@
 			</c:if>
 		</table>
 		
-		<a href="http://twitter.com/rimamelo" title="Follow on Twitter"><img src="<%= request.getContextPath() %>/img/twitter.png" alt="Follow on Twitter" /></a>
+		<a href="http://twitter.com/rimamelo" title="Follow on Twitter"><img src="<%= request.getContextPath() %>/img/twitter.png" alt="Follow on Twitter" border="0" /></a>
 	</div>
 	
 </body>
