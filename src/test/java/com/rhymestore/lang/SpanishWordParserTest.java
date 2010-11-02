@@ -22,6 +22,8 @@
 
 package com.rhymestore.lang;
 
+import static com.rhymestore.lang.WordUtils.capitalize;
+import static com.rhymestore.lang.WordUtils.getLastWord;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -78,11 +80,9 @@ public class SpanishWordParserTest
 		assertEquals(wordParser.phoneticRhymePart("falange"), "anje");
 		assertEquals(wordParser.phoneticRhymePart("alfanje"), "anje");
 		assertEquals(wordParser.phoneticRhymePart("cacho"), "acho");
-		assertEquals(wordParser.phoneticRhymePart("gargáreha"), "area"); // Palabra
-		// imposible
-		// pero
-		// caso
-		// contemplado
+
+		// Palabra imposible pero caso contemplado
+		assertEquals(wordParser.phoneticRhymePart("gargáreha"), "area");
 	}
 
 	@Test
@@ -100,6 +100,7 @@ public class SpanishWordParserTest
 	@Test
 	public void testRhyme()
 	{
+		// Rhymes withoud punctuation
 		assertTrue(wordParser.rhyme("", ""));
 		assertTrue(wordParser.rhyme("pez", "hez"));
 		assertTrue(wordParser.rhyme("tres", "revés"));
@@ -110,7 +111,6 @@ public class SpanishWordParserTest
 		assertTrue(wordParser.rhyme("tuyo", "murmullo"));
 
 		// Rhymes with punctuation
-
 		assertTrue(wordParser.rhyme("cantar.", "pescar"));
 		assertTrue(wordParser.rhyme("calor!", "motor?"));
 		assertTrue(wordParser.rhyme("calor  ", "motor&;'?="));
@@ -166,4 +166,22 @@ public class SpanishWordParserTest
 		assertFalse(wordParser.isWord("hola.adios"));
 		assertFalse(wordParser.isWord("ab23cd"));
 	}
+
+	@Test
+	public void testCapitalize()
+	{
+		assertEquals(capitalize(""), "");
+		assertEquals(capitalize("a"), "A");
+		assertEquals(capitalize("word"), "Word");
+		assertEquals(capitalize("capitalize test"), "Capitalize test");
+	}
+
+	@Test
+	public void testGetLastWord()
+	{
+		assertEquals(getLastWord(""), "");
+		assertEquals(getLastWord("test"), "test");
+		assertEquals(getLastWord("two words"), "words");
+	}
 }
+
