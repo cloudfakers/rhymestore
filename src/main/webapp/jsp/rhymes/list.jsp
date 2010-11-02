@@ -29,16 +29,16 @@
 		</c:if>
 
 		<form action="<%= request.getContextPath() %>/web/rhymes/list" method="post">
-			<input id="ryhme" name="rhyme" type="text" class="input" size="80" maxlength="<%= TwitterUtils.MAX_TWEET_LENGTH %>" />
+			<input id="ryhme" name="rhyme" type="text" class="input" size="90" maxlength="<%= TwitterUtils.MAX_TWEET_LENGTH %>" />
 			<input type="submit" value="Add it!" class="add" />
 		</form>
 		
 		<table id="rhymes">
 			<thead>
 				<tr>
-					<th style="border-right: 0px;">Stored rhymes</th>
+					<th class="left">Stored rhymes</th>
 					<c:if test="${not empty rhymes}">
-						<th style="text-align: right; border-left: 0px;">
+						<th class="right">
 							<form action="<%= request.getContextPath() %>/download" method="post">
 								<input type="submit" value="Download" class="download" />
 							</form>

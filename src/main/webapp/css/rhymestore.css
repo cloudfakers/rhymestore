@@ -5,7 +5,7 @@ body {
 }
 
 #content {
-	width: 760px;
+	width: 820px;
 	text-align: center;
 	margin-left: auto;
 	margin-right: auto;
@@ -62,7 +62,7 @@ h2 {
 	color: #617A61;
 	border-collapse:collapse;
 	text-align: left;
-	width: 758px;
+	width: 818px;
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 10px;
@@ -83,6 +83,15 @@ th {
 	background-color: #a7c942;
 	border: 1px solid #98bf21;
 	padding: 0px 4px 0px 7px;
+}
+
+th.left {
+	border-right: 0px;
+}
+
+th.right {
+	border-left: 0px;
+	text-align: right;
 }
 
 tr.tr0 td 
