@@ -34,6 +34,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.rhymestore.lang.WordParser;
+import com.rhymestore.lang.WordParserFactory;
+import com.rhymestore.lang.WordUtils;
 import com.rhymestore.store.RhymeStore;
 import com.rhymestore.twitter.util.TwitterUtils;
 
@@ -51,12 +54,16 @@ public class RhymeController extends MethodInvokingController
 	/** The Rhyme store. */
 	private RhymeStore store;
 
+	/** The {@link WordParser} used to parse rhymes. */
+	private WordParser wordParser;
+
 	/**
 	 * Default constructor
 	 */
 	public RhymeController()
 	{
 		store = RhymeStore.getInstance();
+		wordParser = WordParserFactory.getWordParser();
 	}
 
 	/**
@@ -69,38 +76,7 @@ public class RhymeController extends MethodInvokingController
 	public void list(final HttpServletRequest request,
 			final HttpServletResponse response) throws ControllerException
 	{
-		// Add the rhyme if present
-		String rhyme = request.getParameter("rhyme");
-
-		if (rhyme != null && rhyme.length() > 0)
-		{
-			try
-			{
-				if (rhyme.length() > TwitterUtils.MAX_TWEET_LENGTH)
-				{
-					error("Rhymes should have maximum "
-							+ TwitterUtils.MAX_TWEET_LENGTH + " characters");
-				}
-
-				String twitterUser = getTwitterUser(request, response);
-				if (rhyme.contains(TwitterUtils.user(twitterUser)))
-				{
-					error("Cannot add a rhyme that contains the Twitter user name");
-				}
-
-				if (!errors())
-				{
-					String capitalized = capitalize(rhyme);
-					store.add(capitalized);
-
-					LOGGER.info("Added rhyme: {}", capitalized);
-				}
-			}
-			catch (Exception ex)
-			{
-				error("Could not add rhyme: " + ex.getMessage(), ex);
-			}
-		}
+		addRhymeIfPresent(request, response);
 
 		// List all rhymes
 		try
@@ -119,20 +95,53 @@ public class RhymeController extends MethodInvokingController
 	}
 
 	/**
-	 * Capitalizes the given String.
+	 * Check if there is a rhyme submitted, and adds it to the store.
 	 * 
-	 * @param str The String to capitalize.
-	 * @return The capitalized String.
+	 * @param request The request.
+	 * @param response The response.
 	 */
-	private static String capitalize(final String str)
+	private void addRhymeIfPresent(HttpServletRequest request,
+			HttpServletResponse response)
 	{
-		switch (str.length()) {
-		case 0:
-			return str;
-		case 1:
-			return str.toUpperCase();
-		default:
-			return str.substring(0, 1).toUpperCase() + str.substring(1);
+		// Check if there is a rhyme present
+		String rhyme = request.getParameter("rhyme");
+
+		if (rhyme != null && rhyme.length() > 0)
+		{
+			try
+			{
+				if (rhyme.length() > TwitterUtils.MAX_TWEET_LENGTH)
+				{
+					error("Rhymes should have maximum "
+							+ TwitterUtils.MAX_TWEET_LENGTH + " characters");
+				}
+
+				// Checl only the last word; it is the only one needed for the
+				// rhyme
+				String lastWord = WordUtils.getLastWord(rhyme);
+				if (!wordParser.isWord(lastWord))
+				{
+					error("The rhyme contains invalid words");
+				}
+
+				String twitterUser = getTwitterUser(request, response);
+				if (rhyme.contains(TwitterUtils.user(twitterUser)))
+				{
+					error("Cannot add a rhyme that contains the Twitter user name");
+				}
+
+				if (!errors())
+				{
+					String capitalized = WordUtils.capitalize(rhyme);
+					store.add(capitalized);
+
+					LOGGER.info("Added rhyme: {}", capitalized);
+				}
+			}
+			catch (Exception ex)
+			{
+				error("Could not add rhyme: " + ex.getMessage(), ex);
+			}
 		}
 	}
 }

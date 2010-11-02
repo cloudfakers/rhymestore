@@ -152,4 +152,18 @@ public class SpanishWordParserTest
 		assertFalse(wordParser.isLetter(';'));
 		assertFalse(wordParser.isLetter('-'));
 	}
+
+	@Test
+	public void testIsWord()
+	{
+		// Valid words
+		assertTrue(wordParser.isWord("hola"));
+		assertTrue(wordParser.isWord("test"));
+
+		// Invalid words
+		assertFalse(wordParser.isWord("25"));
+		assertFalse(wordParser.isWord("invalid1"));
+		assertFalse(wordParser.isWord("hola.adios"));
+		assertFalse(wordParser.isWord("ab23cd"));
+	}
 }

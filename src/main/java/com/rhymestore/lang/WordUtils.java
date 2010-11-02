@@ -22,52 +22,56 @@
 
 package com.rhymestore.lang;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
- * Parses words in a concrete language to build perfect rhymes.
+ * Utility methods to manipulate text.
  * 
  * @author Ignasi Barrera
+ * 
  */
-public interface WordParser
+public class WordUtils
 {
 	/**
-	 * Gets the part of the word that is used to create the rhyme.
+	 * Gets the last word of the given sentence.
 	 * 
-	 * @param word The word.
-	 * @return The part of the word that is used to create the rhyme.
+	 * @param sentence The sentence to parse.
+	 * @return The last word of the given sentence.
 	 */
-	public String phoneticRhymePart(final String word);
+	public static String getLastWord(final String sentence)
+	{
+		String word = "";
+
+		if (sentence != null)
+		{
+			List<String> words = Arrays.asList(sentence.split(" "));
+
+			if (words.size() > 0)
+			{
+				word = words.get(words.size() - 1);
+			}
+		}
+
+		return word;
+	}
 
 	/**
-	 * Gets the {@link StressType} of the word based on the syllables.
+	 * Capitalizes the given String.
 	 * 
-	 * @param word The word.
-	 * @return The <code>StressType</code>.
+	 * @param str The String to capitalize.
+	 * @return The capitalized String.
 	 */
-	public StressType stressType(final String word);
-
-	/**
-	 * Checks if the given words rhyme between them.
-	 * 
-	 * @param word1 The first word.
-	 * @param word2 The second word.
-	 * @return Boolean indicating if the given words rhyme between them.
-	 */
-	public boolean rhyme(String word1, String word2);
-
-	/**
-	 * Checks if the specified character is a valid letter.
-	 * 
-	 * @param letter The character to check.
-	 * @return Boolean indicating if the specified character is a valid letter.
-	 */
-	public boolean isLetter(final char letter);
-
-	/**
-	 * Checks if the specified text is a valid word.
-	 * 
-	 * @param text The text to check.
-	 * @return Boolean indicating if the specified text is a valid word.
-	 */
-	public boolean isWord(final String text);
+	public static String capitalize(final String str)
+	{
+		switch (str.length()) {
+		case 0:
+			return str;
+		case 1:
+			return str.toUpperCase();
+		default:
+			return str.substring(0, 1).toUpperCase() + str.substring(1);
+		}
+	}
 
 }

@@ -29,7 +29,6 @@ import java.net.UnknownHostException;
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -44,6 +43,7 @@ import redis.clients.jedis.Jedis;
 import com.rhymestore.lang.StressType;
 import com.rhymestore.lang.WordParser;
 import com.rhymestore.lang.WordParserFactory;
+import com.rhymestore.lang.WordUtils;
 
 /**
  * Manages the Redis database to store and search rhymes.
@@ -127,7 +127,7 @@ public class RhymeStore
 	 */
 	public void add(final String sentence) throws IOException
 	{
-		String word = getLastWord(sentence);
+		String word = WordUtils.getLastWord(sentence);
 
 		if (word.isEmpty())
 		{
@@ -247,29 +247,6 @@ public class RhymeStore
 	}
 
 	/**
-	 * Gets the last word of the given sentence.
-	 * 
-	 * @param sentence The sentence to parse.
-	 * @return The last word of the given sentence.
-	 */
-	protected String getLastWord(final String sentence)
-	{
-		String word = "";
-
-		if (sentence != null)
-		{
-			List<String> words = Arrays.asList(sentence.split(" "));
-
-			if (words.size() > 0)
-			{
-				word = words.get(words.size() - 1);
-			}
-		}
-
-		return word;
-	}
-
-	/**
 	 * Connects to the Redis database.
 	 * 
 	 * @throws UnknownHostException If the target host does not respond.
@@ -353,7 +330,7 @@ public class RhymeStore
 	 */
 	public String getRhyme(final String sentence) throws IOException
 	{
-		String lastWord = getLastWord(sentence);
+		String lastWord = WordUtils.getLastWord(sentence);
 
 		String rhymepart = wordParser.phoneticRhymePart(lastWord);
 		StressType type = wordParser.stressType(lastWord);

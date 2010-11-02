@@ -782,4 +782,19 @@ public class SpanishWordParser implements WordParser
 		}
 	}
 
+	@Override
+	public boolean isWord(final String text)
+	{
+		char[] letters = text.toCharArray();
+
+		for (char letter : letters)
+		{
+			if (!isLetter(letter))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
 }
