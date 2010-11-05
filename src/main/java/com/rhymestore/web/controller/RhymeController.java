@@ -47,101 +47,97 @@ import com.rhymestore.twitter.util.TwitterUtils;
  */
 public class RhymeController extends MethodInvokingController
 {
-	/** The logger. */
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(RhymeController.class);
+    /** The logger. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(RhymeController.class);
 
-	/** The Rhyme store. */
-	private RhymeStore store;
+    /** The Rhyme store. */
+    private final RhymeStore store;
 
-	/** The {@link WordParser} used to parse rhymes. */
-	private WordParser wordParser;
+    /** The {@link WordParser} used to parse rhymes. */
+    private final WordParser wordParser;
 
-	/**
-	 * Default constructor
-	 */
-	public RhymeController()
-	{
-		store = RhymeStore.getInstance();
-		wordParser = WordParserFactory.getWordParser();
-	}
+    /**
+     * Default constructor
+     */
+    public RhymeController()
+    {
+        store = RhymeStore.getInstance();
+        wordParser = WordParserFactory.getWordParser();
+    }
 
-	/**
-	 * Lists all rhymes in the the store.
-	 * 
-	 * @param request The request.
-	 * @param response The response.
-	 * @throws ControllerException If the rhyme cannot be added.
-	 */
-	public void list(final HttpServletRequest request,
-			final HttpServletResponse response) throws ControllerException
-	{
-		addRhymeIfPresent(request, response);
+    /**
+     * Lists all rhymes in the the store.
+     * 
+     * @param request The request.
+     * @param response The response.
+     * @throws ControllerException If the rhyme cannot be added.
+     */
+    public void list(final HttpServletRequest request, final HttpServletResponse response)
+        throws ControllerException
+    {
+        addRhymeIfPresent(request, response);
 
-		// List all rhymes
-		try
-		{
-			Set<String> rhymes = store.findAll();
+        // List all rhymes
+        try
+        {
+            Set<String> rhymes = store.findAll();
 
-			List<String> sortedRhymes = new ArrayList<String>(rhymes);
-			Collections.sort(sortedRhymes, String.CASE_INSENSITIVE_ORDER);
+            List<String> sortedRhymes = new ArrayList<String>(rhymes);
+            Collections.sort(sortedRhymes, String.CASE_INSENSITIVE_ORDER);
 
-			request.setAttribute("rhymes", sortedRhymes);
-		}
-		catch (IOException ex)
-		{
-			error("Could not get rhymes: " + ex.getMessage(), ex);
-		}
-	}
+            request.setAttribute("rhymes", sortedRhymes);
+        }
+        catch (IOException ex)
+        {
+            error("Could not get rhymes: " + ex.getMessage(), ex);
+        }
+    }
 
-	/**
-	 * Check if there is a rhyme submitted, and adds it to the store.
-	 * 
-	 * @param request The request.
-	 * @param response The response.
-	 */
-	private void addRhymeIfPresent(HttpServletRequest request,
-			HttpServletResponse response)
-	{
-		// Check if there is a rhyme present
-		String rhyme = request.getParameter("rhyme");
+    /**
+     * Check if there is a rhyme submitted, and adds it to the store.
+     * 
+     * @param request The request.
+     * @param response The response.
+     */
+    private void addRhymeIfPresent(HttpServletRequest request, HttpServletResponse response)
+    {
+        // Check if there is a rhyme present
+        String rhyme = request.getParameter("rhyme");
 
-		if (rhyme != null && rhyme.length() > 0)
-		{
-			try
-			{
-				if (rhyme.length() > TwitterUtils.MAX_TWEET_LENGTH)
-				{
-					error("Rhymes should have maximum "
-							+ TwitterUtils.MAX_TWEET_LENGTH + " characters");
-				}
+        if (rhyme != null && rhyme.length() > 0)
+        {
+            try
+            {
+                if (rhyme.length() > TwitterUtils.MAX_TWEET_LENGTH)
+                {
+                    error("Rhymes should have maximum " + TwitterUtils.MAX_TWEET_LENGTH
+                        + " characters");
+                }
 
-				// Checl only the last word; it is the only one needed for the
-				// rhyme
-				String lastWord = WordUtils.getLastWord(rhyme);
-				if (!wordParser.isWord(lastWord))
-				{
-					error("The rhyme contains invalid words");
-				}
+                // Checl only the last word; it is the only one needed for the
+                // rhyme
+                String lastWord = WordUtils.getLastWord(rhyme);
+                if (!wordParser.isWord(lastWord))
+                {
+                    error("The rhyme contains invalid words");
+                }
 
-				String twitterUser = getTwitterUser(request, response);
-				if (rhyme.contains(TwitterUtils.user(twitterUser)))
-				{
-					error("Cannot add a rhyme that contains the Twitter user name");
-				}
+                String twitterUser = getTwitterUser(request, response);
+                if (rhyme.contains(TwitterUtils.user(twitterUser)))
+                {
+                    error("Cannot add a rhyme that contains the Twitter user name");
+                }
 
-				if (!errors())
-				{
-					String capitalized = WordUtils.capitalize(rhyme);
-					store.add(capitalized);
-
-					LOGGER.info("Added rhyme: {}", capitalized);
-				}
-			}
-			catch (Exception ex)
-			{
-				error("Could not add rhyme: " + ex.getMessage(), ex);
-			}
-		}
-	}
+                if (!errors())
+                {
+                    String capitalized = WordUtils.capitalize(rhyme);
+                    store.add(capitalized);
+                }
+            }
+            catch (Exception ex)
+            {
+                error("Could not add rhyme: " + ex.getMessage(), ex);
+            }
+        }
+    }
 }

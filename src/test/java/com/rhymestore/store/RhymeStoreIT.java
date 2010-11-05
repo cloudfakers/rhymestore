@@ -29,7 +29,7 @@ import java.io.IOException;
 import org.testng.annotations.Test;
 
 // The tests assumes a redis server working in localhost!
-public class RhymeStoreTest
+public class RhymeStoreIT
 {
 	private RhymeStore store;
 

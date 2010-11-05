@@ -20,45 +20,57 @@
  * THE SOFTWARE.
  */
 
-package com.rhymestore.twitter;
+package com.rhymestore.twitter.commands;
 
-import junit.framework.Assert;
+import static junit.framework.Assert.assertTrue;
+
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import twitter4j.Twitter;
+import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
-import twitter4j.User;
 
 /**
- * Twitter API client Unit tests.
+ * Unit tests for the {@link GetMentionsCommand} class.
  * 
  * @author Ignasi Barrera
- * 
  */
-public class TwitterTest
+public class GetMentionsCommandIT
 {
-	/** The Twitter API client. */
-	private Twitter twitter;
+    /** The Twitter API client. */
+    private Twitter twitter;
 
-	@BeforeMethod
-	public void setUp()
-	{
-		twitter = new TwitterFactory().getInstance();
-	}
+    /** The command queue used by the {@link #getMentionsCommand}. */
+    private Queue<TwitterCommand> commandQueue;
 
-	@AfterMethod
-	public void tearDown()
-	{
-		twitter.shutdown();
-	}
+    /** The Get Mentions command. */
+    private GetMentionsCommand getMentionsCommand;
 
-	@Test
-	public void testTwitterConnect() throws Exception
-	{
-		User user = twitter.verifyCredentials();
-		Assert.assertEquals("rimamelo", user.getScreenName());
-	}
+    @BeforeMethod
+    public void setUp()
+    {
+        twitter = new TwitterFactory().getInstance();
+        getMentionsCommand = new GetMentionsCommand(commandQueue);
+        commandQueue = new LinkedBlockingDeque<TwitterCommand>(); // Thread-safe
+    }
+
+    @AfterMethod
+    public void tearDown()
+    {
+        commandQueue.clear();
+        twitter.shutdown();
+    }
+
+    @Test
+    public void testGetFirstMentions() throws TwitterException
+    {
+        getMentionsCommand.execute(twitter);
+        assertTrue(getMentionsCommand.getLastTweetId() > 0);
+        assertTrue(commandQueue.isEmpty());
+    }
 }

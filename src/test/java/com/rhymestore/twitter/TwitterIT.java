@@ -20,58 +20,45 @@
  * THE SOFTWARE.
  */
 
-package com.rhymestore.lang;
+package com.rhymestore.twitter;
 
-import java.util.Arrays;
-import java.util.List;
+import junit.framework.Assert;
+
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import twitter4j.Twitter;
+import twitter4j.TwitterFactory;
+import twitter4j.User;
 
 /**
- * Utility methods to manipulate text.
+ * Twitter API client Unit tests.
  * 
  * @author Ignasi Barrera
+ * 
  */
-public class WordUtils
+public class TwitterIT
 {
-    /**
-     * Gets the last word of the given sentence.
-     * 
-     * @param sentence The sentence to parse.
-     * @return The last word of the given sentence.
-     */
-    public static String getLastWord(final String sentence)
-    {
-        String word = "";
+	/** The Twitter API client. */
+	private Twitter twitter;
 
-        if (sentence != null)
-        {
-            List<String> words = Arrays.asList(sentence.split(" "));
+	@BeforeMethod
+	public void setUp()
+	{
+		twitter = new TwitterFactory().getInstance();
+	}
 
-            if (words.size() > 0)
-            {
-                word = words.get(words.size() - 1);
-            }
-        }
+	@AfterMethod
+	public void tearDown()
+	{
+		twitter.shutdown();
+	}
 
-        return word;
-    }
-
-    /**
-     * Capitalizes the given String.
-     * 
-     * @param str The String to capitalize.
-     * @return The capitalized String.
-     */
-    public static String capitalize(final String str)
-    {
-        switch (str.length())
-        {
-            case 0:
-                return str;
-            case 1:
-                return str.toUpperCase();
-            default:
-                return str.substring(0, 1).toUpperCase() + str.substring(1);
-        }
-    }
-
+	@Test
+	public void testTwitterConnect() throws Exception
+	{
+		User user = twitter.verifyCredentials();
+		Assert.assertEquals("rimamelo", user.getScreenName());
+	}
 }

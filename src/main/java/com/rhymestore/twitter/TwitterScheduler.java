@@ -117,7 +117,7 @@ public class TwitterScheduler implements Runnable
 			}
 			else
 			{
-				LOGGER.debug("Running Reply API call...");
+				LOGGER.debug("Running command from queue...");
 
 				TwitterCommand cmd = commandQueue.poll();
 				cmd.execute(twitter);
