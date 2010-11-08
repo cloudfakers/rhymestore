@@ -25,7 +25,7 @@ package com.rhymestore.twitter;
 import static com.rhymestore.twitter.util.TwitterUtils.reply;
 import static com.rhymestore.twitter.util.TwitterUtils.tweet;
 import static com.rhymestore.twitter.util.TwitterUtils.user;
-import static junit.framework.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 
 import org.testng.annotations.Test;
 

@@ -31,9 +31,6 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.rhymestore.lang.WordParser;
 import com.rhymestore.lang.WordParserFactory;
 import com.rhymestore.lang.WordUtils;
@@ -48,7 +45,7 @@ import com.rhymestore.twitter.util.TwitterUtils;
 public class RhymeController extends MethodInvokingController
 {
     /** The logger. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(RhymeController.class);
+    // private static final Logger LOGGER = LoggerFactory.getLogger(RhymeController.class);
 
     /** The Rhyme store. */
     private final RhymeStore store;
@@ -114,7 +111,7 @@ public class RhymeController extends MethodInvokingController
                         + " characters");
                 }
 
-                // Checl only the last word; it is the only one needed for the
+                // Check only the last word; it is the only one needed for the
                 // rhyme
                 String lastWord = WordUtils.getLastWord(rhyme);
                 if (!wordParser.isWord(lastWord))

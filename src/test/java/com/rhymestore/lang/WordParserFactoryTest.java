@@ -20,57 +20,23 @@
  * THE SOFTWARE.
  */
 
-package com.rhymestore.twitter.commands;
+package com.rhymestore.lang;
 
 import static org.testng.Assert.assertTrue;
 
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingDeque;
-
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-
 /**
- * Unit tests for the {@link GetMentionsCommand} class.
+ * Unit tests for the {@link WordParserFactory} class.
  * 
  * @author Ignasi Barrera
  */
-public class GetMentionsCommandIT
+public class WordParserFactoryTest
 {
-    /** The Twitter API client. */
-    private Twitter twitter;
-
-    /** The command queue used by the {@link #getMentionsCommand}. */
-    private Queue<TwitterCommand> commandQueue;
-
-    /** The Get Mentions command. */
-    private GetMentionsCommand getMentionsCommand;
-
-    @BeforeMethod
-    public void setUp()
-    {
-        twitter = new TwitterFactory().getInstance();
-        getMentionsCommand = new GetMentionsCommand(commandQueue);
-        commandQueue = new LinkedBlockingDeque<TwitterCommand>(); // Thread-safe
-    }
-
-    @AfterMethod
-    public void tearDown()
-    {
-        commandQueue.clear();
-        twitter.shutdown();
-    }
 
     @Test
-    public void testGetFirstMentions() throws TwitterException
+    public void testGetWordParser()
     {
-        getMentionsCommand.execute(twitter);
-        assertTrue(getMentionsCommand.getLastTweetId() > 0);
-        assertTrue(commandQueue.isEmpty());
+        assertTrue(WordParserFactory.getWordParser() != null);
     }
 }

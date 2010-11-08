@@ -24,9 +24,9 @@ package com.rhymestore.lang;
 
 import static com.rhymestore.lang.WordUtils.capitalize;
 import static com.rhymestore.lang.WordUtils.getLastWord;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

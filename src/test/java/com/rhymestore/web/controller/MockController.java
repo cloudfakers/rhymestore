@@ -20,45 +20,30 @@
  * THE SOFTWARE.
  */
 
-package com.rhymestore.twitter;
-
-import org.testng.Assert;
-
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
-import twitter4j.Twitter;
-import twitter4j.TwitterFactory;
-import twitter4j.User;
+package com.rhymestore.web.controller;
 
 /**
- * Twitter API client Unit tests.
+ * Mock class to perform {@link Controller} unit tests.
  * 
  * @author Ignasi Barrera
- * 
  */
-public class TwitterIT
+public class MockController extends MethodInvokingController
 {
-	/** The Twitter API client. */
-	private Twitter twitter;
+    /**
+     * A method that always succeeds.
+     */
+    public void success()
+    {
+        // Do nothing
+    }
 
-	@BeforeMethod
-	public void setUp()
-	{
-		twitter = new TwitterFactory().getInstance();
-	}
-
-	@AfterMethod
-	public void tearDown()
-	{
-		twitter.shutdown();
-	}
-
-	@Test
-	public void testTwitterConnect() throws Exception
-	{
-		User user = twitter.verifyCredentials();
-		Assert.assertEquals("rimamelo", user.getScreenName());
-	}
+    /**
+     * A method that always fails.
+     * 
+     * @throws An execution exception.
+     */
+    public void fail() throws Exception
+    {
+        throw new Exception("MockController execution failure");
+    }
 }
