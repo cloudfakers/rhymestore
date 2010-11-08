@@ -23,7 +23,6 @@
 package com.rhymestore.twitter;
 
 import org.testng.Assert;
-
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -36,29 +35,31 @@ import twitter4j.User;
  * Twitter API client Unit tests.
  * 
  * @author Ignasi Barrera
- * 
  */
 public class TwitterIT
 {
-	/** The Twitter API client. */
-	private Twitter twitter;
+    /** The twitter user name. */
+    private static final String TWITTER_USER_NAME = "rimamelo";
 
-	@BeforeMethod
-	public void setUp()
-	{
-		twitter = new TwitterFactory().getInstance();
-	}
+    /** The Twitter API client. */
+    private Twitter twitter;
 
-	@AfterMethod
-	public void tearDown()
-	{
-		twitter.shutdown();
-	}
+    @BeforeMethod
+    public void setUp()
+    {
+        twitter = new TwitterFactory().getInstance();
+    }
 
-	@Test
-	public void testTwitterConnect() throws Exception
-	{
-		User user = twitter.verifyCredentials();
-		Assert.assertEquals("rimamelo", user.getScreenName());
-	}
+    @AfterMethod
+    public void tearDown()
+    {
+        twitter.shutdown();
+    }
+
+    @Test
+    public void testTwitterConnect() throws Exception
+    {
+        User user = twitter.verifyCredentials();
+        Assert.assertEquals(TWITTER_USER_NAME, user.getScreenName());
+    }
 }

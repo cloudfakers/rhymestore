@@ -55,8 +55,8 @@ public class GetMentionsCommandIT
     public void setUp()
     {
         twitter = new TwitterFactory().getInstance();
-        getMentionsCommand = new GetMentionsCommand(commandQueue);
         commandQueue = new LinkedBlockingDeque<TwitterCommand>(); // Thread-safe
+        getMentionsCommand = new GetMentionsCommand(commandQueue);
     }
 
     @AfterMethod
