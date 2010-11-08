@@ -22,32 +22,25 @@
 
 package com.rhymestore.lang;
 
-import static com.rhymestore.lang.WordUtils.capitalize;
-import static com.rhymestore.lang.WordUtils.getLastWord;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
-
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 /**
  * Unit tests for the {@link SpanishWordParser}.
  * 
  * @author Ignasi Barrera
  */
-public class SpanishWordParserTest
+public class SpanishWordParserTest extends AbstractWordParserTest
 {
-    /** The word parser. */
-    private WordParser wordParser;
 
-    @BeforeMethod
-    public void setUp()
+    @Override
+    protected WordParser getWordParser()
     {
-        wordParser = WordParserFactory.getWordParser();
+        return new SpanishWordParser();
     }
 
-    @Test
+    @Override
     public void testPhoneticRhymePart()
     {
         assertEquals(wordParser.phoneticRhymePart(""), "");
@@ -85,7 +78,7 @@ public class SpanishWordParserTest
         assertEquals(wordParser.phoneticRhymePart("gargáreha"), "area");
     }
 
-    @Test
+    @Override
     public void testStressType()
     {
         assertEquals(wordParser.stressType("pez"), StressType.LAST);
@@ -96,7 +89,7 @@ public class SpanishWordParserTest
         assertEquals(wordParser.stressType("recuérdamelo"), StressType.FOURTH_LAST);
     }
 
-    @Test
+    @Override
     public void testRhyme()
     {
         // Rhymes withoud punctuation
@@ -115,7 +108,7 @@ public class SpanishWordParserTest
         assertTrue(wordParser.rhyme("calor  ", "motor&;'?="));
     }
 
-    @Test
+    @Override
     public void testIsLetter()
     {
         // Valid letters
@@ -152,34 +145,18 @@ public class SpanishWordParserTest
         assertFalse(wordParser.isLetter('-'));
     }
 
-    @Test
+    @Override
     public void testIsWord()
     {
         // Valid words
         assertTrue(wordParser.isWord("hola"));
         assertTrue(wordParser.isWord("test"));
+        assertTrue(wordParser.isWord("adiós"));
         assertTrue(wordParser.isWord("valid!"));
 
         // Invalid words
         assertFalse(wordParser.isWord("25"));
         assertFalse(wordParser.isWord("hola.adios"));
         assertFalse(wordParser.isWord("ab23cd"));
-    }
-
-    @Test
-    public void testCapitalize()
-    {
-        assertEquals(capitalize(""), "");
-        assertEquals(capitalize("a"), "A");
-        assertEquals(capitalize("word"), "Word");
-        assertEquals(capitalize("capitalize test"), "Capitalize test");
-    }
-
-    @Test
-    public void testGetLastWord()
-    {
-        assertEquals(getLastWord(""), "");
-        assertEquals(getLastWord("test"), "test");
-        assertEquals(getLastWord("two words"), "words");
     }
 }

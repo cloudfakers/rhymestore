@@ -37,6 +37,9 @@ public class WordParserFactoryTest
     @Test
     public void testGetWordParser()
     {
+        WordParser wordParser = WordParserFactory.getWordParser();
+
         assertTrue(WordParserFactory.getWordParser() != null);
+        assertTrue(wordParser instanceof MockWordParser);
     }
 }

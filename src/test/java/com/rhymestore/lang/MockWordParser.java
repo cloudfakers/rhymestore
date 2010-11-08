@@ -20,52 +20,44 @@
  * THE SOFTWARE.
  */
 
-package com.rhymestore.store;
-
-import static org.testng.Assert.assertEquals;
-
-import java.io.IOException;
-
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+package com.rhymestore.lang;
 
 /**
- * Unit tests for the {@link RhymeStore} class.
+ * Mock implementation fo the {@link WordParser} interface used in tests.
  * 
- * @author Enric Ruiz
+ * @author Ignasi Barrera
  */
-public class RhymeStoreIT
+public class MockWordParser implements WordParser
 {
-    /** The store to test. */
-    private RhymeStore store;
 
-    @BeforeMethod
-    public void setUp() throws IOException
+    @Override
+    public boolean isLetter(char letter)
     {
-        store = RhymeStore.getInstance();
-
-        store.add("Mi nabo para vos");
-        store.add("Te la meto del revés!!");
+        return false;
     }
 
-    @AfterMethod
-    public void tearDown()
+    @Override
+    public boolean isWord(String text)
     {
-        // TODO: Clean test data
+        return false;
     }
 
-    @Test(enabled = false)
-    public void testFindAll() throws IOException
+    @Override
+    public String phoneticRhymePart(String word)
     {
-        assertEquals(store.findAll().size(), 2);
+        return null;
     }
 
-    @Test(enabled = false)
-    public void testGetRhyme() throws IOException
+    @Override
+    public boolean rhyme(String word1, String word2)
     {
-        assertEquals(store.getRhyme("¿Hay algo que rime con tres?"), "Te la meto del revés!!");
-        assertEquals(store.getRhyme("Nada rima con dos."), "Mi nabo para vos");
-        assertEquals(store.getRhyme("Nada rima con be"), RhymeStore.DEFAULT_RHYME);
+        return false;
     }
+
+    @Override
+    public StressType stressType(String word)
+    {
+        return null;
+    }
+
 }
