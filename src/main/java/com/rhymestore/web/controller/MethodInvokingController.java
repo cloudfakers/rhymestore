@@ -35,118 +35,117 @@ import org.slf4j.LoggerFactory;
 import com.rhymestore.web.ContextListener;
 
 /**
- * Controller that delegates execution to a specific method based on the request
- * path.
+ * Controller that delegates execution to a specific method based on the request path.
  * 
  * @author Ignasi Barrera
  */
 public class MethodInvokingController implements Controller
 {
-	/** The logger. */
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(MethodInvokingController.class);
+    /** The logger. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(MethodInvokingController.class);
 
-	/** List of errors produced during method execution. */
-	private List<String> errors = new LinkedList<String>();
+    /** List of errors produced during method execution. */
+    private final List<String> errors = new LinkedList<String>();
 
-	@Override
-	public String execute(final HttpServletRequest request,
-			final HttpServletResponse response) throws ControllerException
-	{
-		// Get the name of the method
-		int lastSlash = request.getRequestURI().lastIndexOf("/");
-		String methodName = request.getRequestURI().substring(lastSlash + 1);
+    @Override
+    public String execute(final HttpServletRequest request, final HttpServletResponse response)
+        throws ControllerException
+    {
+        // Get the name of the method
+        int lastSlash = request.getRequestURI().lastIndexOf("/");
+        String methodName = request.getRequestURI().substring(lastSlash + 1);
 
-		// Find the target method
-		Method targetMethod = null;
+        // Find the target method
+        Method targetMethod = null;
 
-		for (Method method : this.getClass().getMethods())
-		{
-			if (method.getName().equals(methodName))
-			{
-				targetMethod = method;
-				break;
-			}
-		}
+        for (Method method : this.getClass().getMethods())
+        {
+            if (method.getName().equals(methodName))
+            {
+                targetMethod = method;
+                break;
+            }
+        }
 
-		if (targetMethod == null)
-		{
-			throw new ControllerException(
-					"Could not find a Controller method with name "
-							+ methodName + " in class "
-							+ this.getClass().getName());
-		}
+        if (targetMethod == null)
+        {
+            String message =
+                "Could not find a Controller method with name " + methodName + " in class "
+                    + this.getClass().getName();
 
-		// Execute the target method
-		try
-		{
-			errors.clear();
+            throw new ControllerException(message, new NoSuchMethodException(message));
+        }
 
-			targetMethod.invoke(this, request, response);
+        // Execute the target method
+        try
+        {
+            errors.clear();
 
-			request.setAttribute("errors", errors);
-		}
-		catch (Exception ex)
-		{
-			if (ex.getCause() instanceof ControllerException)
-			{
-				// If it is a Controller exception, just propagate it
-				throw (ControllerException) ex.getCause();
-			}
+            targetMethod.invoke(this, request, response);
 
-			throw new ControllerException(
-					"Could not execute the Controller method " + methodName
-							+ " from class " + this.getClass().getName(), ex);
-		}
+            request.setAttribute("errors", errors);
+        }
+        catch (Exception ex)
+        {
+            if (ex.getCause() instanceof ControllerException)
+            {
+                // If it is a Controller exception, just propagate it
+                throw (ControllerException) ex.getCause();
+            }
 
-		// The view name is the same than the method
-		return methodName;
-	}
+            throw new ControllerException("Could not execute the Controller method " + methodName
+                + " from class " + this.getClass().getName(), ex.getCause() == null ? ex : ex
+                .getCause());
+        }
 
-	/**
-	 * Gets the Twitter user.
-	 * 
-	 * @param request The request.
-	 * @param response The response.
-	 * @return The Twitter user name.
-	 */
-	protected String getTwitterUser(final HttpServletRequest request,
-			final HttpServletResponse response)
-	{
-		return (String) request.getSession().getServletContext()
-				.getAttribute(ContextListener.TWITTER_USER_NAME);
-	}
+        // The view name is the same than the method
+        return methodName;
+    }
 
-	/**
-	 * Adds the given error to the {@link #errors} list.
-	 * 
-	 * @param error The error to add.
-	 */
-	protected void error(final String error)
-	{
-		errors.add(error);
-		LOGGER.error(error);
-	}
+    /**
+     * Gets the Twitter user.
+     * 
+     * @param request The request.
+     * @param response The response.
+     * @return The Twitter user name.
+     */
+    protected String getTwitterUser(final HttpServletRequest request,
+        final HttpServletResponse response)
+    {
+        return (String) request.getSession().getServletContext().getAttribute(
+            ContextListener.TWITTER_USER_NAME);
+    }
 
-	/**
-	 * Adds the given error to the {@link #errors} list.
-	 * 
-	 * @param error The error to add.
-	 * @param cause The error cause.
-	 */
-	protected void error(final String error, final Exception cause)
-	{
-		errors.add(error);
-		LOGGER.error(error, cause);
-	}
+    /**
+     * Adds the given error to the {@link #errors} list.
+     * 
+     * @param error The error to add.
+     */
+    protected void error(final String error)
+    {
+        errors.add(error);
+        LOGGER.error(error);
+    }
 
-	/**
-	 * Checks if there are any errors.
-	 * 
-	 * @return Boolean indicating if there are any errors.
-	 */
-	protected boolean errors()
-	{
-		return !errors.isEmpty();
-	}
+    /**
+     * Adds the given error to the {@link #errors} list.
+     * 
+     * @param error The error to add.
+     * @param cause The error cause.
+     */
+    protected void error(final String error, final Exception cause)
+    {
+        errors.add(error);
+        LOGGER.error(error, cause);
+    }
+
+    /**
+     * Checks if there are any errors.
+     * 
+     * @return Boolean indicating if there are any errors.
+     */
+    protected boolean errors()
+    {
+        return !errors.isEmpty();
+    }
 }

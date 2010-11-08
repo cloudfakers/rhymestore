@@ -22,6 +22,9 @@
 
 package com.rhymestore.web.controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * Mock class to perform {@link Controller} unit tests.
  * 
@@ -32,7 +35,7 @@ public class MockController extends MethodInvokingController
     /**
      * A method that always succeeds.
      */
-    public void success()
+    public void success(HttpServletRequest request, HttpServletResponse response)
     {
         // Do nothing
     }
@@ -42,8 +45,16 @@ public class MockController extends MethodInvokingController
      * 
      * @throws An execution exception.
      */
-    public void fail() throws Exception
+    public void fail(HttpServletRequest request, HttpServletResponse response)
     {
-        throw new Exception("MockController execution failure");
+        throw new UnsupportedOperationException("MockController execution failure");
+    }
+
+    /**
+     * A method that always succeeds.
+     */
+    public void invalidArguments()
+    {
+        // Do nothing
     }
 }

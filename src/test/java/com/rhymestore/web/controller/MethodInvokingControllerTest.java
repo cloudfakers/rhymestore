@@ -22,6 +22,16 @@
 
 package com.rhymestore.web.controller;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
+
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import com.meterware.servletunit.InvocationContext;
+import com.meterware.servletunit.ServletRunner;
+import com.meterware.servletunit.ServletUnitClient;
+
 /**
  * Unit tests for the {@link MethodInvokingController} class.
  * 
@@ -29,18 +39,60 @@ package com.rhymestore.web.controller;
  */
 public class MethodInvokingControllerTest
 {
-    /** The controller being tested. */
-    // private MethodInvokingController controller;
+    private static final String BASE_PATH = "http://rhymestore.com/web/mock";
 
-    // @BeforeMethod
+    /** The controller being tested. */
+    private MethodInvokingController controller;
+
+    /** the servlet client used to perform unit tests. */
+    private ServletUnitClient servletClient;
+
+    @BeforeMethod
     public void setUp()
     {
-        // controller = new MethodInvokingController();
+        controller = new MockController();
+        servletClient = new ServletRunner().newClient();
     }
 
-    // @Test
-    public void testUnexistingMethod()
+    @Test
+    public void testUnexistingMethod() throws Exception
     {
+        InvocationContext ic = servletClient.newInvocation(BASE_PATH + "/unexisting");
+        checkControllerException(ic, NoSuchMethodException.class);
+    }
 
+    @Test
+    public void testSuccessMethod() throws Exception
+    {
+        InvocationContext ic = servletClient.newInvocation(BASE_PATH + "/success");
+        controller.execute(ic.getRequest(), ic.getResponse());
+    }
+
+    @Test
+    public void testFailMethod() throws Exception
+    {
+        InvocationContext ic = servletClient.newInvocation(BASE_PATH + "/fail");
+        checkControllerException(ic, UnsupportedOperationException.class);
+    }
+
+    @Test
+    public void testInvalidArgumentsMethod() throws Exception
+    {
+        InvocationContext ic = servletClient.newInvocation(BASE_PATH + "/invalidArguments");
+        checkControllerException(ic, IllegalArgumentException.class);
+    }
+
+    private void checkControllerException(InvocationContext ic,
+        Class< ? extends Throwable> exceptionClass)
+    {
+        try
+        {
+            controller.execute(ic.getRequest(), ic.getResponse());
+            fail("Expected Exception: " + exceptionClass.getName());
+        }
+        catch (ControllerException ex)
+        {
+            assertEquals(ex.getCause().getClass(), exceptionClass);
+        }
     }
 }
