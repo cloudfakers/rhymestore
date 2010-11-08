@@ -7,16 +7,12 @@
 		</layout>
 	</appender>
 	
-	<logger name="com.rhymestore">
-		<level value="DEBUG" />
-	</logger>
-	
-	<logger name="twitter4j">
-		<level value="DEBUG" />
+	<logger name="twitter4j.internal.http.HttpResponseImpl">
+		<level value="INFO" />
 	</logger>
 
 	<root>
-		<level value="INFO" />
+		<level value="DEBUG" />
 		<appender-ref ref="STDOUT" />
 	</root>
 </configuration>
