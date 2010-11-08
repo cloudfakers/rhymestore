@@ -44,6 +44,9 @@ public class MethodInvokingController implements Controller
     /** The logger. */
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodInvokingController.class);
 
+    /** The attribute name where the controller errors will be published. */
+    public static final String ERRORS_ATTRIBUTE = "errors";
+
     /** List of errors produced during method execution. */
     private final List<String> errors = new LinkedList<String>();
 
@@ -83,7 +86,7 @@ public class MethodInvokingController implements Controller
 
             targetMethod.invoke(this, request, response);
 
-            request.setAttribute("errors", errors);
+            request.setAttribute(ERRORS_ATTRIBUTE, errors);
         }
         catch (Exception ex)
         {

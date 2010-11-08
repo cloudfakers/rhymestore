@@ -55,6 +55,14 @@ public class MockController extends MethodInvokingController
      */
     public void invalidArguments()
     {
-        // Do nothing
+        // The MethodInvokingController will throw an IllegalArgumentException
+    }
+
+    /**
+     * A method that adds an error to the error list.
+     */
+    public void addError(HttpServletRequest request, HttpServletResponse response)
+    {
+        error("Mock error");
     }
 }

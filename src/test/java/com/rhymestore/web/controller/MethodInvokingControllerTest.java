@@ -23,7 +23,11 @@
 package com.rhymestore.web.controller;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
+
+import java.util.List;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -39,12 +43,13 @@ import com.meterware.servletunit.ServletUnitClient;
  */
 public class MethodInvokingControllerTest
 {
-    private static final String BASE_PATH = "http://rhymestore.com/web/mock";
+    /** The base path used for web requests. */
+    private static final String BASE_PATH = "http://rhymestore.com/rhymestore/web/mock";
 
     /** The controller being tested. */
     private MethodInvokingController controller;
 
-    /** the servlet client used to perform unit tests. */
+    /** The servlet client used to perform unit tests. */
     private ServletUnitClient servletClient;
 
     @BeforeMethod
@@ -58,7 +63,9 @@ public class MethodInvokingControllerTest
     public void testUnexistingMethod() throws Exception
     {
         InvocationContext ic = servletClient.newInvocation(BASE_PATH + "/unexisting");
+
         checkControllerException(ic, NoSuchMethodException.class);
+        assertFalse(controller.errors());
     }
 
     @Test
@@ -66,20 +73,41 @@ public class MethodInvokingControllerTest
     {
         InvocationContext ic = servletClient.newInvocation(BASE_PATH + "/success");
         controller.execute(ic.getRequest(), ic.getResponse());
+
+        assertFalse(controller.errors());
     }
 
     @Test
     public void testFailMethod() throws Exception
     {
         InvocationContext ic = servletClient.newInvocation(BASE_PATH + "/fail");
+
         checkControllerException(ic, UnsupportedOperationException.class);
+        assertFalse(controller.errors());
     }
 
     @Test
     public void testInvalidArgumentsMethod() throws Exception
     {
         InvocationContext ic = servletClient.newInvocation(BASE_PATH + "/invalidArguments");
+
         checkControllerException(ic, IllegalArgumentException.class);
+        assertFalse(controller.errors());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testMethodWithErrors() throws Exception
+    {
+        InvocationContext ic = servletClient.newInvocation(BASE_PATH + "/addError");
+        controller.execute(ic.getRequest(), ic.getResponse());
+
+        List<String> errors =
+            (List<String>) ic.getRequest().getAttribute(MethodInvokingController.ERRORS_ATTRIBUTE);
+
+        assertTrue(controller.errors());
+        assertTrue(errors != null);
+        assertEquals(errors.size(), 1);
     }
 
     private void checkControllerException(InvocationContext ic,
