@@ -22,7 +22,6 @@
 
 package com.rhymestore.web.controller;
 
-
 /**
  * Unit tests for the {@link MethodInvokingController} class.
  * 
@@ -36,7 +35,7 @@ public class MethodInvokingControllerTest
     // @BeforeMethod
     public void setUp()
     {
-        // /controller = new MethodInvokingController();
+        // controller = new MethodInvokingController();
     }
 
     // @Test
