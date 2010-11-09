@@ -22,41 +22,43 @@
 
 package com.rhymestore.store;
 
+import static org.testng.Assert.assertEquals;
+
+import org.testng.annotations.Test;
+
 /**
- * Generates the keys used to store the rhymes.
+ * Unit tets for the {@link Keymaker} class.
  * 
- * @author Enric Ruiz
- * @see RhymeStore
+ * @author Ignasi Barrera
  */
-public class Keymaker
+public class KeymakerTest
 {
-    String namespace;
-
-    public Keymaker(String namespace)
+    @Test
+    public void testKeymaker()
     {
-        if (namespace == null)
-        {
-            throw new IllegalArgumentException("Namespace cannot be null");
-        }
-
-        this.namespace = namespace;
+        checkKeymaker("");
+        checkKeymaker(":");
+        checkKeymaker("test");
+        checkKeymaker(":test:");
+        checkKeymaker("test::");
+        checkKeymaker("::test");
+        checkKeymaker("test:test2");
     }
 
-    public Keymaker build(String... namespaces)
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testInvalidkeymaker()
     {
-        StringBuilder builder = new StringBuilder(this.namespace);
-
-        for (String name : namespaces)
-        {
-            builder.append(":").append(name);
-        }
-
-        return new Keymaker(builder.toString());
+        new Keymaker(null);
     }
 
-    @Override
-    public String toString()
+    private void checkKeymaker(String ns)
     {
-        return this.namespace;
+        Keymaker km = new Keymaker(ns);
+
+        assertEquals(km.toString(), ns);
+        assertEquals(km.build().toString(), ns);
+        assertEquals(km.build("").toString(), ns + ":");
+        assertEquals(km.build("test").toString(), ns + ":test");
+        assertEquals(km.build("test").build("test").toString(), ns + ":test:test");
     }
 }
