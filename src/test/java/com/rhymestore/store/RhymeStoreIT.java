@@ -31,7 +31,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for the {@link RhymeStore} class.
+ * Integration tests for the {@link RhymeStore} class.
  * 
  * @author Enric Ruiz
  */

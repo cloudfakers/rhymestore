@@ -34,16 +34,16 @@ import com.meterware.servletunit.ServletRunner;
 import com.meterware.servletunit.ServletUnitClient;
 
 /**
- * Unit tests for the {@link DownloadServlet} class.
+ * Integration tests for the {@link DownloadServlet} class.
  * 
  * @author Ignasi Barrera
  */
-public class DownloadServletTest
+public class DownloadServletIT
 {
     /** The base path used for web requests. */
     private static final String DOWNLOAD_PATH = "http://rhymestore.com/rhymestore/download";
 
-    /** The servlet client used to perform unit tests. */
+    /** The servlet client used to perform the tests. */
     private ServletUnitClient servletClient;
 
     @BeforeMethod

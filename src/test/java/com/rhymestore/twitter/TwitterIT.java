@@ -32,7 +32,7 @@ import twitter4j.TwitterFactory;
 import twitter4j.User;
 
 /**
- * Twitter API client Unit tests.
+ * Twitter API client integration tests.
  * 
  * @author Ignasi Barrera
  */

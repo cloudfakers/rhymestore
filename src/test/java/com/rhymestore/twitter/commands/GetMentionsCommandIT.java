@@ -36,7 +36,7 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 
 /**
- * Unit tests for the {@link GetMentionsCommand} class.
+ * Integration tests for the {@link GetMentionsCommand} class.
  * 
  * @author Ignasi Barrera
  */
