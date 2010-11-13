@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.rhymestore</groupId>
@@ -22,8 +21,9 @@
 
 	<!-- Source code -->
 	<scm>
-		<connection>scm:git:git://github.com/nacx/rhymestore.git</connection>
 		<url>http://github.com/nacx/rhymestore</url>
+		<connection>scm:git:git://github.com/nacx/rhymestore.git</connection>
+		<developerConnection>scm:git:git://github.com/nacx/rhymestore.git</developerConnection>
 	</scm>
 
 	<!-- Issue tracking -->
@@ -148,6 +148,10 @@
 						</resource>
 					</webResources>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
