@@ -26,37 +26,38 @@ package com.rhymestore.store;
  * Generates the keys used to store the rhymes.
  * 
  * @author Enric Ruiz
+ * 
  * @see RhymeStore
  */
 public class Keymaker
 {
-    String namespace;
+	String namespace;
 
-    public Keymaker(String namespace)
-    {
-        if (namespace == null)
-        {
-            throw new IllegalArgumentException("Namespace cannot be null");
-        }
+	public Keymaker(String namespace)
+	{
+		if (namespace == null)
+		{
+			throw new IllegalArgumentException("Namespace cannot be null");
+		}
 
-        this.namespace = namespace;
-    }
+		this.namespace = namespace;
+	}
 
-    public Keymaker build(String... namespaces)
-    {
-        StringBuilder builder = new StringBuilder(this.namespace);
+	public Keymaker build(String... namespaces)
+	{
+		StringBuilder builder = new StringBuilder(this.namespace);
 
-        for (String name : namespaces)
-        {
-            builder.append(":").append(name);
-        }
+		for (String name : namespaces)
+		{
+			builder.append(":").append(name);
+		}
 
-        return new Keymaker(builder.toString());
-    }
+		return new Keymaker(builder.toString());
+	}
 
-    @Override
-    public String toString()
-    {
-        return this.namespace;
-    }
+	@Override
+	public String toString()
+	{
+		return this.namespace;
+	}
 }

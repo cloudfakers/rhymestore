@@ -29,35 +29,40 @@ package com.rhymestore.lang;
  */
 public class MockWordParser implements WordParser
 {
+	@Override
+	public boolean isLetter(char letter)
+	{
+		return false;
+	}
 
-    @Override
-    public boolean isLetter(char letter)
-    {
-        return false;
-    }
+	@Override
+	public boolean isWord(String text)
+	{
+		return false;
+	}
 
-    @Override
-    public boolean isWord(String text)
-    {
-        return false;
-    }
+	@Override
+	public String phoneticRhymePart(String word)
+	{
+		return null;
+	}
 
-    @Override
-    public String phoneticRhymePart(String word)
-    {
-        return null;
-    }
+	@Override
+	public boolean rhyme(String word1, String word2)
+	{
+		return false;
+	}
 
-    @Override
-    public boolean rhyme(String word1, String word2)
-    {
-        return false;
-    }
+	@Override
+	public StressType stressType(String word)
+	{
+		return null;
+	}
 
-    @Override
-    public StressType stressType(String word)
-    {
-        return null;
-    }
+	@Override
+	public String getDefaultRhyme()
+	{
+		return null;
+	}
 
 }

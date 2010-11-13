@@ -38,28 +38,28 @@ import twitter4j.User;
  */
 public class TwitterIT
 {
-    /** The twitter user name. */
-    private static final String TWITTER_USER_NAME = "rimamelo";
+	/** The twitter user name. */
+	private static final String TWITTER_USER_NAME = "rimamelo";
 
-    /** The Twitter API client. */
-    private Twitter twitter;
+	/** The Twitter API client. */
+	private Twitter twitter;
 
-    @BeforeMethod
-    public void setUp()
-    {
-        twitter = new TwitterFactory().getInstance();
-    }
+	@BeforeMethod
+	public void setUp()
+	{
+		twitter = new TwitterFactory().getInstance();
+	}
 
-    @AfterMethod
-    public void tearDown()
-    {
-        twitter.shutdown();
-    }
+	@AfterMethod
+	public void tearDown()
+	{
+		twitter.shutdown();
+	}
 
-    @Test
-    public void testTwitterConnect() throws Exception
-    {
-        User user = twitter.verifyCredentials();
-        Assert.assertEquals(TWITTER_USER_NAME, user.getScreenName());
-    }
+	@Test
+	public void testTwitterConnect() throws Exception
+	{
+		User user = twitter.verifyCredentials();
+		Assert.assertEquals(TWITTER_USER_NAME, user.getScreenName());
+	}
 }

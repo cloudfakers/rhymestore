@@ -29,7 +29,6 @@ import com.rhymestore.web.controller.Controller;
  * Global application configuration.
  * 
  * @author Ignasi Barrera
- * 
  */
 public class RhymestoreConfig
 {

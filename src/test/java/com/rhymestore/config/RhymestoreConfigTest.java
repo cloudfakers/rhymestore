@@ -37,23 +37,26 @@ import org.testng.annotations.Test;
 public class RhymestoreConfigTest
 {
 
-    @Test
-    public void testIsConfigProperty()
-    {
-        assertTrue(RhymestoreConfig
-            .isControllerProperty(CONTROLLER_PREFIX + CONTROLLER_PATH_SUFFIX));
-        assertTrue(RhymestoreConfig.isControllerProperty(CONTROLLER_PREFIX + " "
-            + CONTROLLER_PATH_SUFFIX));
-        assertTrue(RhymestoreConfig.isControllerProperty(CONTROLLER_PREFIX + "test"
-            + CONTROLLER_PATH_SUFFIX));
-        assertTrue(RhymestoreConfig.isControllerProperty(CONTROLLER_PREFIX + "."
-            + CONTROLLER_PATH_SUFFIX));
+	@Test
+	public void testIsConfigProperty()
+	{
+		assertTrue(RhymestoreConfig.isControllerProperty(CONTROLLER_PREFIX
+				+ CONTROLLER_PATH_SUFFIX));
+		assertTrue(RhymestoreConfig.isControllerProperty(CONTROLLER_PREFIX
+				+ " " + CONTROLLER_PATH_SUFFIX));
+		assertTrue(RhymestoreConfig.isControllerProperty(CONTROLLER_PREFIX
+				+ "test" + CONTROLLER_PATH_SUFFIX));
+		assertTrue(RhymestoreConfig.isControllerProperty(CONTROLLER_PREFIX
+				+ "." + CONTROLLER_PATH_SUFFIX));
 
-        assertFalse(RhymestoreConfig.isControllerProperty(""));
-        assertFalse(RhymestoreConfig.isControllerProperty("test"));
-        assertFalse(RhymestoreConfig.isControllerProperty(CONTROLLER_PREFIX));
-        assertFalse(RhymestoreConfig.isControllerProperty(CONTROLLER_PATH_SUFFIX));
-        assertFalse(RhymestoreConfig.isControllerProperty(CONTROLLER_PREFIX + "test"));
-        assertFalse(RhymestoreConfig.isControllerProperty("test" + CONTROLLER_PATH_SUFFIX));
-    }
+		assertFalse(RhymestoreConfig.isControllerProperty(""));
+		assertFalse(RhymestoreConfig.isControllerProperty("test"));
+		assertFalse(RhymestoreConfig.isControllerProperty(CONTROLLER_PREFIX));
+		assertFalse(RhymestoreConfig
+				.isControllerProperty(CONTROLLER_PATH_SUFFIX));
+		assertFalse(RhymestoreConfig.isControllerProperty(CONTROLLER_PREFIX
+				+ "test"));
+		assertFalse(RhymestoreConfig.isControllerProperty("test"
+				+ CONTROLLER_PATH_SUFFIX));
+	}
 }

@@ -40,74 +40,78 @@ import org.slf4j.LoggerFactory;
 import com.rhymestore.store.RhymeStore;
 
 /**
- * Creates a text file with all stored rhymes and serves it as a file to download.
+ * Creates a text file with all stored rhymes and serves it as a file to
+ * download.
  * 
  * @author Ignasi Barrera
+ * 
  * @see RhymeStore
  */
 public class DownloadServlet extends HttpServlet
 {
-    /** The logger. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(DownloadServlet.class);
+	/** The logger. */
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(DownloadServlet.class);
 
-    /** The content type of the downloaded file. */
-    protected static final String DOWNLOAD_CONTENT_TYPE = "text/plain";
+	/** The content type of the downloaded file. */
+	protected static final String DOWNLOAD_CONTENT_TYPE = "text/plain";
 
-    /** The name of the download file. */
-    protected static final String DOWNLOAD_FILE_NAME = "rhymes.txt";
+	/** The name of the download file. */
+	protected static final String DOWNLOAD_FILE_NAME = "rhymes.txt";
 
-    /** The attachment header. */
-    protected static final String ATTACHMENT_HEADER = "attachment; filename=" + DOWNLOAD_FILE_NAME;
+	/** The attachment header. */
+	protected static final String ATTACHMENT_HEADER = "attachment; filename="
+			+ DOWNLOAD_FILE_NAME;
 
-    /** Serial UID. */
-    private static final long serialVersionUID = 1L;
+	/** Serial UID. */
+	private static final long serialVersionUID = 1L;
 
-    /** The backend rhyme store. */
-    private RhymeStore store;
+	/** The backend rhyme store. */
+	private RhymeStore store;
 
-    /**
-     * Initializes the servlet.
-     * 
-     * @throws If the servlet cannot be initialized.
-     */
-    @Override
-    public void init() throws ServletException
-    {
-        store = RhymeStore.getInstance();
-    }
+	/**
+	 * Initializes the servlet.
+	 * 
+	 * @throws If the servlet cannot be initialized.
+	 */
+	@Override
+	public void init() throws ServletException
+	{
+		store = RhymeStore.getInstance();
+	}
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-        throws ServletException, IOException
-    {
-        // Get all stored rhymes
-        Set<String> rhymes = store.findAll();
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException
+	{
+		// Get all stored rhymes
+		Set<String> rhymes = store.findAll();
 
-        List<String> sortedRhymes = new ArrayList<String>(rhymes);
-        Collections.sort(sortedRhymes, String.CASE_INSENSITIVE_ORDER);
+		List<String> sortedRhymes = new ArrayList<String>(rhymes);
+		Collections.sort(sortedRhymes, String.CASE_INSENSITIVE_ORDER);
 
-        LOGGER.info("Exporting {} rhymes...", sortedRhymes.size());
+		LOGGER.info("Exporting {} rhymes...", sortedRhymes.size());
 
-        // Set response headers
-        resp.setContentType(DOWNLOAD_CONTENT_TYPE);
-        resp.setHeader("Content-Disposition", ATTACHMENT_HEADER);
+		// Set response headers
+		resp.setContentType(DOWNLOAD_CONTENT_TYPE);
+		resp.setHeader("Content-Disposition", ATTACHMENT_HEADER);
 
-        // Write output
-        PrintWriter pw = new PrintWriter(resp.getOutputStream());
+		// Write output
+		PrintWriter pw = new PrintWriter(resp.getOutputStream());
 
-        for (String rhyme : sortedRhymes)
-        {
-            pw.println(rhyme);
-        }
+		for (String rhyme : sortedRhymes)
+		{
+			pw.println(rhyme);
+		}
 
-        pw.flush();
-        pw.close();
-    }
+		pw.flush();
+		pw.close();
+	}
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
-        IOException
-    {
-        doPost(req, resp);
-    }
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException
+	{
+		doPost(req, resp);
+	}
 }

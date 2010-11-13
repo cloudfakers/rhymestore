@@ -40,28 +40,30 @@ import com.meterware.servletunit.ServletUnitClient;
  */
 public class DownloadServletIT
 {
-    /** The base path used for web requests. */
-    private static final String DOWNLOAD_PATH = "http://rhymestore.com/rhymestore/download";
+	/** The base path used for web requests. */
+	private static final String DOWNLOAD_PATH = "http://rhymestore.com/rhymestore/download";
 
-    /** The servlet client used to perform the tests. */
-    private ServletUnitClient servletClient;
+	/** The servlet client used to perform the tests. */
+	private ServletUnitClient servletClient;
 
-    @BeforeMethod
-    public void setUp()
-    {
-        ServletRunner servletRunner = new ServletRunner();
-        servletRunner.registerServlet("rhymestore/download", DownloadServlet.class.getName());
-        servletClient = servletRunner.newClient();
-    }
+	@BeforeMethod
+	public void setUp()
+	{
+		ServletRunner servletRunner = new ServletRunner();
+		servletRunner.registerServlet("rhymestore/download",
+				DownloadServlet.class.getName());
+		servletClient = servletRunner.newClient();
+	}
 
-    @Test
-    public void testDownload() throws Exception
-    {
-        WebRequest request = new PostMethodWebRequest(DOWNLOAD_PATH);
-        WebResponse response = servletClient.getResponse(request);
+	@Test
+	public void testDownload() throws Exception
+	{
+		WebRequest request = new PostMethodWebRequest(DOWNLOAD_PATH);
+		WebResponse response = servletClient.getResponse(request);
 
-        assertEquals(response.getContentType(), DownloadServlet.DOWNLOAD_CONTENT_TYPE);
-        assertEquals(response.getHeaderField("Content-Disposition"),
-            DownloadServlet.ATTACHMENT_HEADER);
-    }
+		assertEquals(response.getContentType(),
+				DownloadServlet.DOWNLOAD_CONTENT_TYPE);
+		assertEquals(response.getHeaderField("Content-Disposition"),
+				DownloadServlet.ATTACHMENT_HEADER);
+	}
 }

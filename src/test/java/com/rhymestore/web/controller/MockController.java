@@ -32,37 +32,39 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class MockController extends MethodInvokingController
 {
-    /**
-     * A method that always succeeds.
-     */
-    public void success(HttpServletRequest request, HttpServletResponse response)
-    {
-        // Do nothing
-    }
+	/**
+	 * A method that always succeeds.
+	 */
+	public void success(HttpServletRequest request, HttpServletResponse response)
+	{
+		// Do nothing
+	}
 
-    /**
-     * A method that always fails.
-     * 
-     * @throws An execution exception.
-     */
-    public void fail(HttpServletRequest request, HttpServletResponse response)
-    {
-        throw new UnsupportedOperationException("MockController execution failure");
-    }
+	/**
+	 * A method that always fails.
+	 * 
+	 * @throws An execution exception.
+	 */
+	public void fail(HttpServletRequest request, HttpServletResponse response)
+	{
+		throw new UnsupportedOperationException(
+				"MockController execution failure");
+	}
 
-    /**
-     * A method that always succeeds.
-     */
-    public void invalidArguments()
-    {
-        // The MethodInvokingController will throw an IllegalArgumentException
-    }
+	/**
+	 * A method that always succeeds.
+	 */
+	public void invalidArguments()
+	{
+		// The MethodInvokingController will throw an IllegalArgumentException
+	}
 
-    /**
-     * A method that adds an error to the error list.
-     */
-    public void addError(HttpServletRequest request, HttpServletResponse response)
-    {
-        error("Mock error");
-    }
+	/**
+	 * A method that adds an error to the error list.
+	 */
+	public void addError(HttpServletRequest request,
+			HttpServletResponse response)
+	{
+		error("Mock error");
+	}
 }

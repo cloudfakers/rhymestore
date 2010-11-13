@@ -70,4 +70,11 @@ public interface WordParser
 	 */
 	public boolean isWord(final String text);
 
+	/**
+	 * Gets the default rhyme.
+	 * 
+	 * @return The default rhym.
+	 */
+	public String getDefaultRhyme();
+
 }

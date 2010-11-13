@@ -30,6 +30,9 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.rhymestore.lang.WordParser;
+import com.rhymestore.lang.WordParserFactory;
+
 /**
  * Integration tests for the {@link RhymeStore} class.
  * 
@@ -37,35 +40,41 @@ import org.testng.annotations.Test;
  */
 public class RhymeStoreIT
 {
-    /** The store to test. */
-    private RhymeStore store;
+	/** The store to test. */
+	private RhymeStore store;
 
-    @BeforeMethod
-    public void setUp() throws IOException
-    {
-        store = RhymeStore.getInstance();
+	/** The {@link WordParser} used to parse rhymes. */
+	private WordParser wordParser;
 
-        store.add("Mi nabo para vos");
-        store.add("Te la meto del revés!!");
-    }
+	@BeforeMethod
+	public void setUp() throws IOException
+	{
+		store = RhymeStore.getInstance();
+		wordParser = WordParserFactory.getWordParser();
 
-    @AfterMethod
-    public void tearDown()
-    {
-        // TODO: Clean test data
-    }
+		store.add("Mi nabo para vos");
+		store.add("Te la meto del revés!!");
+	}
 
-    @Test(enabled = false)
-    public void testFindAll() throws IOException
-    {
-        assertEquals(store.findAll().size(), 2);
-    }
+	@AfterMethod
+	public void tearDown()
+	{
+		// TODO: Clean test data
+	}
 
-    @Test(enabled = false)
-    public void testGetRhyme() throws IOException
-    {
-        assertEquals(store.getRhyme("¿Hay algo que rime con tres?"), "Te la meto del revés!!");
-        assertEquals(store.getRhyme("Nada rima con dos."), "Mi nabo para vos");
-        assertEquals(store.getRhyme("Nada rima con be"), RhymeStore.DEFAULT_RHYME);
-    }
+	@Test(enabled = false)
+	public void testFindAll() throws IOException
+	{
+		assertEquals(store.findAll().size(), 2);
+	}
+
+	@Test(enabled = false)
+	public void testGetRhyme() throws IOException
+	{
+		assertEquals(store.getRhyme("¿Hay algo que rime con tres?"),
+				"Te la meto del revés!!");
+		assertEquals(store.getRhyme("Nada rima con dos."), "Mi nabo para vos");
+		assertEquals(store.getRhyme("Nada rima con be"),
+				wordParser.getDefaultRhyme());
+	}
 }

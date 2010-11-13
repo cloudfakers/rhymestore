@@ -38,71 +38,77 @@ import org.testng.annotations.Test;
  */
 public abstract class AbstractWordParserTest
 {
-    /** The word parser. */
-    protected WordParser wordParser;
+	/** The word parser. */
+	protected WordParser wordParser;
 
-    @BeforeMethod
-    public void setUp()
-    {
-        wordParser = getWordParser();
-    }
+	@BeforeMethod
+	public void setUp()
+	{
+		wordParser = getWordParser();
+	}
 
-    /**
-     * Gets the {@link WordParser} to test.
-     * 
-     * @return The <code>WordParser</code> to test
-     */
-    protected abstract WordParser getWordParser();
+	/**
+	 * Gets the {@link WordParser} to test.
+	 * 
+	 * @return The <code>WordParser</code> to test
+	 */
+	protected abstract WordParser getWordParser();
 
-    // Common tests
+	// Common tests
 
-    @Test
-    public void testCapitalize()
-    {
-        assertEquals(capitalize(""), "");
-        assertEquals(capitalize("a"), "A");
-        assertEquals(capitalize("word"), "Word");
-        assertEquals(capitalize("capitalize test"), "Capitalize test");
-    }
+	@Test
+	public void testCapitalize()
+	{
+		assertEquals(capitalize(""), "");
+		assertEquals(capitalize("a"), "A");
+		assertEquals(capitalize("word"), "Word");
+		assertEquals(capitalize("capitalize test"), "Capitalize test");
+	}
 
-    @Test
-    public void testGetLastWord()
-    {
-        assertEquals(getLastWord(""), "");
-        assertEquals(getLastWord("test"), "test");
-        assertEquals(getLastWord("two words"), "words");
-    }
+	@Test
+	public void testGetLastWord()
+	{
+		assertEquals(getLastWord(""), "");
+		assertEquals(getLastWord("test"), "test");
+		assertEquals(getLastWord("two words"), "words");
+	}
 
-    // Tests to be implemented by each WordParser implementation tests
+	// Tests to be implemented by each WordParser implementation tests
 
-    /**
-     * Tests the {@link WordParser#phoneticRhymePart(String)} method.
-     */
-    @Test
-    public abstract void testPhoneticRhymePart();
+	/**
+	 * Tests the {@link WordParser#phoneticRhymePart(String)} method.
+	 */
+	@Test
+	public abstract void testPhoneticRhymePart();
 
-    /**
-     * Tests the {@link WordParser#stressType(String)} method.
-     */
-    @Test
-    public abstract void testStressType();
+	/**
+	 * Tests the {@link WordParser#stressType(String)} method.
+	 */
+	@Test
+	public abstract void testStressType();
 
-    /**
-     * Tests the {@link WordParser#rhyme(String, String)} method.
-     */
-    @Test
-    public abstract void testRhyme();
+	/**
+	 * Tests the {@link WordParser#rhyme(String, String)} method.
+	 */
+	@Test
+	public abstract void testRhyme();
 
-    /**
-     * Tests the {@link WordParser#isLetter(char)} method.
-     */
-    @Test
-    public abstract void testIsLetter();
+	/**
+	 * Tests the {@link WordParser#isLetter(char)} method.
+	 */
+	@Test
+	public abstract void testIsLetter();
 
-    /**
-     * Tests the {@link WordParser#isWord(String)} method.
-     */
-    @Test
-    public abstract void testIsWord();
+	/**
+	 * Tests the {@link WordParser#isWord(String)} method.
+	 */
+	@Test
+	public abstract void testIsWord();
+
+	/**
+	 * Tests the {@link WordParser#getDefaultRhyme()} method.
+	 */
+	@Test
+	public abstract void testGetDefaultRhyme();
 
 }
