@@ -32,97 +32,124 @@ import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import twitter4j.User;
 
+import com.rhymestore.lang.WordParser;
+import com.rhymestore.lang.WordParserFactory;
+import com.rhymestore.lang.WordUtils;
 import com.rhymestore.twitter.TwitterScheduler;
 
 /**
  * Gets the list of mentions.
  * 
  * @author Ignasi Barrera
- * 
  * @see Twitter
  * @see TwitterScheduler
  */
 public class GetMentionsCommand implements TwitterCommand
 {
-	/** The logger. */
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(GetMentionsCommand.class);
+    /** The logger. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(GetMentionsCommand.class);
 
-	/** The queue with the pending commands. */
-	private final Queue<TwitterCommand> commandQueue;
+    /** The queue with the pending commands. */
+    private final Queue<TwitterCommand> commandQueue;
 
-	/** The id of the last tweet responded. */
-	private long lastTweetId = -1L;
+    /** The id of the last tweet responded. */
+    private long lastTweetId = -1L;
 
-	/**
-	 * Creates a new {@link ReplyCommand} for the given status.
-	 * 
-	 * @param commandQueue The queue with the pending commands.
-	 */
-	public GetMentionsCommand(final Queue<TwitterCommand> commandQueue)
-	{
-		super();
-		this.commandQueue = commandQueue;
-	}
+    /** The {@link WordParser} to use to check if the mention is well written. */
+    private final WordParser wordParser;
 
-	@Override
-	public void execute(final Twitter twitter) throws TwitterException
-	{
-		// Get last mentions
-		Paging paging = lastTweetId < 0 ? new Paging()
-				: new Paging(lastTweetId);
-		ResponseList<Status> mentions = twitter.getMentions(paging);
+    /**
+     * Creates a new {@link ReplyCommand} for the given status.
+     * 
+     * @param commandQueue The queue with the pending commands.
+     */
+    public GetMentionsCommand(final Queue<TwitterCommand> commandQueue)
+    {
+        super();
+        this.commandQueue = commandQueue;
+        this.wordParser = WordParserFactory.getWordParser();
+    }
 
-		// Reply only if the lastTweetId existed before calling this method
-		// (only reply to mentions
-		// made since the application is running)
-		if (lastTweetId > 0)
-		{
-			for (Status status : mentions)
-			{
-				// Enqueue a reply to the mention if it is not from the current
-				// Twitter user
-				if (!status.getUser().getScreenName()
-						.equalsIgnoreCase(twitter.getScreenName()))
-				{
-					LOGGER.debug("Adding tweet {} from {}", status.getId(),
-							status.getUser().getScreenName());
+    @Override
+    public void execute(final Twitter twitter) throws TwitterException
+    {
+        // Get last mentions
+        Paging paging = lastTweetId < 0 ? new Paging() : new Paging(lastTweetId);
+        ResponseList<Status> mentions = twitter.getMentions(paging);
 
-					ReplyCommand reply = new ReplyCommand(status, commandQueue);
-					commandQueue.add(reply);
-				}
-				else
-				{
-					LOGGER.debug("Ignoring mention from the current user: {}",
-							status.getText());
-				}
-			}
+        // Reply only if the lastTweetId existed before calling this method
+        // (only reply to mentions
+        // made since the application is running)
+        if (lastTweetId > 0)
+        {
+            for (Status mention : mentions)
+            {
+                // Enqueue a reply to the mention only if it is a valid mention and
+                // it is not from the current Twitter user
+                if (isValidMention(mention) && !isCurrentUser(twitter, mention.getUser()))
+                {
+                    LOGGER.debug("Adding tweet {} from {}", mention.getId(), mention.getUser()
+                        .getScreenName());
 
-			if (!mentions.isEmpty())
-			{
-				LOGGER.info("Added {} mentions to the reply queue.",
-						mentions.size());
-			}
-		}
+                    ReplyCommand reply = new ReplyCommand(mention, commandQueue);
+                    commandQueue.add(reply);
+                }
+                else
+                {
+                    LOGGER.debug("Ignoring mention: {}", mention.getText());
+                }
+            }
 
-		// Update the lastTweetId to avoid reply duplication
-		if (!mentions.isEmpty())
-		{
-			lastTweetId = mentions.get(0).getId();
+            if (!mentions.isEmpty())
+            {
+                LOGGER.info("Added {} mentions to the reply queue.", mentions.size());
+            }
+        }
 
-			LOGGER.debug("Setting last tweet to {}", lastTweetId);
-		}
-	}
+        // Update the lastTweetId to avoid reply duplication
+        if (!mentions.isEmpty())
+        {
+            lastTweetId = mentions.get(0).getId();
 
-	/**
-	 * Gets the Id of the last processed tweet.
-	 * 
-	 * @return The Id of the last processed tweet.
-	 */
-	public long getLastTweetId()
-	{
-		return lastTweetId;
-	}
+            LOGGER.debug("Setting last tweet to {}", lastTweetId);
+        }
+    }
+
+    /**
+     * Gets the Id of the last processed tweet.
+     * 
+     * @return The Id of the last processed tweet.
+     */
+    protected long getLastTweetId()
+    {
+        return lastTweetId;
+    }
+
+    /**
+     * Checks if the given user is the current Twitter user.
+     * 
+     * @param twitter The current Twitter connection data.
+     * @param user The user to check.
+     * @return Boolean indicating if the given user is the current Twitter user.
+     * @throws TwitterException If an error occurs while checking user name.
+     */
+    private boolean isCurrentUser(Twitter twitter, User user) throws TwitterException
+    {
+        return user.getScreenName().equalsIgnoreCase(twitter.getScreenName());
+    }
+
+    /**
+     * Checks if the given mention is a valid mention according to the {@link WordParser} rules.
+     * 
+     * @param mention The mention to check.
+     * @return Boolean indicating if the given mention is a valid mention.
+     */
+    private boolean isValidMention(Status mention)
+    {
+        String lastWord = WordUtils.getLastWord(mention.getText());
+        return wordParser.isWord(lastWord);
+    }
 
 }
