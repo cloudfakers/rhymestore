@@ -43,8 +43,8 @@ utility class and put the generated values in that file.
 
 Currently, there is only support for the Spanish language. Support for rhymes in other
 languages can be added by implementing the `com.rhymestore.lang.WordParser` interface
-and adding a unit test class that extends the base class:
-`com.rhymestore.lang.AbstractWordParserTest`.
+and adding a unit test class that extends the base class: `com.rhymestore.lang.AbstractWordParserTest`.
+The WordParser implementation to use can be configured in the `rhymestore.properties` file.
 
 Any contribution to the project is welcome. Feel free to check
 it out from the [Project site](https://github.com/nacx/rhymestore) and play with it.
