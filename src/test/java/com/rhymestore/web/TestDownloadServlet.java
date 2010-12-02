@@ -28,7 +28,7 @@ import com.rhymestore.store.TestRhymeStore;
 
 /**
  * Extension of the {@link DownloadServlet} class to execute the
- * {@link DownloadServletIT} using the test Redis database.
+ * {@link DownloadServletTest} using the test Redis database.
  * 
  * @author Ignasi Barrera
  * 

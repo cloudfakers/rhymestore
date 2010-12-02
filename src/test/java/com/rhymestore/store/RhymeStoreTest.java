@@ -34,11 +34,11 @@ import com.rhymestore.lang.WordParser;
 import com.rhymestore.lang.WordParserFactory;
 
 /**
- * Integration tests for the {@link RhymeStore} class.
+ * Unit tests for the {@link RhymeStore} class.
  * 
  * @author Enric Ruiz
  */
-public class RhymeStoreIT
+public class RhymeStoreTest
 {
 	/** The Redis test database. */
 	public static final int TEST_DATABASE = 1;

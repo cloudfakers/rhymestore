@@ -34,11 +34,11 @@ import com.meterware.servletunit.ServletRunner;
 import com.meterware.servletunit.ServletUnitClient;
 
 /**
- * Integration tests for the {@link DownloadServlet} class.
+ * Unit tests for the {@link DownloadServlet} class.
  * 
  * @author Ignasi Barrera
  */
-public class DownloadServletIT
+public class DownloadServletTest
 {
 	/** The base path used for web requests. */
 	private static final String DOWNLOAD_PATH = "http://rhymestore.com/rhymestore/download";
