@@ -61,7 +61,7 @@ public class RhymeStore
 			.getLogger(RhymeStore.class);
 
 	/** The Redis database API. */
-	private final Jedis redis;
+	protected final Jedis redis;
 
 	/** Redis namespace for sentences. */
 	private final Keymaker sentencens = new Keymaker("sentence");
@@ -97,7 +97,7 @@ public class RhymeStore
 	 * Creates a new <code>RhymeStore</code> connecting to
 	 * <code>localhost</code> and the default Redis port.
 	 */
-	private RhymeStore()
+	protected RhymeStore()
 	{
 		redis = new Jedis("localhost", 6379);
 		wordParser = WordParserFactory.getWordParser();
@@ -297,7 +297,7 @@ public class RhymeStore
 	{
 		Set<String> rhymes = new HashSet<String>();
 
-		redis.connect();
+		connect();
 
 		String lastId = getLastId(sentencens);
 
@@ -316,7 +316,7 @@ public class RhymeStore
 			}
 		}
 
-		redis.disconnect();
+		disconnect();
 
 		return rhymes;
 	}
@@ -336,11 +336,11 @@ public class RhymeStore
 
 		LOGGER.debug("Finding rhymes for {}", sentence);
 
-		redis.connect();
+		connect();
 
 		Set<String> rhymes = search(rhymepart, type);
 
-		redis.disconnect();
+		disconnect();
 
 		if (rhymes.isEmpty())
 		{

@@ -20,25 +20,28 @@
  * THE SOFTWARE.
  */
 
-package com.rhymestore.lang;
+package com.rhymestore.web;
 
-import static org.testng.Assert.assertTrue;
+import javax.servlet.ServletException;
 
-import org.testng.annotations.Test;
+import com.rhymestore.store.TestRhymeStore;
 
 /**
- * Unit tests for the {@link WordParserFactory} class.
+ * Extension of the {@link DownloadServlet} class to execute the
+ * {@link DownloadServletIT} using the test Redis database.
  * 
  * @author Ignasi Barrera
+ * 
  */
-public class WordParserFactoryTest
+public class TestDownloadServlet extends DownloadServlet
 {
-	@Test
-	public void testGetWordParser()
-	{
-		WordParser wordParser = WordParserFactory.getWordParser();
+	/** Serial UID. */
+	private static final long serialVersionUID = 1L;
 
-		assertTrue(WordParserFactory.getWordParser() != null);
-		assertTrue(wordParser instanceof SpanishWordParser);
+	@Override
+	public void init() throws ServletException
+	{
+		store = new TestRhymeStore();
 	}
+
 }

@@ -51,7 +51,7 @@ public class DownloadServletIT
 	{
 		ServletRunner servletRunner = new ServletRunner();
 		servletRunner.registerServlet("rhymestore/download",
-				DownloadServlet.class.getName());
+				TestDownloadServlet.class.getName());
 		servletClient = servletRunner.newClient();
 	}
 

@@ -67,7 +67,7 @@ public class DownloadServlet extends HttpServlet
 	private static final long serialVersionUID = 1L;
 
 	/** The backend rhyme store. */
-	private RhymeStore store;
+	protected RhymeStore store;
 
 	/**
 	 * Initializes the servlet.

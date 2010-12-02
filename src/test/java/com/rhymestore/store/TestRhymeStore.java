@@ -20,49 +20,38 @@
  * THE SOFTWARE.
  */
 
-package com.rhymestore.lang;
+package com.rhymestore.store;
+
+import java.io.IOException;
+import java.net.UnknownHostException;
 
 /**
- * Mock implementation fo the {@link WordParser} interface used in tests.
+ * Store that uses an alternate database to run the tests.
  * 
  * @author Ignasi Barrera
+ * 
  */
-public class MockWordParser implements WordParser
+public class TestRhymeStore extends RhymeStore
 {
-	@Override
-	public boolean isLetter(char letter)
-	{
-		return false;
-	}
+	/** The Redis test database. */
+	public static final int TEST_DATABASE = 1;
 
 	@Override
-	public boolean isWord(String text)
+	protected void connect() throws UnknownHostException, IOException
 	{
-		return false;
+		super.connect();
+		redis.select(TEST_DATABASE);
 	}
 
-	@Override
-	public String phoneticRhymePart(String word)
+	/**
+	 * Cleans the selected database.
+	 * 
+	 * @throws IOException If the database cannot be cleaned.
+	 */
+	public void cleanDB() throws IOException
 	{
-		return null;
+		connect();
+		redis.flushDB();
+		disconnect();
 	}
-
-	@Override
-	public boolean rhyme(String word1, String word2)
-	{
-		return false;
-	}
-
-	@Override
-	public StressType stressType(String word)
-	{
-		return null;
-	}
-
-	@Override
-	public String getDefaultRhyme()
-	{
-		return null;
-	}
-
 }

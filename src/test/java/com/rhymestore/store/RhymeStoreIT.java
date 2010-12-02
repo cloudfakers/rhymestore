@@ -40,6 +40,9 @@ import com.rhymestore.lang.WordParserFactory;
  */
 public class RhymeStoreIT
 {
+	/** The Redis test database. */
+	public static final int TEST_DATABASE = 1;
+
 	/** The store to test. */
 	private RhymeStore store;
 
@@ -49,31 +52,31 @@ public class RhymeStoreIT
 	@BeforeMethod
 	public void setUp() throws IOException
 	{
-		store = RhymeStore.getInstance();
 		wordParser = WordParserFactory.getWordParser();
+		store = new TestRhymeStore();
 
-		store.add("Mi nabo para vos");
-		store.add("Te la meto del revés!!");
+		store.add("Mi nabo para vos!!");
+		store.add("Te la meto del revés");
 	}
 
 	@AfterMethod
-	public void tearDown()
+	public void tearDown() throws IOException
 	{
-		// TODO: Clean test data
+		((TestRhymeStore) store).cleanDB();
 	}
 
-	@Test(enabled = false)
+	@Test
 	public void testFindAll() throws IOException
 	{
 		assertEquals(store.findAll().size(), 2);
 	}
 
-	@Test(enabled = false)
+	@Test
 	public void testGetRhyme() throws IOException
 	{
 		assertEquals(store.getRhyme("¿Hay algo que rime con tres?"),
-				"Te la meto del revés!!");
-		assertEquals(store.getRhyme("Nada rima con dos."), "Mi nabo para vos");
+				"Te la meto del revés");
+		assertEquals(store.getRhyme("Nada rima con dos"), "Mi nabo para vos!!");
 		assertEquals(store.getRhyme("Nada rima con be"),
 				wordParser.getDefaultRhyme());
 	}
