@@ -40,78 +40,74 @@ import com.rhymestore.twitter.util.TwitterUtils;
  * Executes a reply to a user's tweet.
  * 
  * @author Ignasi Barrera
- * 
  * @see Twitter
  * @see TwitterScheduler
  */
 public class ReplyCommand implements TwitterCommand
 {
-	/** The logger. */
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(ReplyCommand.class);
+    /** The logger. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReplyCommand.class);
 
-	/** The queue with the pending commands. */
-	private Queue<TwitterCommand> commandQueue;
+    /** The queue with the pending commands. */
+    private final Queue<TwitterCommand> commandQueue;
 
-	/** The status to reply. */
-	private Status status;
+    /** The status to reply. */
+    private final Status status;
 
-	/** The Rhyme Store. */
-	private RhymeStore rhymeStore;
+    /** The Rhyme Store. */
+    private final RhymeStore rhymeStore;
 
-	/**
-	 * Creates a new {@link ReplyCommand} for the given status.
-	 * 
-	 * @param status The status to reply.
-	 * @param commandQueue The queue with the pending commands.
-	 */
-	public ReplyCommand(final Status status,
-			final Queue<TwitterCommand> commandQueue)
-	{
-		super();
-		this.status = status;
-		this.commandQueue = commandQueue;
-		rhymeStore = RhymeStore.getInstance();
-	}
+    /**
+     * Creates a new {@link ReplyCommand} for the given status.
+     * 
+     * @param status The status to reply.
+     * @param commandQueue The queue with the pending commands.
+     */
+    public ReplyCommand(final Status status, final Queue<TwitterCommand> commandQueue)
+    {
+        super();
+        this.status = status;
+        this.commandQueue = commandQueue;
+        rhymeStore = RhymeStore.getInstance();
+    }
 
-	@Override
-	public void execute(final Twitter twitter) throws TwitterException
-	{
-		String rhyme = null;
+    @Override
+    public void execute(final Twitter twitter) throws TwitterException
+    {
+        String rhyme = null;
 
-		try
-		{
-			rhyme = rhymeStore.getRhyme(status.getText());
-		}
-		catch (IOException ex)
-		{
-			LOGGER.error(
-					"An error occured while connecting to the rhyme store. Could not reply to {}",
-					status.getUser().getScreenName(), ex);
-		}
+        try
+        {
+            rhyme = rhymeStore.getRhyme(status.getText());
+        }
+        catch (IOException ex)
+        {
+            LOGGER.error(
+                "An error occured while connecting to the rhyme store. Could not reply to {}",
+                status.getUser().getScreenName(), ex);
+        }
 
-		try
-		{
-			String tweet = TwitterUtils.reply(status.getUser().getScreenName(),
-					rhyme);
+        try
+        {
+            String tweet = TwitterUtils.reply(status.getUser().getScreenName(), rhyme);
 
-			LOGGER.info("Replying to {} with: {}", status.getUser()
-					.getScreenName(), tweet);
+            LOGGER.info("Replying to {} with: {}", status.getUser().getScreenName(), tweet);
 
-			twitter.updateStatus(tweet, status.getId());
-		}
-		catch (TwitterException ex)
-		{
-			LOGGER.error("Could not send reply to tweet " + status.getId(), ex);
+            // Reply in the timeline and DM to the user
+            twitter.updateStatus(tweet, status.getId());
+        }
+        catch (TwitterException ex)
+        {
+            LOGGER.error("Could not send reply to tweet " + status.getId(), ex);
 
-			// If it is not a duplicate tweet, enqueue the API call again, to
-			// retry it later
-			if (!TwitterUtils.isDuplicateTweetError(ex))
-			{
-				LOGGER.debug("Enqueuing the reply to try again later...");
+            // If it is not a duplicate tweet, enqueue the API call again, to
+            // retry it later
+            if (!TwitterUtils.isDuplicateTweetError(ex))
+            {
+                LOGGER.debug("Enqueuing the reply to try again later...");
 
-				commandQueue.add(this);
-			}
-		}
-	}
+                commandQueue.add(this);
+            }
+        }
+    }
 }
