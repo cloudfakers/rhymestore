@@ -34,75 +34,73 @@ import org.slf4j.LoggerFactory;
  * Utility class to load rhymes from a file.
  * 
  * @author Ignasi Barrera
- * 
  * @see RhymeStore
  */
 public class RhymeLoader
 {
-	/** The logger. */
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(RhymeLoader.class);
+    /** The logger. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(RhymeLoader.class);
 
-	/** The backend rhyme store. */
-	private RhymeStore store;
+    /** The backend rhyme store. */
+    private final RhymeStore store;
 
-	/**
-	 * Default constructor.
-	 */
-	public RhymeLoader()
-	{
-		store = RhymeStore.getInstance();
-	}
+    /**
+     * Default constructor.
+     */
+    public RhymeLoader()
+    {
+        store = new RhymeStore("localhost", 6379);
+    }
 
-	/**
-	 * Loads the rhymes in the given file into the {@link #store}.
-	 * 
-	 * @param file The file with the rhymes to add.
-	 * @throws IOException If the rhymes cannot be loaded.
-	 */
-	public void load(File file) throws IOException
-	{
-		if (!file.exists())
-		{
-			throw new IOException("The rhyme file does not exist");
-		}
+    /**
+     * Loads the rhymes in the given file into the {@link #store}.
+     * 
+     * @param file The file with the rhymes to add.
+     * @throws IOException If the rhymes cannot be loaded.
+     */
+    public void load(File file) throws IOException
+    {
+        if (!file.exists())
+        {
+            throw new IOException("The rhyme file does not exist");
+        }
 
-		BufferedReader br = new BufferedReader(new FileReader(file));
-		String line = br.readLine();
-		int numLines = 0;
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String line = br.readLine();
+        int numLines = 0;
 
-		while (line != null)
-		{
-			store.add(line);
-			line = br.readLine();
-			numLines++;
-		}
+        while (line != null)
+        {
+            store.add(line);
+            line = br.readLine();
+            numLines++;
+        }
 
-		LOGGER.info("Added {} rhymes", numLines);
-	}
+        LOGGER.info("Added {} rhymes", numLines);
+    }
 
-	/**
-	 * Adds the rhymes in the given file to the rhyme store.
-	 * 
-	 * @param args The absolute path of the file containing the rhymes.
-	 */
-	public static void main(String... args)
-	{
-		if (args.length != 1)
-		{
-			throw new IllegalArgumentException("The file path is required");
-		}
+    /**
+     * Adds the rhymes in the given file to the rhyme store.
+     * 
+     * @param args The absolute path of the file containing the rhymes.
+     */
+    public static void main(String... args)
+    {
+        if (args.length != 1)
+        {
+            throw new IllegalArgumentException("The file path is required");
+        }
 
-		File file = new File(args[0]);
-		RhymeLoader loader = new RhymeLoader();
+        File file = new File(args[0]);
+        RhymeLoader loader = new RhymeLoader();
 
-		try
-		{
-			loader.load(file);
-		}
-		catch (IOException ex)
-		{
-			LOGGER.error("Could not load rhymes: " + ex.getMessage(), ex);
-		}
-	}
+        try
+        {
+            loader.load(file);
+        }
+        catch (IOException ex)
+        {
+            LOGGER.error("Could not load rhymes: " + ex.getMessage(), ex);
+        }
+    }
 }
