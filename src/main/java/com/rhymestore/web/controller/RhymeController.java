@@ -68,7 +68,6 @@ public class RhymeController extends MethodInvokingController
     public void list(final HttpServletRequest request, final HttpServletResponse response)
         throws ControllerException
     {
-        // List all rhymes
         try
         {
             Set<String> rhymes = store.findAll();
