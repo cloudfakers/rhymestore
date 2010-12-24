@@ -28,7 +28,7 @@
 			</div>
 		</c:if>
 
-		<form action="<%= request.getContextPath() %>/web/rhymes/list" method="post">
+		<form action="<%= request.getContextPath() %>/web/rhymes/add" method="post">
 			<input id="ryhme" name="rhyme" type="text" class="input" size="90" maxlength="<%= TwitterUtils.MAX_TWEET_LENGTH %>" />
 			<input type="submit" value="Add it!" class="add" />
 		</form>
@@ -48,11 +48,17 @@
 			</thead>
 			<c:forEach var="rhyme" items="${rhymes}" varStatus="status">
 				<tr class="tr<c:out value="${status.count % 2}"/>">
-					<td colspan="2"><c:out value="${rhyme}" /></td>
+					<td class="left"><c:out value="${rhyme}" /></td>
+					<td class="right">
+					   <form action="<%= request.getContextPath() %>/web/rhymes/delete" method="post">
+					       <input type="submit" value="Delete" class="delete"/>
+					       <input name="rhyme" type="hidden" value="<c:out value="${rhyme}" />" />
+                        </form>
+                    </td>
 				</tr>
 			</c:forEach>
 			<c:if test="${empty rhymes}">
-				<tr class="tr1"><td class="empty">There are no rimes yet</td></tr>
+				<tr class="tr1"><td class="empty">There are no rhymes yet</td></tr>
 			</c:if>
 		</table>
 		

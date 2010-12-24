@@ -35,123 +35,145 @@ import org.slf4j.LoggerFactory;
 import com.rhymestore.web.ContextListener;
 
 /**
- * Controller that delegates execution to a specific method based on the request
- * path.
+ * Controller that delegates execution to a specific method based on the request path.
  * 
  * @author Ignasi Barrera
  */
 public class MethodInvokingController implements Controller
 {
-	/** The logger. */
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(MethodInvokingController.class);
+    /** The logger. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(MethodInvokingController.class);
 
-	/** The attribute name where the controller errors will be published. */
-	public static final String ERRORS_ATTRIBUTE = "errors";
+    /** The attribute name where the controller errors will be published. */
+    public static final String ERRORS_ATTRIBUTE = "errors";
 
-	/** List of errors produced during method execution. */
-	private final List<String> errors = new LinkedList<String>();
+    /** List of errors produced during method execution. */
+    private final List<String> errors = new LinkedList<String>();
 
-	@Override
-	public String execute(final HttpServletRequest request,
-			final HttpServletResponse response) throws ControllerException
-	{
-		// Get the name of the method
-		int lastSlash = request.getRequestURI().lastIndexOf("/");
-		String methodName = request.getRequestURI().substring(lastSlash + 1);
+    /** The view to return. */
+    private String returnView;
 
-		// Find the target method
-		Method targetMethod = null;
+    @Override
+    public String execute(final HttpServletRequest request, final HttpServletResponse response)
+        throws ControllerException
+    {
+        // Get the name of the method
+        int lastSlash = request.getRequestURI().lastIndexOf("/");
+        String methodName = request.getRequestURI().substring(lastSlash + 1);
 
-		for (Method method : this.getClass().getMethods())
-		{
-			if (method.getName().equals(methodName))
-			{
-				targetMethod = method;
-				break;
-			}
-		}
+        // Find the target method
+        Method targetMethod = null;
 
-		if (targetMethod == null)
-		{
-			String message = "Could not find a Controller method with name "
-					+ methodName + " in class " + this.getClass().getName();
+        for (Method method : this.getClass().getMethods())
+        {
+            if (method.getName().equals(methodName))
+            {
+                targetMethod = method;
+                break;
+            }
+        }
 
-			throw new ControllerException(message, new NoSuchMethodException(
-					message));
-		}
+        if (targetMethod == null)
+        {
+            String message =
+                "Could not find a Controller method with name " + methodName + " in class "
+                    + this.getClass().getName();
 
-		// Execute the target method
-		try
-		{
-			errors.clear();
+            throw new ControllerException(message, new NoSuchMethodException(message));
+        }
 
-			targetMethod.invoke(this, request, response);
+        // Set the default view to return
+        setView(methodName);
 
-			request.setAttribute(ERRORS_ATTRIBUTE, errors);
-		}
-		catch (Exception ex)
-		{
-			if (ex.getCause() instanceof ControllerException)
-			{
-				// If it is a Controller exception, just propagate it
-				throw (ControllerException) ex.getCause();
-			}
+        // Execute the target method
+        try
+        {
+            errors.clear();
 
-			throw new ControllerException(
-					"Could not execute the Controller method " + methodName
-							+ " from class " + this.getClass().getName(),
-					ex.getCause() == null ? ex : ex.getCause());
-		}
+            targetMethod.invoke(this, request, response);
 
-		// The view name is the same than the method
-		return methodName;
-	}
+            request.setAttribute(ERRORS_ATTRIBUTE, errors);
+        }
+        catch (Exception ex)
+        {
+            if (ex.getCause() instanceof ControllerException)
+            {
+                // If it is a Controller exception, just propagate it
+                throw (ControllerException) ex.getCause();
+            }
 
-	/**
-	 * Gets the Twitter user.
-	 * 
-	 * @param request The request.
-	 * @param response The response.
-	 * @return The Twitter user name.
-	 */
-	protected String getTwitterUser(final HttpServletRequest request,
-			final HttpServletResponse response)
-	{
-		return (String) request.getSession().getServletContext()
-				.getAttribute(ContextListener.TWITTER_USER_NAME);
-	}
+            throw new ControllerException("Could not execute the Controller method " + methodName
+                + " from class " + this.getClass().getName(), ex.getCause() == null ? ex : ex
+                .getCause());
+        }
 
-	/**
-	 * Adds the given error to the {@link #errors} list.
-	 * 
-	 * @param error The error to add.
-	 */
-	protected void error(final String error)
-	{
-		errors.add(error);
-		LOGGER.error(error);
-	}
+        return returnView;
+    }
 
-	/**
-	 * Adds the given error to the {@link #errors} list.
-	 * 
-	 * @param error The error to add.
-	 * @param cause The error cause.
-	 */
-	protected void error(final String error, final Exception cause)
-	{
-		errors.add(error);
-		LOGGER.error(error, cause);
-	}
+    /**
+     * Gets the Twitter user.
+     * 
+     * @param request The request.
+     * @param response The response.
+     * @return The Twitter user name.
+     */
+    protected String getTwitterUser(final HttpServletRequest request,
+        final HttpServletResponse response)
+    {
+        return (String) request.getSession().getServletContext().getAttribute(
+            ContextListener.TWITTER_USER_NAME);
+    }
 
-	/**
-	 * Checks if there are any errors.
-	 * 
-	 * @return Boolean indicating if there are any errors.
-	 */
-	protected boolean errors()
-	{
-		return !errors.isEmpty();
-	}
+    /**
+     * Adds the given error to the {@link #errors} list.
+     * 
+     * @param error The error to add.
+     */
+    protected void error(final String error)
+    {
+        errors.add(error);
+        LOGGER.error(error);
+    }
+
+    /**
+     * Adds the given error to the {@link #errors} list.
+     * 
+     * @param error The error to add.
+     * @param cause The error cause.
+     */
+    protected void error(final String error, final Exception cause)
+    {
+        errors.add(error);
+        LOGGER.error(error, cause);
+    }
+
+    /**
+     * Checks if there are any errors.
+     * 
+     * @return Boolean indicating if there are any errors.
+     */
+    protected boolean errors()
+    {
+        return !errors.isEmpty();
+    }
+
+    /**
+     * Set the view to be returned.
+     * 
+     * @param viewName The name of the view to be returned.
+     */
+    protected void setView(String viewName)
+    {
+        returnView = viewName;
+    }
+
+    /**
+     * Get the view returned by the controller.
+     * 
+     * @return The name of the view returned by the controller.
+     */
+    protected String getView()
+    {
+        return returnView;
+    }
 }

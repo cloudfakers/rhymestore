@@ -48,8 +48,18 @@ h2 {
 	background-color: #BEE34F;
 }
 
+.delete {
+    color: white;
+    border: 1px solid white;
+    background-color: #99BA3D;
+}
+
 .add:hover, .download:hover {
 	background-color: #99BA3D;
+}
+
+.delete:hover {
+    background-color: #BEE34F;
 }
 
 .errors {
@@ -70,7 +80,8 @@ h2 {
 
 td {
 	border: 1px solid #98bf21;
-	padding: 3px 7px 3px 7px;
+	/*padding: 3px 7px 3px 7px;*/
+	padding: 0px 4px 0px 7px;
 }
 
 td.empty {
@@ -85,11 +96,11 @@ th {
 	padding: 0px 4px 0px 7px;
 }
 
-th.left {
+.left {
 	border-right: 0px;
 }
 
-th.right {
+.right {
 	border-left: 0px;
 	text-align: right;
 }
