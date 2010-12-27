@@ -1,0 +1,1 @@
+<a href="http://twitter.com/rimamelo" title="Follow on Twitter" class="raptor"><img src="<%= request.getContextPath() %>/img/twitter.png" alt="Follow on Twitter" border="0" /></a>

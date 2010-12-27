@@ -43,169 +43,175 @@ import com.rhymestore.web.controller.ControllerException;
  * Process requests performed from the Web UI.
  * 
  * @author Ignasi Barrera
- * 
  * @see Controller
  */
 public class MVCServlet extends HttpServlet
 {
-	/** The logger. */
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(MVCServlet.class);
+    /** The logger. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(MVCServlet.class);
 
-	/** Serial UID. */
-	private static final long serialVersionUID = 1L;
+    /** Serial UID. */
+    private static final long serialVersionUID = 1L;
 
-	/** The view path. */
-	private static final String VIEW_PATH = "/jsp";
+    /** The view path. */
+    private static final String VIEW_PATH = "/jsp";
 
-	/** The view suffix. */
-	private static final String VIEW_SUFFIX = ".jsp";
+    /** The view suffix. */
+    private static final String VIEW_SUFFIX = ".jsp";
 
-	/** Mappings from request path to {@link Controller} objects. */
-	protected Map<String, Controller> controllers;
+    /** The layout path. */
+    private static final String LAYOUT_PATH = VIEW_PATH + "/layout";
 
-	/**
-	 * Default constructor.
-	 */
-	public MVCServlet()
-	{
-		controllers = new HashMap<String, Controller>();
-	}
+    /** Mappings from request path to {@link Controller} objects. */
+    protected Map<String, Controller> controllers;
 
-	/**
-	 * Initializes the servlet.
-	 * 
-	 * @throws If the servlet cannot be initialized.
-	 */
-	@Override
-	public void init() throws ServletException
-	{
-		try
-		{
-			loadMappings();
-		}
-		catch (Exception ex)
-		{
-			throw new ServletException("Could not load controllers: "
-					+ ex.getMessage(), ex);
-		}
-	}
+    /** The main layout file to use in the application. */
+    protected String layout;
 
-	@Override
-	protected void doGet(final HttpServletRequest req,
-			final HttpServletResponse resp) throws ServletException,
-			IOException
-	{
-		String controllerPath = null;
-		Controller controller = null;
-		String requestedPath = getRequestedPath(req);
+    /**
+     * Default constructor.
+     */
+    public MVCServlet()
+    {
+        controllers = new HashMap<String, Controller>();
+    }
 
-		for (String path : controllers.keySet())
-		{
-			if (requestedPath.startsWith(path))
-			{
-				controllerPath = path;
-				controller = controllers.get(path);
+    /**
+     * Initializes the servlet.
+     * 
+     * @throws If the servlet cannot be initialized.
+     */
+    @Override
+    public void init() throws ServletException
+    {
+        try
+        {
+            readConfiguration();
+        }
+        catch (Exception ex)
+        {
+            throw new ServletException("Could read MVC configuration: " + ex.getMessage(), ex);
+        }
 
-				LOGGER.debug("Using {} controller to handle request to: {}",
-						controller.getClass().getName(), req.getRequestURI());
-			}
-		}
+    }
 
-		if (controller != null)
-		{
-			try
-			{
-				String viewName = controller.execute(req, resp);
-				String viewPath = VIEW_PATH + controllerPath + "/" + viewName
-						+ VIEW_SUFFIX;
+    @Override
+    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp)
+        throws ServletException, IOException
+    {
+        String controllerPath = null;
+        Controller controller = null;
+        String requestedPath = getRequestedPath(req);
 
-				getServletContext().getRequestDispatcher(viewPath).forward(req,
-						resp);
-			}
-			catch (ControllerException ex)
-			{
-				String errorMessage = "An error occured during request handling: "
-						+ ex.getMessage();
+        for (String path : controllers.keySet())
+        {
+            if (requestedPath.startsWith(path))
+            {
+                controllerPath = path;
+                controller = controllers.get(path);
 
-				LOGGER.error(errorMessage, ex);
+                LOGGER.debug("Using {} controller to handle request to: {}", controller.getClass()
+                    .getName(), req.getRequestURI());
+            }
+        }
 
-				resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-						errorMessage);
-			}
-		}
-		else
-		{
-			resp.sendError(
-					HttpServletResponse.SC_NOT_FOUND,
-					"No controller was found to handle request to: "
-							+ req.getRequestURI());
-		}
-	}
+        if (controller != null)
+        {
+            try
+            {
+                String viewName = controller.execute(req, resp);
+                String viewPath = VIEW_PATH + controllerPath + "/" + viewName + VIEW_SUFFIX;
 
-	/**
-	 * Calls the API to store the Rhyme.
-	 * 
-	 * @param req The request.
-	 * @param resp The response.
-	 */
-	@Override
-	protected void doPost(final HttpServletRequest req,
-			final HttpServletResponse resp) throws ServletException,
-			IOException
-	{
-		doGet(req, resp);
-	}
+                req.setAttribute("currentView", viewPath);
+                getServletContext().getRequestDispatcher(layout).forward(req, resp);
+            }
+            catch (ControllerException ex)
+            {
+                String errorMessage =
+                    "An error occured during request handling: " + ex.getMessage();
 
-	/**
-	 * Get the requested path relative to the servlet path.
-	 * 
-	 * @param req The request.
-	 * @return The requested path.
-	 */
-	private String getRequestedPath(final HttpServletRequest req)
-	{
-		return req.getRequestURI().replaceFirst(req.getContextPath(), "")
-				.replaceFirst(req.getServletPath(), "");
-	}
+                LOGGER.error(errorMessage, ex);
 
-	/**
-	 * Load configured controller mappings.
-	 * 
-	 * @throws Exception If mappings cannot be loaded.
-	 */
-	protected void loadMappings() throws Exception
-	{
-		Properties mappings = new Properties();
-		ClassLoader cl = Thread.currentThread().getContextClassLoader();
-		mappings.load(cl.getResourceAsStream(RhymestoreConfig.CONFIG_FILE));
+                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, errorMessage);
+            }
+        }
+        else
+        {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND,
+                "No controller was found to handle request to: " + req.getRequestURI());
+        }
+    }
 
-		LOGGER.info("Loading controller mappings...");
+    /**
+     * Calls the API to store the Rhyme.
+     * 
+     * @param req The request.
+     * @param resp The response.
+     */
+    @Override
+    protected void doPost(final HttpServletRequest req, final HttpServletResponse resp)
+        throws ServletException, IOException
+    {
+        doGet(req, resp);
+    }
 
-		for (Object mappingKey : mappings.keySet())
-		{
-			String key = (String) mappingKey;
+    /**
+     * Get the requested path relative to the servlet path.
+     * 
+     * @param req The request.
+     * @return The requested path.
+     */
+    private String getRequestedPath(final HttpServletRequest req)
+    {
+        return req.getRequestURI().replaceFirst(req.getContextPath(), "").replaceFirst(
+            req.getServletPath(), "");
+    }
 
-			if (RhymestoreConfig.isControllerProperty(key))
-			{
-				String path = mappings.getProperty(key);
-				String clazz = mappings.getProperty(key.replace(
-						RhymestoreConfig.CONTROLLER_PATH_SUFFIX,
-						RhymestoreConfig.CONTROLLER_CLASS_SUFFIX));
+    /**
+     * Load configured controller mappings.
+     * 
+     * @throws Exception If mappings cannot be loaded.
+     */
+    protected void readConfiguration() throws Exception
+    {
+        Properties config = new Properties();
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        config.load(cl.getResourceAsStream(RhymestoreConfig.CONFIG_FILE));
 
-				if (clazz == null)
-				{
-					throw new Exception("Missing controller class for path: "
-							+ path);
-				}
+        LOGGER.info("Loading controller mappings...");
 
-				Controller controller = (Controller) Class.forName(clazz, true,
-						cl).newInstance();
-				controllers.put(path, controller);
+        for (Object mappingKey : config.keySet())
+        {
+            String key = (String) mappingKey;
 
-				LOGGER.info("Mapping {} to {}", path, controller.getClass()
-						.getName());
-			}
-		}
-	}
+            if (RhymestoreConfig.isControllerProperty(key))
+            {
+                String path = config.getProperty(key);
+                String clazz =
+                    config.getProperty(key.replace(RhymestoreConfig.CONTROLLER_PATH_SUFFIX,
+                        RhymestoreConfig.CONTROLLER_CLASS_SUFFIX));
+
+                if (clazz == null)
+                {
+                    throw new Exception("Missing controller class for path: " + path);
+                }
+
+                Controller controller = (Controller) Class.forName(clazz, true, cl).newInstance();
+                controllers.put(path, controller);
+
+                LOGGER.info("Mapping {} to {}", path, controller.getClass().getName());
+            }
+        }
+
+        LOGGER.info("Setting main layout...");
+
+        layout = config.getProperty(RhymestoreConfig.LAYOUT_PROPERTY);
+
+        if (layout == null)
+        {
+            throw new Exception("You must set the main layout file");
+        }
+
+        layout = LAYOUT_PATH + "/" + layout;
+    }
 }
