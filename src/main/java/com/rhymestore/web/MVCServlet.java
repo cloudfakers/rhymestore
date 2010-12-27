@@ -212,6 +212,6 @@ public class MVCServlet extends HttpServlet
 
         layout = LAYOUT_PATH + "/" + layout;
 
-        LOGGER.info("Ugins {} as the main layout", layout);
+        LOGGER.info("Using {} as the main layout", layout);
     }
 }
