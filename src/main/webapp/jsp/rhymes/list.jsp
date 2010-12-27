@@ -6,8 +6,25 @@
 
 <head>
     <title>The Rhymestore Project</title>
+    
+    <!-- Styles -->
     <link type="image/png" href="<%= request.getContextPath() %>/img/favicon.png" rel="icon" />
 	<link type="text/css" href="<%= request.getContextPath() %>/css/rhymestore.css" rel="stylesheet" />
+	
+	<!-- Scripts -->
+    <script src="<%= request.getContextPath() %>/scripts/jquery-1.4.1.min.js"></script>
+    <script src="<%= request.getContextPath() %>/scripts/jquery.raptorize.1.0.js"></script>
+    
+    <!-- Bind the raptor to the Konami code -->
+    <script type="text/javascript">
+        var imgPath = '<%= request.getContextPath() %>/img';
+        var soundPath = '<%= request.getContextPath() %>/media';
+        $(window).load(function() {
+	        $('.raptor').raptorize(imgPath, soundPath, {
+	            'enterOn' : 'konami-code'
+	        });
+	    });
+    </script>
 </head>
 
 <body>
@@ -61,8 +78,7 @@
 				<tr class="tr1"><td class="empty">There are no rhymes yet</td></tr>
 			</c:if>
 		</table>
-		
-		<a href="http://twitter.com/rimamelo" title="Follow on Twitter"><img src="<%= request.getContextPath() %>/img/twitter.png" alt="Follow on Twitter" border="0" /></a>
+		<a href="http://twitter.com/rimamelo" title="Follow on Twitter" class="raptor"><img src="<%= request.getContextPath() %>/img/twitter.png" alt="Follow on Twitter" border="0" /></a>
 	</div>
 	
 </body>
