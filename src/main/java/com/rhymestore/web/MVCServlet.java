@@ -203,6 +203,8 @@ public class MVCServlet extends HttpServlet
             }
         }
 
+        LOGGER.info("Setting main layout...");
+
         layout = config.getProperty(RhymestoreConfig.LAYOUT_PROPERTY);
 
         if (layout == null)
@@ -211,7 +213,5 @@ public class MVCServlet extends HttpServlet
         }
 
         layout = LAYOUT_PATH + "/" + layout;
-
-        LOGGER.info("Ugins {} as the main layout", layout);
     }
 }
