@@ -68,7 +68,7 @@ public class ReplyCommand implements TwitterCommand
         super();
         this.status = status;
         this.commandQueue = commandQueue;
-        rhymeStore = RhymeStore.getInstance();
+        this.rhymeStore = RhymeStore.getInstance();
     }
 
     @Override

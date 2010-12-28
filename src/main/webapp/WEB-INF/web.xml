@@ -18,22 +18,23 @@
 	
 	<!-- Servlets -->
 	<servlet>
+        <servlet-name>MVCServlet</servlet-name>
+        <servlet-class>com.rhymestore.web.MVCServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+	<servlet>
 		<servlet-name>DownloadServlet</servlet-name>
 		<servlet-class>com.rhymestore.web.DownloadServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>MVCServlet</servlet-name>
-		<servlet-class>com.rhymestore.web.MVCServlet</servlet-class>
 	</servlet>
 
 	<!-- Servlet mappings -->
 	<servlet-mapping>
+        <servlet-name>MVCServlet</servlet-name>
+        <url-pattern>/web/*</url-pattern>
+    </servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>DownloadServlet</servlet-name>
 		<url-pattern>/download</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>MVCServlet</servlet-name>
-		<url-pattern>/web/*</url-pattern>
 	</servlet-mapping>
 
 	<!-- Main document -->

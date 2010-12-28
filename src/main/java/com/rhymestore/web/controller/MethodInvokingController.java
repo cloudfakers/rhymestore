@@ -23,39 +23,21 @@
 package com.rhymestore.web.controller;
 
 import java.lang.reflect.Method;
-import java.util.LinkedList;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.rhymestore.web.ContextListener;
 
 /**
  * Controller that delegates execution to a specific method based on the request path.
  * 
  * @author Ignasi Barrera
  */
-public class MethodInvokingController implements Controller
+public class MethodInvokingController extends AbstractController
 {
-    /** The logger. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(MethodInvokingController.class);
-
-    /** The attribute name where the controller errors will be published. */
-    public static final String ERRORS_ATTRIBUTE = "errors";
-
-    /** List of errors produced during method execution. */
-    private final List<String> errors = new LinkedList<String>();
-
-    /** The view to return. */
-    private String returnView;
 
     @Override
-    public String execute(final HttpServletRequest request, final HttpServletResponse response)
-        throws ControllerException
+    public void doExecute(final HttpServletRequest request, final HttpServletResponse response)
+        throws Exception
     {
         // Get the name of the method
         int lastSlash = request.getRequestURI().lastIndexOf("/");
@@ -85,95 +67,8 @@ public class MethodInvokingController implements Controller
         // Set the default view to return
         setView(methodName);
 
-        // Execute the target method
-        try
-        {
-            errors.clear();
-
-            targetMethod.invoke(this, request, response);
-
-            request.setAttribute(ERRORS_ATTRIBUTE, errors);
-        }
-        catch (Exception ex)
-        {
-            if (ex.getCause() instanceof ControllerException)
-            {
-                // If it is a Controller exception, just propagate it
-                throw (ControllerException) ex.getCause();
-            }
-
-            throw new ControllerException("Could not execute the Controller method " + methodName
-                + " from class " + this.getClass().getName(), ex.getCause() == null ? ex : ex
-                .getCause());
-        }
-
-        return returnView;
+        // Execute the target method (parent class will handle exceptions)
+        targetMethod.invoke(this, request, response);
     }
 
-    /**
-     * Gets the Twitter user.
-     * 
-     * @param request The request.
-     * @param response The response.
-     * @return The Twitter user name.
-     */
-    protected String getTwitterUser(final HttpServletRequest request,
-        final HttpServletResponse response)
-    {
-        return (String) request.getSession().getServletContext().getAttribute(
-            ContextListener.TWITTER_USER_NAME);
-    }
-
-    /**
-     * Adds the given error to the {@link #errors} list.
-     * 
-     * @param error The error to add.
-     */
-    protected void error(final String error)
-    {
-        errors.add(error);
-        LOGGER.error(error);
-    }
-
-    /**
-     * Adds the given error to the {@link #errors} list.
-     * 
-     * @param error The error to add.
-     * @param cause The error cause.
-     */
-    protected void error(final String error, final Exception cause)
-    {
-        errors.add(error);
-        LOGGER.error(error, cause);
-    }
-
-    /**
-     * Checks if there are any errors.
-     * 
-     * @return Boolean indicating if there are any errors.
-     */
-    protected boolean errors()
-    {
-        return !errors.isEmpty();
-    }
-
-    /**
-     * Set the view to be returned.
-     * 
-     * @param viewName The name of the view to be returned.
-     */
-    protected void setView(String viewName)
-    {
-        returnView = viewName;
-    }
-
-    /**
-     * Get the view returned by the controller.
-     * 
-     * @return The name of the view returned by the controller.
-     */
-    protected String getView()
-    {
-        return returnView;
-    }
 }

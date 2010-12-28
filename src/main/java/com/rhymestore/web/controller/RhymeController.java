@@ -35,6 +35,7 @@ import com.rhymestore.lang.WordParserFactory;
 import com.rhymestore.lang.WordUtils;
 import com.rhymestore.store.RhymeStore;
 import com.rhymestore.twitter.util.TwitterUtils;
+import com.rhymestore.web.ContextListener;
 
 /**
  * Controller to manage stored rhymes.
@@ -75,7 +76,7 @@ public class RhymeController extends MethodInvokingController
             List<String> sortedRhymes = new ArrayList<String>(rhymes);
             Collections.sort(sortedRhymes, String.CASE_INSENSITIVE_ORDER);
 
-            request.setAttribute("rhymes", sortedRhymes);
+            addModel("rhymes", sortedRhymes);
         }
         catch (Exception ex)
         {
@@ -166,6 +167,20 @@ public class RhymeController extends MethodInvokingController
         // Load the new list of rhymes to render the list view
         list(request, response);
         setView("list");
+    }
+
+    /**
+     * Gets the Twitter user.
+     * 
+     * @param request The request.
+     * @param response The response.
+     * @return The Twitter user name.
+     */
+    private String getTwitterUser(final HttpServletRequest request,
+        final HttpServletResponse response)
+    {
+        return (String) request.getSession().getServletContext().getAttribute(
+            ContextListener.TWITTER_USER_NAME);
     }
 
 }
