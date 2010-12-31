@@ -20,51 +20,23 @@
  * THE SOFTWARE.
  */
 
-package com.rhymestore.web.controller;
+package com.rhymestore.config;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.rhymestore.lang.WordParser;
 
 /**
- * Mock class to perform {@link Controller} unit tests.
+ * Global application configuration.
  * 
  * @author Ignasi Barrera
  */
-public class MockController extends MethodInvokingController
+public class Configuration
 {
-	/**
-	 * A method that always succeeds.
-	 */
-	public void success(HttpServletRequest request, HttpServletResponse response)
-	{
-		// Do nothing
-	}
+    /** The main configuration file. */
+    public static final String CONFIG_FILE = "rhymestore.properties";
 
-	/**
-	 * A method that always fails.
-	 * 
-	 * @throws An execution exception.
-	 */
-	public void fail(HttpServletRequest request, HttpServletResponse response)
-	{
-		throw new UnsupportedOperationException(
-				"MockController execution failure");
-	}
+    /**
+     * Name of the property that holds the {@link WordParser} implementation class.
+     */
+    public static final String WORDPARSER_PROPERTY = "wordparser.class";
 
-	/**
-	 * A method that always succeeds.
-	 */
-	public void invalidArguments()
-	{
-		// The MethodInvokingController will throw an IllegalArgumentException
-	}
-
-	/**
-	 * A method that adds an error to the error list.
-	 */
-	public void addError(HttpServletRequest request,
-			HttpServletResponse response)
-	{
-		error("Mock error");
-	}
 }

@@ -35,7 +35,7 @@
 
 	<!-- Dependencies -->
 	<dependencies>
-		<!-- J2EE -->
+		<!-- MVC -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
@@ -53,6 +53,13 @@
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
 		</dependency>
+		<dependency>
+            <groupId>org.sjmvc</groupId>
+            <artifactId>sjmvc</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/sjmvc-0.1-SNAPSHOT.jar</systemPath>
+        </dependency>
 
 		<!-- Logging -->
 		<dependency>
@@ -110,6 +117,10 @@
 	</dependencies>
 
 	<!-- Build settings -->
+	<properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    
 	<build>
 		<finalName>rhymestore</finalName>
 		<plugins>

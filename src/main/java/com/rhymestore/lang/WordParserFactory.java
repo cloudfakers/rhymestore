@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.rhymestore.config.ConfigurationException;
-import com.rhymestore.config.RhymestoreConfig;
+import com.rhymestore.config.Configuration;
 
 /**
  * Factory class to create the {@link WordParser}.
@@ -66,7 +66,7 @@ public class WordParserFactory
 			try
 			{
 				config.load(classLoader
-						.getResourceAsStream(RhymestoreConfig.CONFIG_FILE));
+						.getResourceAsStream(Configuration.CONFIG_FILE));
 			}
 			catch (IOException ex)
 			{
@@ -75,12 +75,12 @@ public class WordParserFactory
 			}
 
 			String className = config
-					.getProperty(RhymestoreConfig.WORDPARSER_PROPERTY);
+					.getProperty(Configuration.WORDPARSER_PROPERTY);
 
 			if (className == null)
 			{
 				throw new ConfigurationException(
-						RhymestoreConfig.WORDPARSER_PROPERTY
+						Configuration.WORDPARSER_PROPERTY
 								+ " property not defined");
 			}
 

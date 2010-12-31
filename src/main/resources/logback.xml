@@ -11,6 +11,10 @@
 		<level value="INFO" />
 	</logger>
 	
+	<logger name="org.sjmvc">
+        <level value="INFO" />
+    </logger>
+	
 	<logger name="twitter4j">
 		<level value="INFO" />
 	</logger>

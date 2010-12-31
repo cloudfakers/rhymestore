@@ -19,7 +19,7 @@
 	<!-- Servlets -->
 	<servlet>
         <servlet-name>MVCServlet</servlet-name>
-        <servlet-class>com.rhymestore.web.MVCServlet</servlet-class>
+        <servlet-class>org.sjmvc.web.MVCServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
 	<servlet>
