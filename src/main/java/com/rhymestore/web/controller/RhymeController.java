@@ -33,9 +33,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.sjmvc.controller.ControllerException;
 import org.sjmvc.controller.MethodInvokingController;
 
-import com.rhymestore.lang.WordParser;
-import com.rhymestore.lang.WordParserFactory;
 import com.rhymestore.lang.WordUtils;
+import com.rhymestore.model.Rhyme;
 import com.rhymestore.store.RhymeStore;
 import com.rhymestore.twitter.util.TwitterUtils;
 import com.rhymestore.web.ContextListener;
@@ -47,143 +46,126 @@ import com.rhymestore.web.ContextListener;
  */
 public class RhymeController extends MethodInvokingController
 {
-    /** The Rhyme store. */
-    private final RhymeStore store;
+	/** The Rhyme store. */
+	private final RhymeStore store;
 
-    /** The {@link WordParser} used to parse rhymes. */
-    private final WordParser wordParser;
+	/**
+	 * Default constructor
+	 */
+	public RhymeController()
+	{
+		store = RhymeStore.getInstance();
+	}
 
-    /**
-     * Default constructor
-     */
-    public RhymeController()
-    {
-        store = RhymeStore.getInstance();
-        wordParser = WordParserFactory.getWordParser();
-    }
+	/**
+	 * Lists all rhymes in the the store.
+	 * 
+	 * @param request The request.
+	 * @param response The response.
+	 * @throws ControllerException If the rhyme cannot be added.
+	 */
+	public void list(final HttpServletRequest request,
+			final HttpServletResponse response) throws ControllerException
+	{
+		try
+		{
+			Set<String> rhymes = store.findAll();
 
-    /**
-     * Lists all rhymes in the the store.
-     * 
-     * @param request The request.
-     * @param response The response.
-     * @throws ControllerException If the rhyme cannot be added.
-     */
-    public void list(final HttpServletRequest request, final HttpServletResponse response)
-        throws ControllerException
-    {
-        try
-        {
-            Set<String> rhymes = store.findAll();
+			List<String> sortedRhymes = new ArrayList<String>(rhymes);
+			Collections.sort(sortedRhymes, String.CASE_INSENSITIVE_ORDER);
 
-            List<String> sortedRhymes = new ArrayList<String>(rhymes);
-            Collections.sort(sortedRhymes, String.CASE_INSENSITIVE_ORDER);
+			setModel(sortedRhymes);
+		}
+		catch (Exception ex)
+		{
+			error("Could not get rhymes: " + ex.getMessage());
+		}
+	}
 
-            addModel("rhymes", sortedRhymes);
-        }
-        catch (Exception ex)
-        {
-            error("Could not get rhymes: " + ex.getMessage(), ex);
-        }
-    }
+	/**
+	 * Check if there is a rhyme submitted, and adds it to the store.
+	 * 
+	 * @param request The request.
+	 * @param response The response.
+	 * @throws ControllerException If the rhyme cannot be added.
+	 */
+	public void add(final HttpServletRequest request,
+			final HttpServletResponse response) throws ControllerException
+	{
+		Rhyme rhyme = new Rhyme();
+		bindAndValidate(rhyme, request);
 
-    /**
-     * Check if there is a rhyme submitted, and adds it to the store.
-     * 
-     * @param request The request.
-     * @param response The response.
-     * @throws ControllerException If the rhyme cannot be added.
-     */
-    public void add(final HttpServletRequest request, final HttpServletResponse response)
-        throws ControllerException
-    {
-        // Check if there is a rhyme present
-        String rhyme = request.getParameter("rhyme");
+		// Add the rhyme only if there are no binding or validation errors
+		if (!errors())
+		{
+			String twitterUser = getTwitterUser(request, response);
+			if (rhyme.getRhyme().contains(TwitterUtils.user(twitterUser)))
+			{
+				error("Cannot add a rhyme that contains the Twitter user name");
+			}
 
-        if (rhyme != null && rhyme.length() > 0)
-        {
-            try
-            {
-                if (rhyme.length() > TwitterUtils.MAX_TWEET_LENGTH)
-                {
-                    error("Rhymes should have maximum " + TwitterUtils.MAX_TWEET_LENGTH
-                        + " characters");
-                }
+			if (!errors())
+			{
+				try
+				{
+					String capitalized = WordUtils.capitalize(rhyme.getRhyme());
+					store.add(capitalized);
+				}
+				catch (Exception ex)
+				{
+					error("Could not add rhyme: " + ex.getMessage());
+				}
+			}
+		}
 
-                // Check only the last word; it is the only one needed for the
-                // rhyme
-                String lastWord = WordUtils.getLastWord(rhyme);
-                if (!wordParser.isWord(lastWord))
-                {
-                    error("The rhyme contains invalid words");
-                }
+		// Load the new list of rhymes to render the list view
+		list(request, response);
+		setView("list");
+	}
 
-                String twitterUser = getTwitterUser(request, response);
-                if (rhyme.contains(TwitterUtils.user(twitterUser)))
-                {
-                    error("Cannot add a rhyme that contains the Twitter user name");
-                }
+	/**
+	 * Check if there is a rhyme submitted, and deletes it from the store.
+	 * 
+	 * @param request The request.
+	 * @param response The response.
+	 * @throws ControllerException If the rhyme cannot be deleted.
+	 */
+	public void delete(final HttpServletRequest request,
+			final HttpServletResponse response) throws ControllerException
+	{
+		Rhyme rhyme = new Rhyme();
+		bindAndValidate(rhyme, request);
 
-                if (!errors())
-                {
-                    String capitalized = WordUtils.capitalize(rhyme);
-                    store.add(capitalized);
-                }
-            }
-            catch (Exception ex)
-            {
-                error("Could not add rhyme: " + ex.getMessage(), ex);
-            }
-        }
+		if (!errors())
+		{
+			try
+			{
+				String capitalized = WordUtils.capitalize(rhyme.getRhyme());
+				store.delete(capitalized);
+			}
+			catch (Exception ex)
+			{
+				error("Could not delete rhyme: " + ex.getMessage());
+			}
+		}
 
-        // Load the new list of rhymes to render the list view
-        list(request, response);
-        setView("list");
-    }
+		// Load the new list of rhymes to render the list view
+		list(request, response);
+		setView("list");
+	}
 
-    /**
-     * Check if there is a rhyme submitted, and deletes it from the store.
-     * 
-     * @param request The request.
-     * @param response The response.
-     * @throws ControllerException If the rhyme cannot be deleted.
-     */
-    public void delete(final HttpServletRequest request, final HttpServletResponse response)
-        throws ControllerException
-    {
-        // Check if there is a rhyme present
-        String rhyme = request.getParameter("rhyme");
-
-        if (rhyme != null && rhyme.length() > 0)
-        {
-            try
-            {
-                String capitalized = WordUtils.capitalize(rhyme);
-                store.delete(capitalized);
-            }
-            catch (Exception ex)
-            {
-                error("Could not delete rhyme: " + ex.getMessage(), ex);
-            }
-        }
-
-        // Load the new list of rhymes to render the list view
-        list(request, response);
-        setView("list");
-    }
-
-    /**
-     * Gets the Twitter user.
-     * 
-     * @param request The request.
-     * @param response The response.
-     * @return The Twitter user name.
-     */
-    private String getTwitterUser(final HttpServletRequest request,
-        final HttpServletResponse response)
-    {
-        return (String) request.getSession().getServletContext().getAttribute(
-            ContextListener.TWITTER_USER_NAME);
-    }
+	/**
+	 * Gets the Twitter user.
+	 * 
+	 * @param request The request.
+	 * @param response The response.
+	 * @return The Twitter user name.
+	 */
+	private String getTwitterUser(final HttpServletRequest request,
+			final HttpServletResponse response)
+	{
+		return (String) request.getSession().getServletContext()
+				.getAttribute(ContextListener.TWITTER_USER_NAME);
+	}
 
 }
