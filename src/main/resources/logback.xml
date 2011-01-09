@@ -8,11 +8,11 @@
 	</appender>
 	
 	<logger name="com.rhymestore">
-		<level value="INFO" />
+		<level value="DEBUG" />
 	</logger>
 	
 	<logger name="org.sjmvc">
-        <level value="INFO" />
+        <level value="DEBUG" />
     </logger>
 	
 	<logger name="twitter4j">

@@ -10,6 +10,10 @@
 	<logger name="twitter4j.internal.http.HttpResponseImpl">
 		<level value="INFO" />
 	</logger>
+	
+    <logger name="org.sjmvc">
+        <level value="TRACE" />
+    </logger>
 
 	<root>
 		<level value="DEBUG" />

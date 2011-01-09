@@ -111,13 +111,13 @@ public class TwitterScheduler implements Runnable
 		{
 			if (commandQueue.isEmpty())
 			{
-				LOGGER.debug("Running GetMentions API call...");
+				LOGGER.trace("Running GetMentions API call...");
 
 				getMentionsCommand.execute(twitter);
 			}
 			else
 			{
-				LOGGER.debug("Running command from queue...");
+				LOGGER.trace("Running command from queue...");
 
 				TwitterCommand cmd = commandQueue.poll();
 				cmd.execute(twitter);
