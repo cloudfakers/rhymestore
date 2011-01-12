@@ -1,45 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	id="Rhymestore" version="2.5">
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    id="Rhymestore" version="2.5">
 
-	<display-name>The Rhymestore Project</display-name>
-	
-	<!-- Configure if twitter communication is enabled -->
-	<context-param>
-		<param-name>TWITTER_ENABLED</param-name>
-		<param-value>true</param-value>
-	</context-param>
-	
-	<!-- Startup ContextListener -->
-	<listener>
-		<listener-class>com.rhymestore.web.ContextListener</listener-class>
-	</listener>
-	
-	<!-- Servlets -->
-	<servlet>
+    <display-name>The Rhymestore Project</display-name>
+
+    <!-- Configure if twitter communication is enabled -->
+    <context-param>
+        <param-name>TWITTER_ENABLED</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <!-- Startup ContextListener -->
+    <listener>
+        <listener-class>com.rhymestore.web.ContextListener</listener-class>
+    </listener>
+
+    <!-- Servlets -->
+    <servlet>
         <servlet-name>MVCServlet</servlet-name>
         <servlet-class>org.sjmvc.web.MVCServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
-	<servlet>
-		<servlet-name>DownloadServlet</servlet-name>
-		<servlet-class>com.rhymestore.web.DownloadServlet</servlet-class>
-	</servlet>
+    <servlet>
+        <servlet-name>DownloadServlet</servlet-name>
+        <servlet-class>com.rhymestore.web.DownloadServlet</servlet-class>
+    </servlet>
 
-	<!-- Servlet mappings -->
-	<servlet-mapping>
+    <!-- Servlet mappings -->
+    <servlet-mapping>
         <servlet-name>MVCServlet</servlet-name>
         <url-pattern>/web/*</url-pattern>
     </servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>DownloadServlet</servlet-name>
-		<url-pattern>/download</url-pattern>
-	</servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DownloadServlet</servlet-name>
+        <url-pattern>/download</url-pattern>
+    </servlet-mapping>
 
-	<!-- Main document -->
-	<welcome-file-list>
-		<welcome-file>jsp/index.jsp</welcome-file>
-	</welcome-file-list>
+    <!-- Main document -->
+    <welcome-file-list>
+        <welcome-file>jsp/index.jsp</welcome-file>
+    </welcome-file-list>
 
 </web-app>
