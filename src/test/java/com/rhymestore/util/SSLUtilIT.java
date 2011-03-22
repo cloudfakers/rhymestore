@@ -20,24 +20,51 @@
  * THE SOFTWARE.
  */
 
-package com.rhymestore.config;
+package com.rhymestore.util;
 
-import com.rhymestore.lang.WordParser;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 /**
- * Global application configuration.
+ * Integration tests for the {@link SSLUtils} class.
  * 
  * @author Ignasi Barrera
  */
-public class Configuration
+public class SSLUtilIT
 {
-    /** The main configuration file. */
-    public static final String CONFIG_FILE = "rhymestore.properties";
+    /** Default SSL URL used in tests. */
+    private static final String DETAULT_SSL_URL =
+        "https://github.com/nacx/rhymestore/raw/master/db/rhymes";
 
-    /** Name of the property that holds the {@link WordParser} implementation class. */
-    public static final String WORDPARSER_PROPERTY = "rhymestore.wordparser.class";
+    @Test
+    public void testInstallTrustManager() throws Exception
+    {
+        SSLUtils.installIgnoreCertTrustManager();
+    }
 
-    /** Name of the property that holds the default rhymes URI. */
-    public static final String DEFAULT_RHYMES_URI_PROPERTY = "rhymestore.store.rhymes.defaulturi";
+    @Test
+    public void testLoadHttpsURL() throws Exception
+    {
+        SSLUtils.installIgnoreCertTrustManager();
 
+        URL url = new URL(DETAULT_SSL_URL);
+        URLConnection conn = url.openConnection();
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        String line = br.readLine();
+        int numLines = 0;
+
+        while (line != null)
+        {
+            line = br.readLine();
+            numLines++;
+        }
+
+        Assert.assertTrue(numLines > 0);
+    }
 }
