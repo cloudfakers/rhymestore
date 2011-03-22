@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import twitter4j.Status;
+import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
@@ -94,7 +95,9 @@ public class ReplyCommand implements TwitterCommand
             LOGGER.info("Replying to {} with: {}", status.getUser().getScreenName(), tweet);
 
             // Reply in the timeline and DM to the user
-            twitter.updateStatus(tweet, status.getId());
+            StatusUpdate newStatus = new StatusUpdate(tweet);
+            newStatus.setInReplyToStatusId(status.getId());
+            twitter.updateStatus(newStatus);
         }
         catch (TwitterException ex)
         {
