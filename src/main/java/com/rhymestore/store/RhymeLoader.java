@@ -24,8 +24,10 @@ package com.rhymestore.store;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +51,18 @@ public class RhymeLoader
      */
     public RhymeLoader()
     {
-        store = new RhymeStore("localhost", 6379);
+        store = RhymeStore.getInstance();
+    }
+
+    /**
+     * Creates a new <code>RhymeLoader</code> connecting to the given Redis host and port.
+     * 
+     * @param host The Redis host.
+     * @param port The Redis listening port.
+     */
+    public RhymeLoader(final String host, final int port)
+    {
+        store = new RhymeStore(host, port);
     }
 
     /**
@@ -65,7 +78,18 @@ public class RhymeLoader
             throw new IOException("The rhyme file does not exist");
         }
 
-        BufferedReader br = new BufferedReader(new FileReader(file));
+        load(new FileInputStream(file));
+    }
+
+    /**
+     * Loads the rhymes in the given {@link InputStream} into the {@link #store}.
+     * 
+     * @param in The stream with the rhymes to add.
+     * @throws IOException If the rhymes cannot be loaded.
+     */
+    public void load(InputStream in) throws IOException
+    {
+        BufferedReader br = new BufferedReader(new InputStreamReader(in));
         String line = br.readLine();
         int numLines = 0;
 
@@ -86,13 +110,22 @@ public class RhymeLoader
      */
     public static void main(String... args)
     {
-        if (args.length != 1)
+        if (args.length < 1)
         {
             throw new IllegalArgumentException("The file path is required");
         }
 
+        RhymeLoader loader = null;
         File file = new File(args[0]);
-        RhymeLoader loader = new RhymeLoader();
+
+        if (args.length > 1)
+        {
+            loader = new RhymeLoader(args[1], Integer.valueOf(args[2]));
+        }
+        else
+        {
+            loader = new RhymeLoader();
+        }
 
         try
         {
