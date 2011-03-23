@@ -10,7 +10,7 @@ Prerequisites
 -------------
 
 The Rhymestore project uses Redis to store the rhymes. You
-can download it from: [http://code.google.com/p/redis/](http://code.google.com/p/redis/)
+can download it from: [http://redis.io](http://redis.io)
 
 Refer to Redis installation instructions if you need any
 help installing it.
@@ -25,14 +25,16 @@ Rhymestore can be compiled as a standard [Maven](http://maven.apache.org/) proje
 That will run all unit and integration tests, and generate the rhymestore.war file
 in the *target/* folder.
 
+You will need a running Redis instance while compiling, since unit and integration
+tests will test persistence.
+
 Deploying
 ---------
 
 The generated *rhymestore.war* file can be deployed to any servlet container.
 
-Once the application is started, you need to have a running
-Redis instance and Internet access to let the application connect to the configured
-Twitter account.
+Once the application is started, you need to have a running edis instance and
+Internet access to let the application connect to the configured witter account.
 
 Customizing and Contributing
 ----------------------------
