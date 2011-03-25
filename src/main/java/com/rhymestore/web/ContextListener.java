@@ -68,25 +68,25 @@ public class ContextListener implements ServletContextListener
     @Override
     public void contextInitialized(final ServletContextEvent sce)
     {
-        // Connects to Twitter
-        twitter = new TwitterFactory().getInstance();
-
-        try
-        {
-            LOGGER.info("Connected to Twitter as: {}", twitter.getScreenName());
-
-            // Store the user name in the servlet context to make it available
-            // to Controllers
-            sce.getServletContext().setAttribute(TWITTER_USER_NAME, twitter.getScreenName());
-        }
-        catch (TwitterException ex)
-        {
-            LOGGER.error("Could not get the Twitter username", ex);
-        }
-
         // Starts the Twitter scheduler
         if (twitterEnabled(sce))
         {
+            // Connects to Twitter
+            twitter = new TwitterFactory().getInstance();
+
+            try
+            {
+                LOGGER.info("Connected to Twitter as: {}", twitter.getScreenName());
+
+                // Store the user name in the servlet context to make it available
+                // to Controllers
+                sce.getServletContext().setAttribute(TWITTER_USER_NAME, twitter.getScreenName());
+            }
+            catch (TwitterException ex)
+            {
+                LOGGER.error("Could not get the Twitter username", ex);
+            }
+
             LOGGER.info("Starting the Twitter API scheduler");
 
             twitterScheduler = new TwitterScheduler(twitter);
