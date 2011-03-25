@@ -100,7 +100,7 @@ public class RhymeLoader
             numLines++;
         }
 
-        LOGGER.info("Added {} rhymes", numLines);
+        LOGGER.info("Loaded {} rhymes", numLines);
     }
 
     /**

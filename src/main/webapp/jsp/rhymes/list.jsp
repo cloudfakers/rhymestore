@@ -1,4 +1,5 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@page import="com.rhymestore.twitter.util.TwitterUtils" %>
 
 <form action="<%= request.getContextPath() %>/web/rhymes/add" method="post">
@@ -9,7 +10,7 @@
 <table id="rhymes">
 	<thead>
 		<tr>
-			<th class="left">Stored rhymes</th>
+			<th class="left"><c:out value="${fn:length(model)}" /> stored rhymes</th>
 			<c:if test="${not empty model}">
 				<th class="right">
 					<form action="<%= request.getContextPath() %>/download" method="post">
