@@ -61,7 +61,7 @@ public class APIController extends HttpMethodController
     {
         rhymeController.list(request, response);
         setModel(rhymeController.getModel());
-        prepareView(request, response);
+        checkErrors(request, response);
     }
 
     /**
@@ -80,7 +80,7 @@ public class APIController extends HttpMethodController
         String capitalized = WordUtils.capitalize(rhyme);
 
         setModel(capitalized);
-        prepareView(request, response);
+        checkErrors(request, response);
     }
 
     /**
@@ -99,7 +99,7 @@ public class APIController extends HttpMethodController
         String capitalized = WordUtils.capitalize(rhyme);
 
         setModel(capitalized);
-        prepareView(request, response);
+        checkErrors(request, response);
     }
 
     /**
@@ -108,14 +108,12 @@ public class APIController extends HttpMethodController
      * @param request The request.
      * @param response The response.
      */
-    private void prepareView(final HttpServletRequest request, final HttpServletResponse response)
+    private void checkErrors(final HttpServletRequest request, final HttpServletResponse response)
     {
         if (rhymeController.errors())
         {
             errors.addAll(rhymeController.getErrors());
             setView("errors");
         }
-
-        setUseLayout(false);
     }
 }
