@@ -24,7 +24,7 @@
     <scm>
         <url>http://github.com/nacx/rhymestore</url>
         <connection>scm:git:git://github.com/nacx/rhymestore.git</connection>
-        <developerConnection>scm:git:git://github.com/nacx/rhymestore.git</developerConnection>
+        <developerConnection>scm:git:git@github.com:nacx/rhymestore.git</developerConnection>
     </scm>
 
     <!-- Issue tracking -->
@@ -32,6 +32,16 @@
         <system>Github</system>
         <url>http://github.com/nacx/rhymestore/issues</url>
     </issueManagement>
+    
+    <!-- Developers -->
+    <developers>
+        <developer>
+            <name>Enric Ruiz</name>
+        </developer>
+        <developer>
+            <name>Ignasi Barrera</name>
+        </developer>
+    </developers>
 
     <!-- Snapshot reposiroty for SJVMC -->
     <repositories>
@@ -78,7 +88,7 @@
         <dependency>
             <groupId>org.sjmvc</groupId>
             <artifactId>sjmvc</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>1.1-SNAPSHOT</version>
         </dependency>
 
         <!-- Logging -->
