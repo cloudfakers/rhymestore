@@ -161,7 +161,7 @@ public class RhymeController extends MethodInvokingController
     }
     
     /**
-     * Download all the stored rhymes in a text file..
+     * Download all the stored rhymes in a text file.
      * 
      * @param request The request.
      * @param response The response.
