@@ -13,7 +13,7 @@
 			<th class="left"><c:out value="${fn:length(model)}" /> stored rhymes</th>
 			<c:if test="${not empty model}">
 				<th class="right">
-					<form action="<%= request.getContextPath() %>/download" method="post">
+					<form action="<%= request.getContextPath() %>/web/rhymes/download" method="get">
 						<input type="submit" value="Download" class="download" />
 					</form>
 				</th>

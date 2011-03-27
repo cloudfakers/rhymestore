@@ -55,6 +55,14 @@ Deploying
 
 The generated *rhymestore.war* file can be deployed to any servlet container.
 
+In order to connect to Twitter, you will need to configure the following system
+properties:
+
+    -Dtwitter4j.oauth.consumerKey=your_consumer_key
+    -Dtwitter4j.oauth.consumerSecret=your_consumer_secret
+    -Dtwitter4j.oauth.accessToken=your_access_token
+    -Dtwitter4j.oauth.accessTokenSecret=your_access_token_secret
+
 Once the application is started, you need to have a running Redis instance and
 Internet access to let the application connect to the configured Twitter account.
 

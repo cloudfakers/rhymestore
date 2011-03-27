@@ -22,6 +22,7 @@
 
 package com.rhymestore.web.controller;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,6 +33,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.sjmvc.controller.ControllerException;
 import org.sjmvc.controller.MethodInvokingController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.rhymestore.lang.WordUtils;
 import com.rhymestore.model.Rhyme;
@@ -46,11 +49,14 @@ import com.rhymestore.web.ContextListener;
  */
 public class RhymeController extends MethodInvokingController
 {
+    /** The logger. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(RhymeController.class);
+    
     /** The Rhyme store. */
     private final RhymeStore store;
 
     /**
-     * Default constructor
+     * Default constructor.
      */
     public RhymeController()
     {
@@ -152,6 +158,47 @@ public class RhymeController extends MethodInvokingController
         // Load the new list of rhymes to render the list view
         list(request, response);
         setView("list");
+    }
+    
+    /**
+     * Download all the stored rhymes in a text file..
+     * 
+     * @param request The request.
+     * @param response The response.
+     * @throws ControllerException If the rhymes cannot be downloaded.
+     */
+    public void download(final HttpServletRequest request, final HttpServletResponse response)
+        throws ControllerException
+    {
+        try
+        {
+            // Get all rhymes
+            Set<String> rhymes = store.findAll();
+            List<String> sortedRhymes = new ArrayList<String>(rhymes);
+            Collections.sort(sortedRhymes, String.CASE_INSENSITIVE_ORDER);
+            
+            LOGGER.info("Exporting {} rhymes...", sortedRhymes.size());
+            
+            // Configure the response to generate an attachment
+            response.setContentType("text/plain");
+            response.setHeader("Content-Disposition", "attachment; filename=rhymes.txt");
+            
+            // Write output
+            PrintWriter pw = new PrintWriter(response.getOutputStream());
+
+            for (String rhyme : sortedRhymes)
+            {
+                pw.println(rhyme);
+            }
+
+            pw.flush();
+            pw.close();
+        }
+        catch (Exception ex)
+        {
+            error("Could not get rhymes: " + ex.getMessage());
+            setView("list");
+        }
     }
 
     /**

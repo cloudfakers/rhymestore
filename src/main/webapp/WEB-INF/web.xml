@@ -22,19 +22,11 @@
         <servlet-class>org.sjmvc.web.MVCServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
-    <servlet>
-        <servlet-name>DownloadServlet</servlet-name>
-        <servlet-class>com.rhymestore.web.DownloadServlet</servlet-class>
-    </servlet>
 
     <!-- Servlet mappings -->
     <servlet-mapping>
         <servlet-name>MVCServlet</servlet-name>
         <url-pattern>/web/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>DownloadServlet</servlet-name>
-        <url-pattern>/download</url-pattern>
     </servlet-mapping>
 
     <!-- Main document -->
@@ -43,6 +35,7 @@
     </welcome-file-list>
     
     <!-- Security -->
+ 
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Rhymestore Web Console</web-resource-name>
@@ -52,7 +45,7 @@
             <role-name>rhymestore</role-name>
         </auth-constraint>
     </security-constraint>
-    
+
     <login-config>
         <auth-method>BASIC</auth-method>
         <realm-name>Basic Authentication</realm-name>
