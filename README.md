@@ -20,28 +20,50 @@ Compiling Rhymestore
 
 Rhymestore can be compiled as a standard [Maven](http://maven.apache.org/) project:
 
-    mvn clean verify
+    mvn clean package
   
-That will run all unit and integration tests, and generate the rhymestore.war file
+That will run all unit  tests, and generate the rhymestore.war file
 in the *target/* folder.
 
-You will need a running Redis instance while compiling, since unit and integration
-tests will test persistence.
+You will need a running Redis instance while compiling, since unit tests
+will test persistence.
+
+To run the integration tests to test Twitter and default rhyme downloading,
+you need to configure the Twitter credentials. You can set the following
+profile in your Maven `settings.xml` file:
+
+    <profile>
+        <id>rhymestore</id>
+        <properties>
+            <twitter.consumerKey>your_consumer_key</twitter.consumerKey>
+            <twitter.consumerSecret>your_consumer_secret</twitter.consumerSecret>
+            <twitter.accessToken>your_access_token</twitter.accessToken>
+            <twitter.accessTokenSecret>your_access_token_secret</twitter.accessTokenSecret>
+        </properties>
+    </profile>
+    
+Once the Twitter credentials have been configured, you can build and run the
+integration tests as follows:
+
+    mvn clean verify -P rhymestore
+    
+If you don't have your accessToken and accessTokenSecret, you can use the
+`com.rhymestore.twitter.AccessTokenGenerator` main class to generate them.
 
 Deploying
 ---------
 
 The generated *rhymestore.war* file can be deployed to any servlet container.
 
-Once the application is started, you need to have a running edis instance and
-Internet access to let the application connect to the configured witter account.
+Once the application is started, you need to have a running Redis instance and
+Internet access to let the application connect to the configured Twitter account.
+
+By default, the Rhymestore application comes with HTTP Basic Authentication
+security configured. You can configure security in your application server
+or disable the security settings in the `web.xml` file.
 
 Customizing and Contributing
 ----------------------------
-
-You can change the Twitter user by editing the `twitter4j.properties` file. To
-generate the required OAuth tokens, you can run the `com.rhymestore.twitter.AccessTokenGenerator`
-utility class and put the generated values in that file.
 
 Currently, there is only support for the Spanish language. Support for rhymes in other
 languages can be added by implementing the `com.rhymestore.lang.WordParser` interface
