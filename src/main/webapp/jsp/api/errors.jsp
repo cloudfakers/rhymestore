@@ -3,6 +3,6 @@
 
 <?xml version="1.0" encoding="UTF-8"?>
 <errors>
-    <total><c:out value="${fn:length(errors)}" /></total>
-    <c:forEach var="error" items="${errors}"><error><c:out value="${error}" /></error></c:forEach>
-</errors>
+    <total><c:out value="${fn:length(errors)}" /></total><c:forEach var="error" items="${errors}">
+    <error><c:out value="${error}" /></error>
+</c:forEach></errors>

@@ -35,7 +35,6 @@
     </welcome-file-list>
     
     <!-- Security -->
- 
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Rhymestore Web Console</web-resource-name>
