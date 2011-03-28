@@ -35,7 +35,7 @@ import org.testng.annotations.Test;
  * 
  * @author Ignasi Barrera
  */
-public class SSLUtilIT
+public class SSLUtilsIT
 {
     /** Default SSL URL used in tests. */
     private static final String DETAULT_SSL_URL =
