@@ -75,7 +75,7 @@ public class RhymeStore
 
     /** Parses the words to get the part used to rhyme. */
     private final WordParser wordParser;
-
+    
     /**
      * Gets the singleton instance of the store.
      * 
@@ -87,7 +87,7 @@ public class RhymeStore
         {
             instance = new RhymeStore();
         }
-
+        
         return instance;
     }
 

@@ -28,6 +28,11 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
 
+import redis.clients.johm.Attribute;
+import redis.clients.johm.Id;
+import redis.clients.johm.Indexed;
+import redis.clients.johm.Model;
+
 import com.rhymestore.model.validator.ValidWord;
 import com.rhymestore.twitter.util.TwitterUtils;
 
@@ -35,29 +40,44 @@ import com.rhymestore.twitter.util.TwitterUtils;
  * The Rhyme object.
  * 
  * @author Ignasi Barrera
- * 
  */
+@Model
 public class Rhyme implements Serializable
 {
-	/** Serial UID. */
-	private static final long serialVersionUID = 1L;
+    /** Serial UID. */
+    private static final long serialVersionUID = 1L;
 
-	/** The text of the rhyme to add/delete. */
-	@NotNull
-	@Length(min = 1, max = TwitterUtils.MAX_TWEET_LENGTH)
-	@ValidWord
-	private String rhyme;
+    @Id
+    private Long id;
 
-	// Getters and setters
+    /** The text of the rhyme to add/delete. */
+    @NotNull
+    @Length(min = 1, max = TwitterUtils.MAX_TWEET_LENGTH)
+    @ValidWord
+    @Attribute
+    @Indexed
+    private String rhyme;
 
-	public String getRhyme()
-	{
-		return rhyme;
-	}
+    // Getters and setters
 
-	public void setRhyme(String rhyme)
-	{
-		this.rhyme = rhyme;
-	}
+    public Long getId()
+    {
+        return id;
+    }
+
+    public void setId(Long id)
+    {
+        this.id = id;
+    }
+
+    public String getRhyme()
+    {
+        return rhyme;
+    }
+
+    public void setRhyme(String rhyme)
+    {
+        this.rhyme = rhyme;
+    }
 
 }
