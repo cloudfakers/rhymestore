@@ -67,7 +67,7 @@ public class Configuration
     {
         super();
     }
-    
+
     /**
      * Gets the configuration properties.
      * 
@@ -100,7 +100,7 @@ public class Configuration
 
         return instance.properties;
     }
-    
+
     /**
      * Get the configuration value for the given property name.
      * 
@@ -108,7 +108,14 @@ public class Configuration
      */
     public static String getConfigValue(final String propertyName)
     {
-        return getConfiguration().getProperty(propertyName);
-    }
+        String value = getConfiguration().getProperty(propertyName);
 
+        if (value == null)
+        {
+            throw new ConfigurationException("Te requested property [" + propertyName
+                + "] was not set.");
+        }
+
+        return value;
+    }
 }

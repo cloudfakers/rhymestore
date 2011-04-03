@@ -55,17 +55,6 @@ public class RhymeLoader
     }
 
     /**
-     * Creates a new <code>RhymeLoader</code> connecting to the given Redis host and port.
-     * 
-     * @param host The Redis host.
-     * @param port The Redis listening port.
-     */
-    public RhymeLoader(final String host, final int port)
-    {
-        store = new RhymeStore(host, port);
-    }
-
-    /**
      * Loads the rhymes in the given file into the {@link #store}.
      * 
      * @param file The file with the rhymes to add.
@@ -115,17 +104,8 @@ public class RhymeLoader
             throw new IllegalArgumentException("The file path is required");
         }
 
-        RhymeLoader loader = null;
+        RhymeLoader loader = new RhymeLoader();
         File file = new File(args[0]);
-
-        if (args.length > 1)
-        {
-            loader = new RhymeLoader(args[1], Integer.valueOf(args[2]));
-        }
-        else
-        {
-            loader = new RhymeLoader();
-        }
 
         try
         {

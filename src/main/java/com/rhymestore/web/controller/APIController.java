@@ -39,7 +39,7 @@ public class APIController extends HttpMethodController
 {
     /** Controller to delegate execution to. */
     private final RhymeController rhymeController;
-
+    
     /**
      * Creates the API {@link Controller}.
      */

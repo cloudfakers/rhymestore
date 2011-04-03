@@ -40,13 +40,11 @@ import org.slf4j.LoggerFactory;
 
 import redis.clients.jedis.Jedis;
 
+import com.rhymestore.config.Configuration;
 import com.rhymestore.lang.StressType;
 import com.rhymestore.lang.WordParser;
 import com.rhymestore.lang.WordParserFactory;
 import com.rhymestore.lang.WordUtils;
-import com.rhymestore.model.Rhyme;
-import com.rhymestore.store.dao.RedisDao;
-import com.rhymestore.store.dao.RedisDaoFactory;
 
 /**
  * Manages the Redis database to store and search rhymes.
@@ -78,10 +76,10 @@ public class RhymeStore
 
     /** Parses the words to get the part used to rhyme. */
     private final WordParser wordParser;
-    
+
     /** The DAO used to persist the rhymes. */
-    private RedisDao<Rhyme> rhymeDAO;
-    
+    // private RedisDao<Rhyme> rhymeDAO;
+
     /**
      * Gets the singleton instance of the store.
      * 
@@ -93,7 +91,7 @@ public class RhymeStore
         {
             instance = new RhymeStore();
         }
-        
+
         return instance;
     }
 
@@ -103,21 +101,12 @@ public class RhymeStore
      */
     protected RhymeStore()
     {
-        redis = new Jedis("localhost", 6379);
-        wordParser = WordParserFactory.getWordParser();
-        rhymeDAO = RedisDaoFactory.getDAO(Rhyme.class);
-    }
+        String host = Configuration.getConfigValue(Configuration.REDIS_HOST_PROPERTY);
+        String port = Configuration.getConfigValue(Configuration.REDIS_PORT_PROPERTY);
 
-    /**
-     * Creates a new <code>RhymeStore</code> connecting to the given host and port.
-     * 
-     * @param host The Redis host.
-     * @param port The Redis listening port.
-     */
-    public RhymeStore(final String host, final int port)
-    {
-        redis = new Jedis(host, port);
+        redis = new Jedis(host, Integer.valueOf(port));
         wordParser = WordParserFactory.getWordParser();
+        // rhymeDAO = RedisDaoFactory.getDAO(Rhyme.class);
     }
 
     /**
