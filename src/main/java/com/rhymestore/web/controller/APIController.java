@@ -61,7 +61,7 @@ public class APIController extends HttpMethodController
     {
         rhymeController.list(request, response);
         setModel(rhymeController.getModel());
-        checkErrors(request, response);
+        populateResponse(request, response);
     }
 
     /**
@@ -80,7 +80,7 @@ public class APIController extends HttpMethodController
         String capitalized = WordUtils.capitalize(rhyme);
 
         setModel(capitalized);
-        checkErrors(request, response);
+        populateResponse(request, response);
     }
 
     /**
@@ -99,7 +99,7 @@ public class APIController extends HttpMethodController
         String capitalized = WordUtils.capitalize(rhyme);
 
         setModel(capitalized);
-        checkErrors(request, response);
+        populateResponse(request, response);
     }
 
     /**
@@ -108,8 +108,10 @@ public class APIController extends HttpMethodController
      * @param request The request.
      * @param response The response.
      */
-    private void checkErrors(final HttpServletRequest request, final HttpServletResponse response)
+    private void populateResponse(final HttpServletRequest request, final HttpServletResponse response)
     {
+        response.setContentType("text/xml; charset=ISO-8859-1");
+        
         if (rhymeController.errors())
         {
             errors.addAll(rhymeController.getErrors());

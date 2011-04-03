@@ -44,6 +44,9 @@ import com.rhymestore.lang.StressType;
 import com.rhymestore.lang.WordParser;
 import com.rhymestore.lang.WordParserFactory;
 import com.rhymestore.lang.WordUtils;
+import com.rhymestore.model.Rhyme;
+import com.rhymestore.store.dao.RedisDao;
+import com.rhymestore.store.dao.RedisDaoFactory;
 
 /**
  * Manages the Redis database to store and search rhymes.
@@ -76,6 +79,9 @@ public class RhymeStore
     /** Parses the words to get the part used to rhyme. */
     private final WordParser wordParser;
     
+    /** The DAO used to persist the rhymes. */
+    private RedisDao<Rhyme> rhymeDAO;
+    
     /**
      * Gets the singleton instance of the store.
      * 
@@ -99,6 +105,7 @@ public class RhymeStore
     {
         redis = new Jedis("localhost", 6379);
         wordParser = WordParserFactory.getWordParser();
+        rhymeDAO = RedisDaoFactory.getDAO(Rhyme.class);
     }
 
     /**

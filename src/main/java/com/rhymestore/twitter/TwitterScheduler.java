@@ -51,8 +51,7 @@ import com.rhymestore.twitter.util.TwitterUtils;
 public class TwitterScheduler implements Runnable
 {
 	/** The logger. */
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(TwitterScheduler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TwitterScheduler.class);
 
 	/** The scheduler service. */
 	private ScheduledExecutorService scheduler;
@@ -86,8 +85,7 @@ public class TwitterScheduler implements Runnable
 	 */
 	public void start()
 	{
-		double callsPerMinute = Math
-				.floor(TwitterUtils.MAX_API_CALLS_PER_HOUR / 60);
+		double callsPerMinute = Math.floor(TwitterUtils.MAX_API_CALLS_PER_HOUR / 60);
 		long interval = (long) Math.ceil(60 / callsPerMinute);
 
 		scheduler.scheduleAtFixedRate(this, 0, interval, TimeUnit.SECONDS);

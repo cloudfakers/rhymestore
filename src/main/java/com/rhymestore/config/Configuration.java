@@ -22,6 +22,11 @@
 
 package com.rhymestore.config;
 
+import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.rhymestore.lang.WordParser;
 
 /**
@@ -31,13 +36,79 @@ import com.rhymestore.lang.WordParser;
  */
 public class Configuration
 {
+    /** The logger. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(Configuration.class);
+
     /** The main configuration file. */
     public static final String CONFIG_FILE = "rhymestore.properties";
+
+    /** Name of the property that holds the Redis host. */
+    public static final String REDIS_HOST_PROPERTY = "rhymestore.redis.host";
+
+    /** Name of the property that holds the Redis port. */
+    public static final String REDIS_PORT_PROPERTY = "rhymestore.redis.port";
 
     /** Name of the property that holds the {@link WordParser} implementation class. */
     public static final String WORDPARSER_PROPERTY = "rhymestore.wordparser.class";
 
     /** Name of the property that holds the default rhymes URI. */
     public static final String DEFAULT_RHYMES_URI_PROPERTY = "rhymestore.store.rhymes.defaulturi";
+
+    /** The singleton instance of the configuration object. */
+    private static Configuration instance;
+
+    /** The configuration properties. */
+    private Properties properties;
+
+    /**
+     * Private constructor. This class should ot be instantiated.
+     */
+    private Configuration()
+    {
+        super();
+    }
+    
+    /**
+     * Gets the configuration properties.
+     * 
+     * @return The configuration properties.
+     */
+    public static Properties getConfiguration()
+    {
+        if (instance == null)
+        {
+            instance = new Configuration();
+
+            LOGGER.debug("Loading configuration from {}", CONFIG_FILE);
+
+            // Load properties
+            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            instance.properties = new Properties();
+
+            try
+            {
+                instance.properties.load(cl.getResourceAsStream(CONFIG_FILE));
+            }
+            catch (Exception ex)
+            {
+                throw new ConfigurationException("Could not load configuration file: "
+                    + ex.getMessage());
+            }
+
+            LOGGER.debug("Loaded {} configuration properties", instance.properties.size());
+        }
+
+        return instance.properties;
+    }
+    
+    /**
+     * Get the configuration value for the given property name.
+     * 
+     * @return The value for the given property or <code>null</code> if the value is not defined.
+     */
+    public static String getConfigValue(final String propertyName)
+    {
+        return getConfiguration().getProperty(propertyName);
+    }
 
 }

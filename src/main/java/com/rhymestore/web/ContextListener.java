@@ -22,10 +22,8 @@
 
 package com.rhymestore.web;
 
-import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Properties;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -38,7 +36,6 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 
 import com.rhymestore.config.Configuration;
-import com.rhymestore.config.ConfigurationException;
 import com.rhymestore.store.RhymeLoader;
 import com.rhymestore.twitter.TwitterScheduler;
 import com.rhymestore.util.SSLUtils;
@@ -133,22 +130,8 @@ public class ContextListener implements ServletContextListener
      */
     private void loadDefaultRhymes()
     {
-        String rhymesURI = null;
-
-        try
-        {
-            // Load Rhymestore configuration
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            Properties config = new Properties();
-            config.load(classLoader.getResourceAsStream(Configuration.CONFIG_FILE));
-
-            // Load the rhymes URI
-            rhymesURI = config.getProperty(Configuration.DEFAULT_RHYMES_URI_PROPERTY);
-        }
-        catch (IOException ex)
-        {
-            throw new ConfigurationException("Could not read the configuration file", ex);
-        }
+        // Load the rhymes URI
+        String rhymesURI = Configuration.getConfigValue(Configuration.DEFAULT_RHYMES_URI_PROPERTY);
 
         if (rhymesURI != null)
         {
