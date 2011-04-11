@@ -51,7 +51,7 @@ public class Rhyme implements Serializable
     private Long id;
 
     /** The text of the rhyme to add/delete. */
-    @NotNull
+    @NotNull(message = "rhyme text must not be null")
     @Length(min = 1, max = TwitterUtils.MAX_TWEET_LENGTH)
     @ValidWord
     @Attribute

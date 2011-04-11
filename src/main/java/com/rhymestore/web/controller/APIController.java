@@ -27,7 +27,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.sjmvc.controller.Controller;
 
-import com.rhymestore.lang.WordUtils;
+import com.rhymestore.model.Rhyme;
+import com.rhymestore.store.RhymeStore;
 
 /**
  * Controller to handle API calls.
@@ -37,16 +38,15 @@ import com.rhymestore.lang.WordUtils;
  */
 public class APIController extends HttpMethodController
 {
-    /** Controller to delegate execution to. */
-    private final RhymeController rhymeController;
-    
+    /** The Rhyme store. */
+    private final RhymeStore store;
+
     /**
      * Creates the API {@link Controller}.
      */
     public APIController()
     {
-        super();
-        rhymeController = new RhymeController();
+        store = RhymeStore.getInstance();
     }
 
     /**
@@ -59,63 +59,27 @@ public class APIController extends HttpMethodController
     public void get(final HttpServletRequest request, final HttpServletResponse response)
         throws Exception
     {
-        rhymeController.list(request, response);
-        setModel(rhymeController.getModel());
-        populateResponse(request, response);
-    }
+        Rhyme rhyme = new Rhyme();
+        bindAndValidate(rhyme, request);
 
-    /**
-     * Handles POST requests to the mapped resource.
-     * 
-     * @param request The request.
-     * @param response The response.
-     * @throws Exception If an error occurs during request processing.
-     */
-    public void post(final HttpServletRequest request, final HttpServletResponse response)
-        throws Exception
-    {
-        rhymeController.add(request, response);
-
-        String rhyme = request.getParameter("model.rhyme");
-        String capitalized = WordUtils.capitalize(rhyme);
-
-        setModel(capitalized.trim());
-        populateResponse(request, response);
-    }
-
-    /**
-     * Handles DELETE requests to the mapped resource.
-     * 
-     * @param request The request.
-     * @param response The response.
-     * @throws Exception If an error occurs during request processing.
-     */
-    public void delete(final HttpServletRequest request, final HttpServletResponse response)
-        throws Exception
-    {
-        rhymeController.delete(request, response);
-
-        String rhyme = request.getParameter("model.rhyme");
-        String capitalized = WordUtils.capitalize(rhyme);
-
-        setModel(capitalized);
-        populateResponse(request, response);
-    }
-
-    /**
-     * Configures the view to be loaded.
-     * 
-     * @param request The request.
-     * @param response The response.
-     */
-    private void populateResponse(final HttpServletRequest request, final HttpServletResponse response)
-    {
-        response.setContentType("text/xml; charset=ISO-8859-1");
-        
-        if (rhymeController.errors())
+        if (!errors())
         {
-            errors.addAll(rhymeController.getErrors());
+            try
+            {
+                String rhymeResponse = store.getRhyme(rhyme.getRhyme());
+                setModel(rhymeResponse);
+            }
+            catch (Exception ex)
+            {
+                error("Could not get rhyme: " + ex.getMessage());
+            }
+        }
+
+        if (errors())
+        {
             setView("errors");
         }
+
+        response.setContentType("text/xml; charset=ISO-8859-1");
     }
 }
