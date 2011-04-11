@@ -79,7 +79,7 @@ public class APIController extends HttpMethodController
         String rhyme = request.getParameter("model.rhyme");
         String capitalized = WordUtils.capitalize(rhyme);
 
-        setModel(capitalized);
+        setModel(capitalized.trim());
         populateResponse(request, response);
     }
 

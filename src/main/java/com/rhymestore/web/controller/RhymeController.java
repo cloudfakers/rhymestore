@@ -115,7 +115,7 @@ public class RhymeController extends MethodInvokingController
                 try
                 {
                     String capitalized = WordUtils.capitalize(rhyme.getRhyme());
-                    store.add(capitalized);
+                    store.add(capitalized.trim());
                 }
                 catch (Exception ex)
                 {
