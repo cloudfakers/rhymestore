@@ -167,7 +167,10 @@ public class SpanishWordParserTest extends AbstractWordParserTest
     @Override
     public void testGetDefaultRhyme()
     {
-        assertEquals(wordParser.getDefaultRhyme(), SpanishWordParser.DEFAULT_RHYME);
+        assertEquals(wordParser.getDefaultRhyme(), SpanishWordParser.DEFAULT_RHYMES[0]);
+        assertEquals(wordParser.getDefaultRhyme(), SpanishWordParser.DEFAULT_RHYMES[1]);
+        assertEquals(wordParser.getDefaultRhyme(), SpanishWordParser.DEFAULT_RHYMES[0]);
+        assertEquals(wordParser.getDefaultRhyme(), SpanishWordParser.DEFAULT_RHYMES[1]);
     }
 
 }

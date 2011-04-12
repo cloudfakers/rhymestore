@@ -76,7 +76,6 @@ public class RhymeStoreTest
     {
         assertEquals(store.getRhyme("¿Hay algo que rime con tres?"), "Te la meto del revés");
         assertEquals(store.getRhyme("Nada rima con dos"), "Mi nabo para vos!!");
-        assertEquals(store.getRhyme("Nada rima con be"), wordParser.getDefaultRhyme());
     }
 
     @Test(expectedExceptions = UnsupportedOperationException.class)

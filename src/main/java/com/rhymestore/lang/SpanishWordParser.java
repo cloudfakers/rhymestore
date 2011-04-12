@@ -31,8 +31,12 @@ package com.rhymestore.lang;
  */
 public class SpanishWordParser implements WordParser
 {
-    /** The default rhyme for the Spanish language. */
-    /* package */static final String DEFAULT_RHYME = "Patada en los cojones";
+    /** The default rhymes for the Spanish language. */
+    /* package */static final String[] DEFAULT_RHYMES = new String[] {"Patada en los cojones",
+    "¿Seguro que tienes nada mejor que hacer?"};
+
+    /** The last used default rhyme. */
+    /* package */static int lastUsedDefault = 0;
 
     private int letra(final char c)
     {
@@ -812,6 +816,6 @@ public class SpanishWordParser implements WordParser
     @Override
     public String getDefaultRhyme()
     {
-        return DEFAULT_RHYME;
+        return DEFAULT_RHYMES[lastUsedDefault++ % DEFAULT_RHYMES.length];
     }
 }
