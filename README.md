@@ -95,5 +95,5 @@ See LICENSE file.
 Contributors
 ------------
 
-Special thanks to Andrea Cansirro for his generosity by hosting the first Rhymestore
-application and for his dedication in setting up an optimal environment to run it.
+Special thanks to Andrea Cansirro (isochronic) for his generosity by hosting the first
+Rhymestore application and for his dedication in setting up an optimal environment to run it.
