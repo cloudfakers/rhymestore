@@ -28,11 +28,6 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
 
-import redis.clients.johm.Attribute;
-import redis.clients.johm.Id;
-import redis.clients.johm.Indexed;
-import redis.clients.johm.Model;
-
 import com.rhymestore.model.validator.ValidWord;
 import com.rhymestore.twitter.util.TwitterUtils;
 
@@ -41,21 +36,17 @@ import com.rhymestore.twitter.util.TwitterUtils;
  * 
  * @author Ignasi Barrera
  */
-@Model
 public class Rhyme implements Serializable
 {
     /** Serial UID. */
     private static final long serialVersionUID = 1L;
 
-    @Id
     private Long id;
 
     /** The text of the rhyme to add/delete. */
     @NotNull(message = "rhyme text must not be null")
     @Length(min = 1, max = TwitterUtils.MAX_TWEET_LENGTH)
     @ValidWord
-    @Attribute
-    @Indexed
     private String rhyme;
 
     // Getters and setters

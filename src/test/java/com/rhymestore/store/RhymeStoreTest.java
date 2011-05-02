@@ -30,9 +30,6 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.rhymestore.lang.WordParser;
-import com.rhymestore.lang.WordParserFactory;
-
 /**
  * Unit tests for the {@link RhymeStore} class.
  * 
@@ -46,17 +43,12 @@ public class RhymeStoreTest
     /** The store to test. */
     private RhymeStore store;
 
-    /** The {@link WordParser} used to parse rhymes. */
-    private WordParser wordParser;
-
     @BeforeMethod
     public void setUp() throws IOException
     {
-        wordParser = WordParserFactory.getWordParser();
         store = new TestRhymeStore();
-
-        store.add("Mi nabo para vos!!");
-        store.add("Te la meto del revés");
+        store.add("Ya son veintid¡ós!!");
+        store.add("Me escondo y no me ves");
     }
 
     @AfterMethod
@@ -74,8 +66,8 @@ public class RhymeStoreTest
     @Test
     public void testGetRhyme() throws IOException
     {
-        assertEquals(store.getRhyme("¿Hay algo que rime con tres?"), "Te la meto del revés");
-        assertEquals(store.getRhyme("Nada rima con dos"), "Mi nabo para vos!!");
+        assertEquals(store.getRhyme("¿Hay algo que rime con tres?"), "Me escondo y no me ves");
+        assertEquals(store.getRhyme("Nada rima con dos"), "Ya son veintid¡ós!!");
     }
 
     @Test(expectedExceptions = UnsupportedOperationException.class)

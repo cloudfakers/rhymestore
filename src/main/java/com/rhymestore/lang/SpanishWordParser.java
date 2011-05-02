@@ -22,6 +22,11 @@
 
 package com.rhymestore.lang;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.rhymestore.config.Configuration;
+
 /**
  * Parses words to identify the part that is used to conform a consonant rhyme.
  * 
@@ -32,11 +37,26 @@ package com.rhymestore.lang;
 public class SpanishWordParser implements WordParser
 {
     /** The default rhymes for the Spanish language. */
-    /* package */static final String[] DEFAULT_RHYMES = new String[] {"Patada en los cojones",
-    "¿Seguro que tienes nada mejor que hacer?"};
+    /* package */List<String> defaultRhymes;
 
     /** The last used default rhyme. */
-    /* package */static int lastUsedDefault = 0;
+    /* package */int lastUsedDefault = 0;
+
+    public SpanishWordParser()
+    {
+        super();
+
+        defaultRhymes = new ArrayList<String>();
+
+        for (Object prop : Configuration.getConfiguration().keySet())
+        {
+            String propertyName = (String) prop;
+            if (propertyName.startsWith(Configuration.DEFAULT_RHYME_PROPERTY))
+            {
+                defaultRhymes.add(Configuration.getConfigValue(propertyName));
+            }
+        }
+    }
 
     private int letra(final char c)
     {
@@ -816,6 +836,6 @@ public class SpanishWordParser implements WordParser
     @Override
     public String getDefaultRhyme()
     {
-        return DEFAULT_RHYMES[lastUsedDefault++ % DEFAULT_RHYMES.length];
+        return defaultRhymes.get(lastUsedDefault++ % defaultRhymes.size());
     }
 }

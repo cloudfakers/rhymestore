@@ -51,6 +51,9 @@ public class Configuration
     /** Name of the property that holds the {@link WordParser} implementation class. */
     public static final String WORDPARSER_PROPERTY = "rhymestore.wordparser.class";
 
+    /** Name of the property that holds the default rhymes to use. */
+    public static final String DEFAULT_RHYME_PROPERTY = "rhymestore.wordparser.default";
+
     /** Name of the property that holds the default rhymes URI. */
     public static final String DEFAULT_RHYMES_URI_PROPERTY = "rhymestore.store.rhymes.defaulturi";
 
