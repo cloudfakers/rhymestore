@@ -39,7 +39,7 @@ public class SSLUtilsIT
 {
     /** Default SSL URL used in tests. */
     private static final String DETAULT_SSL_URL =
-        "https://github.com/nacx/rhymestore/raw/master/db/rhymes";
+        "https://github.com/nacx/rhymestore/raw/master/README.md";
 
     @Test
     public void testInstallTrustManager() throws Exception
