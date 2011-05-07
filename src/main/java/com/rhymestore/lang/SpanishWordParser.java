@@ -53,7 +53,7 @@ public class SpanishWordParser implements WordParser
             String propertyName = (String) prop;
             if (propertyName.startsWith(Configuration.DEFAULT_RHYME_PROPERTY))
             {
-                defaultRhymes.add(Configuration.getConfigValue(propertyName));
+                defaultRhymes.add(Configuration.getRequiredConfigValue(propertyName));
             }
         }
     }

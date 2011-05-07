@@ -36,89 +36,106 @@ import com.rhymestore.lang.WordParser;
  */
 public class Configuration
 {
-    /** The logger. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(Configuration.class);
+	/** The logger. */
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(Configuration.class);
 
-    /** The main configuration file. */
-    public static final String CONFIG_FILE = "rhymestore.properties";
+	/** The main configuration file. */
+	public static final String CONFIG_FILE = "rhymestore.properties";
 
-    /** Name of the property that holds the Redis host. */
-    public static final String REDIS_HOST_PROPERTY = "rhymestore.redis.host";
+	/** Name of the property that holds the Redis host. */
+	public static final String REDIS_HOST_PROPERTY = "rhymestore.redis.host";
 
-    /** Name of the property that holds the Redis port. */
-    public static final String REDIS_PORT_PROPERTY = "rhymestore.redis.port";
+	/** Name of the property that holds the Redis port. */
+	public static final String REDIS_PORT_PROPERTY = "rhymestore.redis.port";
 
-    /** Name of the property that holds the {@link WordParser} implementation class. */
-    public static final String WORDPARSER_PROPERTY = "rhymestore.wordparser.class";
+	/**
+	 * Name of the property that holds the {@link WordParser} implementation
+	 * class.
+	 */
+	public static final String WORDPARSER_PROPERTY = "rhymestore.wordparser.class";
 
-    /** Name of the property that holds the default rhymes to use. */
-    public static final String DEFAULT_RHYME_PROPERTY = "rhymestore.wordparser.default";
+	/** Name of the property that holds the default rhymes to use. */
+	public static final String DEFAULT_RHYME_PROPERTY = "rhymestore.wordparser.default";
 
-    /** Name of the property that holds the default rhymes URI. */
-    public static final String DEFAULT_RHYMES_URI_PROPERTY = "rhymestore.store.rhymes.defaulturi";
+	/** Name of the property that holds the default rhymes URI. */
+	public static final String DEFAULT_RHYMES_URI_PROPERTY = "rhymestore.store.rhymes.defaulturi";
 
-    /** The singleton instance of the configuration object. */
-    private static Configuration instance;
+	/** The singleton instance of the configuration object. */
+	private static Configuration instance;
 
-    /** The configuration properties. */
-    private Properties properties;
+	/** The configuration properties. */
+	private Properties properties;
 
-    /**
-     * Private constructor. This class should ot be instantiated.
-     */
-    private Configuration()
-    {
-        super();
-    }
+	/**
+	 * Private constructor. This class should ot be instantiated.
+	 */
+	private Configuration()
+	{
+		super();
+	}
 
-    /**
-     * Gets the configuration properties.
-     * 
-     * @return The configuration properties.
-     */
-    public static Properties getConfiguration()
-    {
-        if (instance == null)
-        {
-            instance = new Configuration();
+	/**
+	 * Gets the configuration properties.
+	 * 
+	 * @return The configuration properties.
+	 */
+	public static Properties getConfiguration()
+	{
+		if (instance == null)
+		{
+			instance = new Configuration();
 
-            LOGGER.debug("Loading configuration from {}", CONFIG_FILE);
+			LOGGER.debug("Loading configuration from {}", CONFIG_FILE);
 
-            // Load properties
-            ClassLoader cl = Thread.currentThread().getContextClassLoader();
-            instance.properties = new Properties();
+			// Load properties
+			ClassLoader cl = Thread.currentThread().getContextClassLoader();
+			instance.properties = new Properties();
 
-            try
-            {
-                instance.properties.load(cl.getResourceAsStream(CONFIG_FILE));
-            }
-            catch (Exception ex)
-            {
-                throw new ConfigurationException("Could not load configuration file: "
-                    + ex.getMessage());
-            }
+			try
+			{
+				instance.properties.load(cl.getResourceAsStream(CONFIG_FILE));
+			}
+			catch (Exception ex)
+			{
+				throw new ConfigurationException(
+						"Could not load configuration file: " + ex.getMessage());
+			}
 
-            LOGGER.debug("Loaded {} configuration properties", instance.properties.size());
-        }
+			LOGGER.debug("Loaded {} configuration properties",
+					instance.properties.size());
+		}
 
-        return instance.properties;
-    }
+		return instance.properties;
+	}
 
-    /**
-     * Get the configuration value for the given property name.
-     * 
-     * @return The value for the given property or <code>null</code> if the value is not defined.
-     */
-    public static String getConfigValue(final String propertyName)
-    {
-        String value = getConfiguration().getProperty(propertyName);
+	/**
+	 * Get the configuration value for the given property name.
+	 * 
+	 * @return The value for the given property.
+	 * @throws ConfigurationException If the property does not exist.
+	 */
+	public static String getRequiredConfigValue(final String propertyName)
+	{
+		String value = getConfiguration().getProperty(propertyName);
 
-        if (value == null)
-        {
-            throw new ConfigurationException("Te requested property [" + propertyName
-                + "] was not set.");
-        }
+		if (value == null)
+		{
+			throw new ConfigurationException("Te requested property ["
+					+ propertyName + "] was not set.");
+		}
 
-        return value;
-    }
+		return value;
+	}
+
+	/**
+	 * Get the configuration value for the given property name.
+	 * 
+	 * @return The value for the given property or <code>null</code> if the
+	 *         value is not defined.
+	 */
+	public static String getConfigValue(final String propertyName)
+	{
+		return getConfiguration().getProperty(propertyName);
+	}
 }
