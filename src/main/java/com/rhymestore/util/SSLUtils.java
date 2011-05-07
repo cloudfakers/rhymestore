@@ -33,7 +33,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 /**
- * Utility methods to work with SSl.
+ * Utility methods to work with SSL.
  * 
  * @author Ignasi Barrera
  */
