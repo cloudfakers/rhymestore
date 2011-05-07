@@ -60,8 +60,8 @@ public class RhymeStore
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(RhymeStore.class);
 
-	/** The Redis database API. */
-	protected final Jedis redis;
+	/** The key used to store the next id value. */
+	private static final String NEXT_ID_KEY = "next.id";
 
 	/** Redis namespace for sentences. */
 	private final Keymaker sentencens = new Keymaker("sentence");
@@ -73,10 +73,13 @@ public class RhymeStore
 	private final String encoding = "UTF-8";
 
 	/** The singleton instance of the store. */
-	public static RhymeStore instance;
+	private static RhymeStore instance;
 
 	/** Parses the words to get the part used to rhyme. */
 	private final WordParser wordParser;
+
+	/** The Redis database API. */
+	protected final Jedis redis;
 
 	/**
 	 * Gets the singleton instance of the store.
@@ -175,7 +178,6 @@ public class RhymeStore
 
 		String sentenceKey = getUniqueIdKey(sentencens,
 				normalizeString(sentence));
-		String indexKey = getUniqueIdKey(indexns, buildUniqueToken(rhyme, type));
 
 		if (redis.exists(sentenceKey) == 0)
 		{
@@ -183,24 +185,31 @@ public class RhymeStore
 			throw new IOException("The element to remove does not exist.");
 		}
 
+		String indexKey = getUniqueIdKey(indexns, buildUniqueToken(rhyme, type));
+		String sentenceId = redis.get(sentenceKey);
+		sentenceId = sentencens.build(sentenceId).toString();
+
 		// Remove the index
 		if (redis.exists(indexKey) == 1)
 		{
 			String indexId = redis.get(indexKey);
 			indexId = indexns.build(indexId).toString();
 
+			// Remove the sentence from the index
 			if (redis.exists(indexId) == 1)
 			{
-				redis.srem(indexId, sentenceKey);
+				redis.srem(indexId, sentenceId);
+			}
+
+			// Remove the index if empty
+			if (redis.smembers(indexId).isEmpty())
+			{
+				redis.del(indexId, indexKey);
 			}
 		}
 
 		// Remove the key
-		String sentenceId = redis.get(sentenceKey);
-		sentenceId = sentencens.build(sentenceId).toString();
-
-		redis.del(sentenceId);
-		redis.del(sentenceKey);
+		redis.del(sentenceId, sentenceKey);
 
 		disconnect();
 
@@ -385,7 +394,7 @@ public class RhymeStore
 			return id;
 		}
 
-		Integer next = redis.incr(ns.build("next.id").toString());
+		Integer next = redis.incr(ns.build(NEXT_ID_KEY).toString());
 		id = next.toString();
 
 		if (redis.setnx(key, id) == 0)
@@ -404,7 +413,7 @@ public class RhymeStore
 	 */
 	private String getLastId(final Keymaker ns)
 	{
-		return redis.get(ns.build("next.id").toString());
+		return redis.get(ns.build(NEXT_ID_KEY).toString());
 	}
 
 	/**
