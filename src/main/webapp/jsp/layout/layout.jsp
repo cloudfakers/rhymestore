@@ -30,7 +30,7 @@
     <div id="content">
         <jsp:include page="header.jsp" />
         <hr />
-        <sjmvc:errors />
+        <sjmvc:messages />
         <jsp:include page="${currentView}" />
         <jsp:include page="footer.jsp" />
     </div>

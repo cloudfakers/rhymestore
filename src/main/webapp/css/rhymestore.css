@@ -62,6 +62,12 @@ h2 {
     background-color: #BEE34F;
 }
 
+.messages {
+    color: #5D7A07;
+    text-align: left;
+    font-size: 0.8em;
+}
+
 .errors {
 	color: maroon;
 	text-align: left;
