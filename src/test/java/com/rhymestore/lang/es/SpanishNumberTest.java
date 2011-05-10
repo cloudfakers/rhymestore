@@ -71,6 +71,7 @@ public class SpanishNumberTest
         assertEquals(getBaseSound(18), "ocho");
         assertEquals(getBaseSound(19), "nueve");
         assertEquals(getBaseSound(20), "veinte");
+
         assertEquals(getBaseSound(100), "cien");
         assertEquals(getBaseSound(1000000), "millón");
 
