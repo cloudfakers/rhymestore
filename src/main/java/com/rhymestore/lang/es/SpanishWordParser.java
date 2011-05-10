@@ -20,12 +20,15 @@
  * THE SOFTWARE.
  */
 
-package com.rhymestore.lang;
+package com.rhymestore.lang.es;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.rhymestore.config.Configuration;
+import com.rhymestore.lang.StressType;
+import com.rhymestore.lang.WordParser;
+import com.rhymestore.lang.WordUtils;
 
 /**
  * Parses words to identify the part that is used to conform a consonant rhyme.
@@ -459,22 +462,35 @@ public class SpanishWordParser implements WordParser
         // Monosilabo
         if (syllables.length == 1)
         {
-            int lastVocal = lastVocalIndex(syllables[0]);
-            return syllables[0].substring(lastVocal);
+            // TODO: Vocal tonica en monosilabos
+            int index = vocalTonicaIndex(syllables[0]);
+            if (index == -1)
+            {
+                index = firstVocalIndex(syllables[0]);
+            }
+            return syllables[0].substring(index);
         }
 
         // Palabra aguda
         if (aguda(syllables))
         {
-            int lastVocal = lastVocalIndex(syllables[syllables.length - 1]);
-            return syllables[syllables.length - 1].substring(lastVocal);
+            int index = vocalTonicaIndex(syllables[syllables.length - 1]);
+            if (index == -1)
+            {
+                index = lastVocalIndex(syllables[syllables.length - 1]);
+            }
+            return syllables[syllables.length - 1].substring(index);
         }
 
         // Palabra llana
         if (llana(syllables))
         {
-            int lastVocal = lastVocalIndex(syllables[syllables.length - 2]);
-            return syllables[syllables.length - 2].substring(lastVocal)
+            int index = vocalTonicaIndex(syllables[syllables.length - 2]);
+            if (index == -1)
+            {
+                index = lastVocalIndex(syllables[syllables.length - 2]);
+            }
+            return syllables[syllables.length - 2].substring(index)
                 + syllables[syllables.length - 1];
         }
 
@@ -559,6 +575,34 @@ public class SpanishWordParser implements WordParser
         throw new IllegalArgumentException("It is impossible to have a word without vowels");
     }
 
+    private static int firstVocalIndex(final String syllable)
+    {
+        char[] letters = syllable.toCharArray();
+        for (int i = 0; i < letters.length; i++)
+        {
+            if (isVocal(letters[i]))
+            {
+                return i;
+            }
+        }
+
+        throw new IllegalArgumentException("It is impossible to have a word without vowels");
+    }
+
+    private static int vocalTonicaIndex(final String syllable)
+    {
+        char[] letters = syllable.toCharArray();
+        for (int i = 0; i < letters.length; i++)
+        {
+            if (isVocal(letters[i]) && acento(letters[i]))
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
     private static boolean aguda(final String[] silabas)
     {
         String silaba = silabas[silabas.length - 1];
@@ -571,8 +615,8 @@ public class SpanishWordParser implements WordParser
         }
 
         // si termina en vocal 'n' o 's' y tiene acento => aguda
-        char lastVocal = silaba.charAt(lastVocalIndex(silaba));
-        if ((last == 'n' || last == 's' || isVocal(last)) && acento(lastVocal))
+        // char lastVocal = silaba.charAt(lastVocalIndex(silaba));
+        if ((last == 'n' || last == 's' || isVocal(last)) && acento(silaba))
         {
             return true;
         }
@@ -601,12 +645,12 @@ public class SpanishWordParser implements WordParser
     private static boolean llana(final String[] silabas)
     {
         String silaba = silabas[silabas.length - 2];
-        int vocalIndex = lastVocalIndex(silaba);
-        char vocal = silaba.charAt(vocalIndex);
+        // int vocalIndex = lastVocalIndex(silaba);
+        // char vocal = silaba.charAt(vocalIndex);
 
         if (!aguda(silabas))
         {
-            if (acento(vocal))
+            if (acento(silaba))
             {
                 return true;
             }
@@ -659,7 +703,7 @@ public class SpanishWordParser implements WordParser
         int i = chars.length - 1;
         while (i >= 0)
         {
-            if (isLetter(chars[i]))
+            if (isLetter(chars[i]) || Character.isDigit(chars[i]))
             {
                 break;
             }
@@ -673,7 +717,15 @@ public class SpanishWordParser implements WordParser
     @Override
     public StressType stressType(final String word)
     {
-        String[] silabas = silabas(removeTrailingPunctuation(word));
+        String withoutPunctuation = removeTrailingPunctuation(word);
+
+        // If it is a number, just translate its phonetic part
+        if (WordUtils.isNumber(withoutPunctuation))
+        {
+            withoutPunctuation = SpanishNumber.getBaseSound(withoutPunctuation);
+        }
+
+        String[] silabas = silabas(withoutPunctuation);
 
         if (silabas.length == 1)
         {
@@ -710,6 +762,13 @@ public class SpanishWordParser implements WordParser
     public String phoneticRhymePart(final String word)
     {
         String withoutPunctuation = removeTrailingPunctuation(word);
+
+        // If it is a number, just translate its phonetic part
+        if (WordUtils.isNumber(withoutPunctuation))
+        {
+            withoutPunctuation = SpanishNumber.getBaseSound(withoutPunctuation);
+        }
+
         String rhymePart = rhymePart(withoutPunctuation);
 
         StringBuilder result = new StringBuilder();
@@ -815,22 +874,47 @@ public class SpanishWordParser implements WordParser
     @Override
     public boolean isWord(final String text)
     {
-        char[] letters = removeTrailingPunctuation(text).toCharArray();
+        String withoutPunctuation = removeTrailingPunctuation(text);
+        boolean negative = false;
+
+        // Ignore the sign if we are verifying a number
+        if (withoutPunctuation.startsWith("-"))
+        {
+            negative = true;
+            withoutPunctuation = withoutPunctuation.replaceFirst("-", "");
+        }
+
+        char[] letters = withoutPunctuation.toCharArray();
 
         if (letters.length == 0)
         {
             return false;
         }
 
+        boolean hasLetters = false;
+        boolean hasDigits = false;
+
         for (char letter : letters)
         {
-            if (!isLetter(letter))
+            boolean isLetter = isLetter(letter);
+            boolean isDigit = Character.isDigit(letter);
+
+            if (!isLetter && !isDigit)
             {
                 return false;
             }
+
+            hasLetters = hasLetters || isLetter;
+            hasDigits = hasDigits || isDigit;
         }
 
-        return true;
+        if (hasLetters && hasDigits)
+        {
+            return false;
+        }
+
+        // If is a word with the sign prefix fail, otherwise succeed (positive or negative number)
+        return hasLetters ? !negative : true;
     }
 
     @Override

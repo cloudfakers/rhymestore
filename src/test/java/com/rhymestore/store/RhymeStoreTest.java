@@ -93,4 +93,17 @@ public class RhymeStoreTest
         store.delete("Me escondo y no me ves");
         assertTrue(store.findAll().isEmpty());
     }
+
+    @Test
+    public void testGetRhymeForNumber() throws IOException
+    {
+        store.add("Os digo que os comportéis");
+        store.add("Me apetece un montón");
+        store.add("Dile que apriete");
+
+        assertEquals(store.getRhyme("Nada rima con 6"), "Os digo que os comportéis");
+        assertEquals(store.getRhyme("Nada rima con 16"), "Os digo que os comportéis");
+        assertEquals(store.getRhyme("Nada rima con 1000000"), "Me apetece un montón");
+        assertEquals(store.getRhyme("Nada rima con 7!"), "Dile que apriete");
+    }
 }

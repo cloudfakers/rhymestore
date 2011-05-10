@@ -20,11 +20,17 @@
  * THE SOFTWARE.
  */
 
-package com.rhymestore.lang;
+package com.rhymestore.lang.es;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
+
+import org.testng.annotations.Test;
+
+import com.rhymestore.lang.AbstractWordParserTest;
+import com.rhymestore.lang.StressType;
+import com.rhymestore.lang.WordParser;
 
 /**
  * Unit tests for the {@link SpanishWordParser}.
@@ -46,6 +52,7 @@ public class SpanishWordParserTest extends AbstractWordParserTest
 
         // Monosilabos
         assertEquals(wordParser.phoneticRhymePart("pez"), "ez");
+        assertEquals(wordParser.phoneticRhymePart("seis"), "eis");
 
         // Agudas
         assertEquals(wordParser.phoneticRhymePart("correr"), "er");
@@ -158,8 +165,16 @@ public class SpanishWordParserTest extends AbstractWordParserTest
         assertTrue(wordParser.isWord("logroño"));
         assertTrue(wordParser.isWord("LOGROÑO"));
 
+        // Valid numbers
+        assertTrue(wordParser.isWord("-1500"));
+        assertTrue(wordParser.isWord("-1"));
+        assertTrue(wordParser.isWord("0"));
+        assertTrue(wordParser.isWord("25"));
+        assertTrue(wordParser.isWord("123456789"));
+
         // Invalid words
-        assertFalse(wordParser.isWord("25"));
+        assertFalse(wordParser.isWord("-1-2"));
+        assertFalse(wordParser.isWord("-abc"));
         assertFalse(wordParser.isWord("hola.adios"));
         assertFalse(wordParser.isWord("ab23cd"));
     }
@@ -176,4 +191,14 @@ public class SpanishWordParserTest extends AbstractWordParserTest
         assertEquals(wordParser.getDefaultRhyme(), rhyme1);
     }
 
+    @Test
+    public void testGetNumberPhoneticRhymePart()
+    {
+        assertEquals(wordParser.phoneticRhymePart("-1"), "uno");
+        assertEquals(wordParser.phoneticRhymePart("0"), "ero");
+        assertEquals(wordParser.phoneticRhymePart("dos"), "os");
+        assertEquals(wordParser.phoneticRhymePart("3521637"), "ete");
+        assertEquals(wordParser.phoneticRhymePart("350000"), "il");
+        assertEquals(wordParser.phoneticRhymePart("5000000"), "ones");
+    }
 }

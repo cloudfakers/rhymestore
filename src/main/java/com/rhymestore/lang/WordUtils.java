@@ -63,6 +63,11 @@ public class WordUtils
      */
     public static String capitalize(final String str)
     {
+        if (str == null)
+        {
+            return null;
+        }
+
         switch (str.length())
         {
             case 0:
@@ -72,6 +77,42 @@ public class WordUtils
             default:
                 return str.substring(0, 1).toUpperCase() + str.substring(1);
         }
+    }
+
+    /**
+     * Check if the given word is a number.
+     * 
+     * @param word The word to check.
+     * @return Boolean indicating if the given word is a number.
+     */
+    public static boolean isNumber(String word)
+    {
+        if (word == null)
+        {
+            return false;
+        }
+
+        String wordToParse = new String(word);
+
+        if (wordToParse.startsWith("-"))
+        {
+            wordToParse = wordToParse.replaceFirst("-", "");
+        }
+
+        if (wordToParse.length() == 0)
+        {
+            return false;
+        }
+
+        for (char c : wordToParse.toCharArray())
+        {
+            if (!Character.isDigit(c))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }

@@ -20,27 +20,57 @@
  * THE SOFTWARE.
  */
 
+/**
+ * 
+ */
 package com.rhymestore.lang;
 
+import static com.rhymestore.lang.WordUtils.capitalize;
+import static com.rhymestore.lang.WordUtils.getLastWord;
+import static com.rhymestore.lang.WordUtils.isNumber;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import org.testng.annotations.Test;
 
-import com.rhymestore.lang.es.SpanishWordParser;
-
 /**
- * Unit tests for the {@link WordParserFactory} class.
+ * Unit tests for the {@link WordUtils} class.
  * 
  * @author Ignasi Barrera
  */
-public class WordParserFactoryTest
+public class WordUtilsTest
 {
     @Test
-    public void testGetWordParser()
+    public void testCapitalize()
     {
-        WordParser wordParser = WordParserFactory.getWordParser();
+        assertEquals(capitalize(null), null);
+        assertEquals(capitalize(""), "");
+        assertEquals(capitalize("hola"), "Hola");
+        assertEquals(capitalize("hOLA"), "HOLA");
+    }
 
-        assertTrue(WordParserFactory.getWordParser() != null);
-        assertTrue(wordParser instanceof SpanishWordParser);
+    @Test
+    public void testGetLastWord()
+    {
+        assertEquals(getLastWord(null), "");
+        assertEquals(getLastWord(""), "");
+        assertEquals(getLastWord("hola"), "hola");
+        assertEquals(getLastWord("hola adios"), "adios");
+        assertEquals(getLastWord("hola ."), ".");
+    }
+
+    @Test
+    public void testIsNumber()
+    {
+        assertFalse(isNumber(null));
+        assertFalse(isNumber(""));
+        assertFalse(isNumber("a"));
+        assertFalse(isNumber("-a"));
+        assertFalse(isNumber("23a"));
+
+        assertTrue(isNumber("-1"));
+        assertTrue(isNumber("0"));
+        assertTrue(isNumber("12345"));
     }
 }
