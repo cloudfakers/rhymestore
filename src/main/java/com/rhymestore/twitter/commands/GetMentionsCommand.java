@@ -80,8 +80,7 @@ public class GetMentionsCommand implements TwitterCommand
         ResponseList<Status> mentions = twitter.getMentions(paging);
 
         // Reply only if the lastTweetId existed before calling this method
-        // (only reply to mentions
-        // made since the application is running)
+        // (only reply to mentions made since the application is running)
         if (lastTweetId > 0)
         {
             for (Status mention : mentions)

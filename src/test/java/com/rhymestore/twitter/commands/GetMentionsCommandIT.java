@@ -42,35 +42,35 @@ import twitter4j.TwitterFactory;
  */
 public class GetMentionsCommandIT
 {
-	/** The Twitter API client. */
-	private Twitter twitter;
+    /** The Twitter API client. */
+    private Twitter twitter;
 
-	/** The command queue used by the {@link #getMentionsCommand}. */
-	private Queue<TwitterCommand> commandQueue;
+    /** The command queue used by the {@link #getMentionsCommand}. */
+    private Queue<TwitterCommand> commandQueue;
 
-	/** The Get Mentions command. */
-	private GetMentionsCommand getMentionsCommand;
+    /** The Get Mentions command. */
+    private GetMentionsCommand getMentionsCommand;
 
-	@BeforeMethod
-	public void setUp()
-	{
-		twitter = new TwitterFactory().getInstance();
-		commandQueue = new LinkedBlockingDeque<TwitterCommand>(); // Thread-safe
-		getMentionsCommand = new GetMentionsCommand(commandQueue);
-	}
+    @BeforeMethod
+    public void setUp()
+    {
+        twitter = new TwitterFactory().getInstance();
+        commandQueue = new LinkedBlockingDeque<TwitterCommand>(); // Thread-safe
+        getMentionsCommand = new GetMentionsCommand(commandQueue);
+    }
 
-	@AfterMethod
-	public void tearDown()
-	{
-		commandQueue.clear();
-		twitter.shutdown();
-	}
+    @AfterMethod
+    public void tearDown()
+    {
+        commandQueue.clear();
+        twitter.shutdown();
+    }
 
-	@Test
-	public void testGetFirstMentions() throws TwitterException
-	{
-		getMentionsCommand.execute(twitter);
-		assertTrue(getMentionsCommand.getLastTweetId() > 0);
-		assertTrue(commandQueue.isEmpty());
-	}
+    @Test
+    public void testGetFirstMentions() throws TwitterException
+    {
+        getMentionsCommand.execute(twitter);
+        assertTrue(getMentionsCommand.getLastTweetId() > 0);
+        assertTrue(commandQueue.isEmpty());
+    }
 }

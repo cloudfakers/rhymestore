@@ -42,59 +42,56 @@ import com.rhymestore.lang.WordParserFactory;
 import com.rhymestore.lang.WordUtils;
 
 /**
- * Validates that the given property is a valid word, as defined by the
- * {@link WordParser}.
+ * Validates that the given property is a valid word, as defined by the {@link WordParser}.
  * 
  * @author Ignasi Barrera
- * 
  */
 @Documented
 @Constraint(validatedBy = ValidWord.Validator.class)
-@Target({ METHOD, FIELD })
+@Target( {METHOD, FIELD})
 @Retention(RUNTIME)
 public @interface ValidWord
 {
-	String message() default "The input text contains invalid words";
+    String message() default "The input text contains invalid words";
 
-	Class<?>[] groups() default {};
+    Class< ? >[] groups() default {};
 
-	Class<? extends Payload>[] payload() default {};
+    Class< ? extends Payload>[] payload() default {};
 
-	static class Validator implements ConstraintValidator<ValidWord, String>
-	{
-		/** The {@link WordParser} used to validate the word. */
-		private WordParser wordParser;
+    static class Validator implements ConstraintValidator<ValidWord, String>
+    {
+        /** The {@link WordParser} used to validate the word. */
+        private WordParser wordParser;
 
-		/** The validation annotation to use. */
-		private ValidWord validWord;
+        /** The validation annotation to use. */
+        private ValidWord validWord;
 
-		@Override
-		public void initialize(ValidWord constraintAnnotation)
-		{
-			wordParser = WordParserFactory.getWordParser();
-			validWord = constraintAnnotation;
-		}
+        @Override
+        public void initialize(ValidWord constraintAnnotation)
+        {
+            wordParser = WordParserFactory.getWordParser();
+            validWord = constraintAnnotation;
+        }
 
-		@Override
-		public boolean isValid(String value, ConstraintValidatorContext context)
-		{
-			if (StringUtils.isEmpty(value))
-			{
-				return true;
-			}
+        @Override
+        public boolean isValid(String value, ConstraintValidatorContext context)
+        {
+            if (StringUtils.isEmpty(value))
+            {
+                return true;
+            }
 
-			String lastWord = WordUtils.getLastWord(value);
-			boolean valid = wordParser.isWord(lastWord);
+            String lastWord = WordUtils.getLastWord(value);
+            boolean valid = wordParser.isWord(lastWord);
 
-			if (!valid)
-			{
-				context.disableDefaultConstraintViolation();
-				context.buildConstraintViolationWithTemplate(
-						validWord.message() + ": " + value)
-						.addConstraintViolation();
-			}
+            if (!valid)
+            {
+                context.disableDefaultConstraintViolation();
+                context.buildConstraintViolationWithTemplate(validWord.message() + ": " + value)
+                    .addConstraintViolation();
+            }
 
-			return valid;
-		}
-	}
+            return valid;
+        }
+    }
 }

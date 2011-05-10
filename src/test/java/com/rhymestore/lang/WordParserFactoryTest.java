@@ -33,12 +33,12 @@ import org.testng.annotations.Test;
  */
 public class WordParserFactoryTest
 {
-	@Test
-	public void testGetWordParser()
-	{
-		WordParser wordParser = WordParserFactory.getWordParser();
+    @Test
+    public void testGetWordParser()
+    {
+        WordParser wordParser = WordParserFactory.getWordParser();
 
-		assertTrue(WordParserFactory.getWordParser() != null);
-		assertTrue(wordParser instanceof SpanishWordParser);
-	}
+        assertTrue(WordParserFactory.getWordParser() != null);
+        assertTrue(wordParser instanceof SpanishWordParser);
+    }
 }

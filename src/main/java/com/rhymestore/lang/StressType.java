@@ -29,15 +29,15 @@ package com.rhymestore.lang;
  */
 public enum StressType
 {
-	/** Stress is in the last syllable. */
-	LAST,
+    /** Stress is in the last syllable. */
+    LAST,
 
-	/** Stress is in the second-last syllable. */
-	SECOND_LAST,
+    /** Stress is in the second-last syllable. */
+    SECOND_LAST,
 
-	/** Stress is in the third-last syllable. */
-	THIRD_LAST,
+    /** Stress is in the third-last syllable. */
+    THIRD_LAST,
 
-	/** Stress is in the fourth-last syllable. */
-	FOURTH_LAST;
+    /** Stress is in the fourth-last syllable. */
+    FOURTH_LAST;
 }

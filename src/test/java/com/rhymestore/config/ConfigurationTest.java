@@ -34,26 +34,25 @@ import org.testng.annotations.Test;
  * Unit tests for the {@link Configuration} class.
  * 
  * @author Ignasi Barrera
- * 
  */
 public class ConfigurationTest
 {
-	@Test
-	public void testGetConfigValue()
-	{
-		assertNull(getConfigValue("unexisting"));
-		assertEquals(getConfigValue(REDIS_HOST_PROPERTY), "localhost");
-	}
+    @Test
+    public void testGetConfigValue()
+    {
+        assertNull(getConfigValue("unexisting"));
+        assertEquals(getConfigValue(REDIS_HOST_PROPERTY), "localhost");
+    }
 
-	@Test
-	public void testGetRequiredConfigValue()
-	{
-		assertEquals(getRequiredConfigValue(REDIS_HOST_PROPERTY), "localhost");
-	}
+    @Test
+    public void testGetRequiredConfigValue()
+    {
+        assertEquals(getRequiredConfigValue(REDIS_HOST_PROPERTY), "localhost");
+    }
 
-	@Test(expectedExceptions = ConfigurationException.class)
-	public void testGetUnexistingRequiredConfigValue()
-	{
-		getRequiredConfigValue("unexisting");
-	}
+    @Test(expectedExceptions = ConfigurationException.class)
+    public void testGetUnexistingRequiredConfigValue()
+    {
+        getRequiredConfigValue("unexisting");
+    }
 }

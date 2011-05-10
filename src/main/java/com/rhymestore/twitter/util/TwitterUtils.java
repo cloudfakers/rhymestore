@@ -32,59 +32,59 @@ import twitter4j.internal.http.HttpResponseCode;
  */
 public class TwitterUtils
 {
-	/** Maximum length for the tweets. */
-	public static final int MAX_TWEET_LENGTH = 140;
+    /** Maximum length for the tweets. */
+    public static final int MAX_TWEET_LENGTH = 140;
 
-	/** Maximum number of API calls that can be performed in an hour. */
-	public static final int MAX_API_CALLS_PER_HOUR = 150;
+    /** Maximum number of API calls that can be performed in an hour. */
+    public static final int MAX_API_CALLS_PER_HOUR = 150;
 
-	/** The error produced when attempting to send duplicate tweets. */
-	public static final String DUPLICATE_TWEET_ERROR = "Status is a duplicate.";
+    /** The error produced when attempting to send duplicate tweets. */
+    public static final String DUPLICATE_TWEET_ERROR = "Status is a duplicate.";
 
-	/**
-	 * Returns a valid tweet for the given sentence.
-	 * 
-	 * @param sentence The sentence to tweet.
-	 * @return The valid tweet.
-	 */
-	public static String tweet(final String sentence)
-	{
-		return sentence.length() > MAX_TWEET_LENGTH ? sentence.substring(0,
-				MAX_TWEET_LENGTH - 3) + "..." : sentence;
-	}
+    /**
+     * Returns a valid tweet for the given sentence.
+     * 
+     * @param sentence The sentence to tweet.
+     * @return The valid tweet.
+     */
+    public static String tweet(final String sentence)
+    {
+        return sentence.length() > MAX_TWEET_LENGTH ? sentence.substring(0, MAX_TWEET_LENGTH - 3)
+            + "..." : sentence;
+    }
 
-	/**
-	 * Builds a reply to the given user.
-	 * 
-	 * @param user The user to reply.
-	 * @param tweet The tweet to send.
-	 * @return The reply tweet.
-	 */
-	public static String reply(final String user, final String tweet)
-	{
-		return tweet(user(user) + " " + tweet);
-	}
+    /**
+     * Builds a reply to the given user.
+     * 
+     * @param user The user to reply.
+     * @param tweet The tweet to send.
+     * @return The reply tweet.
+     */
+    public static String reply(final String user, final String tweet)
+    {
+        return tweet(user(user) + " " + tweet);
+    }
 
-	/**
-	 * Builds Twitter user name.
-	 * 
-	 * @param user The user name.
-	 * @return The Twitter user name.
-	 */
-	public static String user(final String user)
-	{
-		return "@" + user;
-	}
+    /**
+     * Builds Twitter user name.
+     * 
+     * @param user The user name.
+     * @return The Twitter user name.
+     */
+    public static String user(final String user)
+    {
+        return "@" + user;
+    }
 
-	/**
-	 * Checks if the exception cause is a duplicate tweet.
-	 * 
-	 * @param ex The exception to check.
-	 * @return Boolean indicating if the exception cause is a duplicate tweet.
-	 */
-	public static boolean isDuplicateTweetError(final TwitterException ex)
-	{
-		return ex.getStatusCode() == HttpResponseCode.FORBIDDEN
-				&& ex.getMessage().contains(DUPLICATE_TWEET_ERROR);
-	}
+    /**
+     * Checks if the exception cause is a duplicate tweet.
+     * 
+     * @param ex The exception to check.
+     * @return Boolean indicating if the exception cause is a duplicate tweet.
+     */
+    public static boolean isDuplicateTweetError(final TwitterException ex)
+    {
+        return ex.getStatusCode() == HttpResponseCode.FORBIDDEN
+            && ex.getMessage().contains(DUPLICATE_TWEET_ERROR);
+    }
 }

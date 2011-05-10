@@ -32,45 +32,46 @@ import java.util.List;
  */
 public class WordUtils
 {
-	/**
-	 * Gets the last word of the given sentence.
-	 * 
-	 * @param sentence The sentence to parse.
-	 * @return The last word of the given sentence.
-	 */
-	public static String getLastWord(final String sentence)
-	{
-		String word = "";
+    /**
+     * Gets the last word of the given sentence.
+     * 
+     * @param sentence The sentence to parse.
+     * @return The last word of the given sentence.
+     */
+    public static String getLastWord(final String sentence)
+    {
+        String word = "";
 
-		if (sentence != null)
-		{
-			List<String> words = Arrays.asList(sentence.split(" "));
+        if (sentence != null)
+        {
+            List<String> words = Arrays.asList(sentence.split(" "));
 
-			if (words.size() > 0)
-			{
-				word = words.get(words.size() - 1);
-			}
-		}
+            if (words.size() > 0)
+            {
+                word = words.get(words.size() - 1);
+            }
+        }
 
-		return word;
-	}
+        return word;
+    }
 
-	/**
-	 * Capitalizes the given String.
-	 * 
-	 * @param str The String to capitalize.
-	 * @return The capitalized String.
-	 */
-	public static String capitalize(final String str)
-	{
-		switch (str.length()) {
-		case 0:
-			return str;
-		case 1:
-			return str.toUpperCase();
-		default:
-			return str.substring(0, 1).toUpperCase() + str.substring(1);
-		}
-	}
+    /**
+     * Capitalizes the given String.
+     * 
+     * @param str The String to capitalize.
+     * @return The capitalized String.
+     */
+    public static String capitalize(final String str)
+    {
+        switch (str.length())
+        {
+            case 0:
+                return str;
+            case 1:
+                return str.toUpperCase();
+            default:
+                return str.substring(0, 1).toUpperCase() + str.substring(1);
+        }
+    }
 
 }

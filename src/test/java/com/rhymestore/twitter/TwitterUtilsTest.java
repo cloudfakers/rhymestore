@@ -38,40 +38,38 @@ import com.rhymestore.twitter.util.TwitterUtils;
  */
 public class TwitterUtilsTest
 {
-	@Test
-	public void testTweet()
-	{
-		assertEquals(tweet(""), "");
-		assertEquals(tweet("hola"), "hola");
-		assertEquals(
-				tweet("esto es un tweet de prueba para ver si funciona el test unitario."
-						+ " El tweet tiene más de 140 carácteres, será recortado por la aplicación"
-						+ " y se añadirán tres carácteres."),
-				"esto es un tweet de prueba para ver si funciona el test unitario."
-						+ " El tweet tiene más de 140 carácteres, será recortado por la aplicación ...");
-	}
+    @Test
+    public void testTweet()
+    {
+        assertEquals(tweet(""), "");
+        assertEquals(tweet("hola"), "hola");
+        assertEquals(tweet("esto es un tweet de prueba para ver si funciona el test unitario."
+            + " El tweet tiene más de 140 carácteres, será recortado por la aplicación"
+            + " y se añadirán tres carácteres."),
+            "esto es un tweet de prueba para ver si funciona el test unitario."
+                + " El tweet tiene más de 140 carácteres, será recortado por la aplicación ...");
+    }
 
-	@Test
-	public void testUser()
-	{
-		assertEquals(user(""), "@");
-		assertEquals(user("rimamelo"), "@rimamelo");
-		assertEquals(user("IgnasiBarrera"), "@IgnasiBarrera");
-		assertEquals(user("hola adios"), "@hola adios");
-	}
+    @Test
+    public void testUser()
+    {
+        assertEquals(user(""), "@");
+        assertEquals(user("rimamelo"), "@rimamelo");
+        assertEquals(user("IgnasiBarrera"), "@IgnasiBarrera");
+        assertEquals(user("hola adios"), "@hola adios");
+    }
 
-	@Test
-	public void testReply()
-	{
-		assertEquals(reply("", ""), "@ ");
-		assertEquals(reply("rimamelo", ""), "@rimamelo ");
-		assertEquals(reply("rimamelo", "que tal"), "@rimamelo que tal");
-		assertEquals(
-				reply("rimamelo",
-						"esto es un tweet de prueba para ver si funciona el test unitario."
-								+ " El tweet tiene más de 140 carácteres, será recortado por la aplicación"
-								+ " y se añadirán tres carácteres."),
-				"@rimamelo esto es un tweet de prueba para ver si funciona el test unitario."
-						+ " El tweet tiene más de 140 carácteres, será recortado por la a...");
-	}
+    @Test
+    public void testReply()
+    {
+        assertEquals(reply("", ""), "@ ");
+        assertEquals(reply("rimamelo", ""), "@rimamelo ");
+        assertEquals(reply("rimamelo", "que tal"), "@rimamelo que tal");
+        assertEquals(reply("rimamelo",
+            "esto es un tweet de prueba para ver si funciona el test unitario."
+                + " El tweet tiene más de 140 carácteres, será recortado por la aplicación"
+                + " y se añadirán tres carácteres."),
+            "@rimamelo esto es un tweet de prueba para ver si funciona el test unitario."
+                + " El tweet tiene más de 140 carácteres, será recortado por la a...");
+    }
 }

@@ -33,33 +33,32 @@ import org.testng.annotations.Test;
  */
 public class KeymakerTest
 {
-	@Test
-	public void testKeymaker()
-	{
-		checkKeymaker("");
-		checkKeymaker(":");
-		checkKeymaker("test");
-		checkKeymaker(":test:");
-		checkKeymaker("test::");
-		checkKeymaker("::test");
-		checkKeymaker("test:test2");
-	}
+    @Test
+    public void testKeymaker()
+    {
+        checkKeymaker("");
+        checkKeymaker(":");
+        checkKeymaker("test");
+        checkKeymaker(":test:");
+        checkKeymaker("test::");
+        checkKeymaker("::test");
+        checkKeymaker("test:test2");
+    }
 
-	@Test(expectedExceptions = IllegalArgumentException.class)
-	public void testInvalidkeymaker()
-	{
-		new Keymaker(null);
-	}
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testInvalidkeymaker()
+    {
+        new Keymaker(null);
+    }
 
-	private void checkKeymaker(String ns)
-	{
-		Keymaker km = new Keymaker(ns);
+    private void checkKeymaker(String ns)
+    {
+        Keymaker km = new Keymaker(ns);
 
-		assertEquals(km.toString(), ns);
-		assertEquals(km.build().toString(), ns);
-		assertEquals(km.build("").toString(), ns + ":");
-		assertEquals(km.build("test").toString(), ns + ":test");
-		assertEquals(km.build("test").build("test").toString(), ns
-				+ ":test:test");
-	}
+        assertEquals(km.toString(), ns);
+        assertEquals(km.build().toString(), ns);
+        assertEquals(km.build("").toString(), ns + ":");
+        assertEquals(km.build("test").toString(), ns + ":test");
+        assertEquals(km.build("test").build("test").toString(), ns + ":test:test");
+    }
 }

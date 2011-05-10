@@ -53,7 +53,8 @@ public class WordParserFactory
     {
         if (wordParser == null)
         {
-            String className = Configuration.getRequiredConfigValue(Configuration.WORDPARSER_PROPERTY);
+            String className =
+                Configuration.getRequiredConfigValue(Configuration.WORDPARSER_PROPERTY);
 
             if (className == null)
             {

@@ -49,178 +49,174 @@ import com.rhymestore.web.ContextListener;
  */
 public class RhymeController extends MethodInvokingController
 {
-	/** The logger. */
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(RhymeController.class);
+    /** The logger. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(RhymeController.class);
 
-	/** The Rhyme store. */
-	private final RhymeStore store;
+    /** The Rhyme store. */
+    private final RhymeStore store;
 
-	/**
-	 * Default constructor.
-	 */
-	public RhymeController()
-	{
-		store = RhymeStore.getInstance();
-	}
+    /**
+     * Default constructor.
+     */
+    public RhymeController()
+    {
+        store = RhymeStore.getInstance();
+    }
 
-	/**
-	 * Lists all rhymes in the the store.
-	 * 
-	 * @param request The request.
-	 * @param response The response.
-	 * @throws ControllerException If the rhyme cannot be added.
-	 */
-	public void list(final HttpServletRequest request,
-			final HttpServletResponse response) throws ControllerException
-	{
-		try
-		{
-			Set<String> rhymes = store.findAll();
+    /**
+     * Lists all rhymes in the the store.
+     * 
+     * @param request The request.
+     * @param response The response.
+     * @throws ControllerException If the rhyme cannot be added.
+     */
+    public void list(final HttpServletRequest request, final HttpServletResponse response)
+        throws ControllerException
+    {
+        try
+        {
+            Set<String> rhymes = store.findAll();
 
-			List<String> sortedRhymes = new ArrayList<String>(rhymes);
-			Collections.sort(sortedRhymes, String.CASE_INSENSITIVE_ORDER);
+            List<String> sortedRhymes = new ArrayList<String>(rhymes);
+            Collections.sort(sortedRhymes, String.CASE_INSENSITIVE_ORDER);
 
-			setModel(sortedRhymes);
-		}
-		catch (Exception ex)
-		{
-			error("Could not get rhymes: " + ex.getMessage());
-		}
-	}
+            setModel(sortedRhymes);
+        }
+        catch (Exception ex)
+        {
+            error("Could not get rhymes: " + ex.getMessage());
+        }
+    }
 
-	/**
-	 * Check if there is a rhyme submitted, and adds it to the store.
-	 * 
-	 * @param request The request.
-	 * @param response The response.
-	 * @throws ControllerException If the rhyme cannot be added.
-	 */
-	public void add(final HttpServletRequest request,
-			final HttpServletResponse response) throws ControllerException
-	{
-		Rhyme rhyme = new Rhyme();
-		bindAndValidate(rhyme, request);
+    /**
+     * Check if there is a rhyme submitted, and adds it to the store.
+     * 
+     * @param request The request.
+     * @param response The response.
+     * @throws ControllerException If the rhyme cannot be added.
+     */
+    public void add(final HttpServletRequest request, final HttpServletResponse response)
+        throws ControllerException
+    {
+        Rhyme rhyme = new Rhyme();
+        bindAndValidate(rhyme, request);
 
-		// Add the rhyme only if there are no binding or validation errors
-		if (!errors())
-		{
-			String twitterUser = getTwitterUser(request, response);
-			if (twitterUser != null
-					&& rhyme.getRhyme()
-							.contains(TwitterUtils.user(twitterUser)))
-			{
-				error("Cannot add a rhyme that contains the Twitter user name");
-			}
+        // Add the rhyme only if there are no binding or validation errors
+        if (!errors())
+        {
+            String twitterUser = getTwitterUser(request, response);
+            if (twitterUser != null && rhyme.getRhyme().contains(TwitterUtils.user(twitterUser)))
+            {
+                error("Cannot add a rhyme that contains the Twitter user name");
+            }
 
-			if (!errors())
-			{
-				try
-				{
-					String capitalized = WordUtils.capitalize(rhyme.getRhyme());
-					store.add(capitalized.trim());
+            if (!errors())
+            {
+                try
+                {
+                    String capitalized = WordUtils.capitalize(rhyme.getRhyme());
+                    store.add(capitalized.trim());
 
-					message("Added rhyme: " + capitalized);
-				}
-				catch (Exception ex)
-				{
-					error("Could not add rhyme: " + ex.getMessage());
-				}
-			}
-		}
+                    message("Added rhyme: " + capitalized);
+                }
+                catch (Exception ex)
+                {
+                    error("Could not add rhyme: " + ex.getMessage());
+                }
+            }
+        }
 
-		// Load the new list of rhymes to render the list view
-		list(request, response);
-		setView("list");
-	}
+        // Load the new list of rhymes to render the list view
+        list(request, response);
+        setView("list");
+    }
 
-	/**
-	 * Check if there is a rhyme submitted, and deletes it from the store.
-	 * 
-	 * @param request The request.
-	 * @param response The response.
-	 * @throws ControllerException If the rhyme cannot be deleted.
-	 */
-	public void delete(final HttpServletRequest request,
-			final HttpServletResponse response) throws ControllerException
-	{
-		Rhyme rhyme = new Rhyme();
-		bindAndValidate(rhyme, request);
+    /**
+     * Check if there is a rhyme submitted, and deletes it from the store.
+     * 
+     * @param request The request.
+     * @param response The response.
+     * @throws ControllerException If the rhyme cannot be deleted.
+     */
+    public void delete(final HttpServletRequest request, final HttpServletResponse response)
+        throws ControllerException
+    {
+        Rhyme rhyme = new Rhyme();
+        bindAndValidate(rhyme, request);
 
-		if (!errors())
-		{
-			try
-			{
-				String capitalized = WordUtils.capitalize(rhyme.getRhyme());
-				store.delete(capitalized);
+        if (!errors())
+        {
+            try
+            {
+                String capitalized = WordUtils.capitalize(rhyme.getRhyme());
+                store.delete(capitalized);
 
-				message("Deleted rhyme: " + capitalized);
-			}
-			catch (Exception ex)
-			{
-				error("Could not delete rhyme: " + ex.getMessage());
-			}
-		}
+                message("Deleted rhyme: " + capitalized);
+            }
+            catch (Exception ex)
+            {
+                error("Could not delete rhyme: " + ex.getMessage());
+            }
+        }
 
-		// Load the new list of rhymes to render the list view
-		list(request, response);
-		setView("list");
-	}
+        // Load the new list of rhymes to render the list view
+        list(request, response);
+        setView("list");
+    }
 
-	/**
-	 * Download all the stored rhymes in a text file.
-	 * 
-	 * @param request The request.
-	 * @param response The response.
-	 * @throws ControllerException If the rhymes cannot be downloaded.
-	 */
-	public void download(final HttpServletRequest request,
-			final HttpServletResponse response) throws ControllerException
-	{
-		try
-		{
-			// Get all rhymes
-			Set<String> rhymes = store.findAll();
-			List<String> sortedRhymes = new ArrayList<String>(rhymes);
-			Collections.sort(sortedRhymes, String.CASE_INSENSITIVE_ORDER);
+    /**
+     * Download all the stored rhymes in a text file.
+     * 
+     * @param request The request.
+     * @param response The response.
+     * @throws ControllerException If the rhymes cannot be downloaded.
+     */
+    public void download(final HttpServletRequest request, final HttpServletResponse response)
+        throws ControllerException
+    {
+        try
+        {
+            // Get all rhymes
+            Set<String> rhymes = store.findAll();
+            List<String> sortedRhymes = new ArrayList<String>(rhymes);
+            Collections.sort(sortedRhymes, String.CASE_INSENSITIVE_ORDER);
 
-			LOGGER.info("Exporting {} rhymes...", sortedRhymes.size());
+            LOGGER.info("Exporting {} rhymes...", sortedRhymes.size());
 
-			// Configure the response to generate an attachment
-			response.setContentType("text/plain");
-			response.setHeader("Content-Disposition",
-					"attachment; filename=rhymes.txt");
+            // Configure the response to generate an attachment
+            response.setContentType("text/plain");
+            response.setHeader("Content-Disposition", "attachment; filename=rhymes.txt");
 
-			// Write output
-			PrintWriter pw = new PrintWriter(response.getOutputStream());
+            // Write output
+            PrintWriter pw = new PrintWriter(response.getOutputStream());
 
-			for (String rhyme : sortedRhymes)
-			{
-				pw.println(rhyme);
-			}
+            for (String rhyme : sortedRhymes)
+            {
+                pw.println(rhyme);
+            }
 
-			pw.flush();
-			pw.close();
-		}
-		catch (Exception ex)
-		{
-			error("Could not get rhymes: " + ex.getMessage());
-			setView("list");
-		}
-	}
+            pw.flush();
+            pw.close();
+        }
+        catch (Exception ex)
+        {
+            error("Could not get rhymes: " + ex.getMessage());
+            setView("list");
+        }
+    }
 
-	/**
-	 * Gets the Twitter user.
-	 * 
-	 * @param request The request.
-	 * @param response The response.
-	 * @return The Twitter user name.
-	 */
-	private String getTwitterUser(final HttpServletRequest request,
-			final HttpServletResponse response)
-	{
-		return (String) request.getSession().getServletContext()
-				.getAttribute(ContextListener.TWITTER_USER_NAME);
-	}
+    /**
+     * Gets the Twitter user.
+     * 
+     * @param request The request.
+     * @param response The response.
+     * @return The Twitter user name.
+     */
+    private String getTwitterUser(final HttpServletRequest request,
+        final HttpServletResponse response)
+    {
+        return (String) request.getSession().getServletContext().getAttribute(
+            ContextListener.TWITTER_USER_NAME);
+    }
 
 }
