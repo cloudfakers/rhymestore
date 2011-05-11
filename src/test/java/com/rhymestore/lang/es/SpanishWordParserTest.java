@@ -107,6 +107,7 @@ public class SpanishWordParserTest extends AbstractWordParserTest
         assertTrue(wordParser.rhyme("falange", "alfanje"));
         assertTrue(wordParser.rhyme("parva", "escarba"));
         assertTrue(wordParser.rhyme("tuyo", "murmullo"));
+        assertTrue(wordParser.rhyme("cáspita", "supercáspita"));
 
         // Rhymes with punctuation
         assertTrue(wordParser.rhyme("cantar.", "pescar"));

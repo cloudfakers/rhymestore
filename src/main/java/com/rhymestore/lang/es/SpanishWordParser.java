@@ -506,7 +506,14 @@ public class SpanishWordParser implements WordParser
             else if (acento(silaba))
             {
                 found = true;
-                parte = silaba.substring(lastVocalIndex(silaba));
+
+                int index = vocalTonicaIndex(silaba);
+                if (index == -1)
+                {
+                    index = lastVocalIndex(silaba);
+                }
+
+                parte = silaba.substring(index);
             }
         }
 
