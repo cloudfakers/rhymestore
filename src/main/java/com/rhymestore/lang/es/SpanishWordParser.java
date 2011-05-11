@@ -462,7 +462,6 @@ public class SpanishWordParser implements WordParser
         // Monosilabo
         if (syllables.length == 1)
         {
-            // TODO: Vocal tonica en monosilabos
             int index = vocalTonicaIndex(syllables[0]);
             if (index == -1)
             {
@@ -598,6 +597,8 @@ public class SpanishWordParser implements WordParser
 
     private static int vocalTonicaIndex(final String syllable)
     {
+        // TODO: Fix this method to find properly the stressed vowel
+
         char[] letters = syllable.toCharArray();
         for (int i = 0; i < letters.length; i++)
         {
