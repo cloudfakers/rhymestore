@@ -27,6 +27,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.sjmvc.controller.Controller;
 
+import com.rhymestore.lang.WordParser;
+import com.rhymestore.lang.WordParserFactory;
 import com.rhymestore.model.Rhyme;
 import com.rhymestore.store.RhymeStore;
 
@@ -41,12 +43,16 @@ public class APIController extends HttpMethodController
     /** The Rhyme store. */
     private final RhymeStore store;
 
+    /** The {@link WordParser} used to get the default rhyme if none is found. */
+    private final WordParser wordParser;
+
     /**
      * Creates the API {@link Controller}.
      */
     public APIController()
     {
         store = RhymeStore.getInstance();
+        wordParser = WordParserFactory.getWordParser();
     }
 
     /**
@@ -67,6 +73,12 @@ public class APIController extends HttpMethodController
             try
             {
                 String rhymeResponse = store.getRhyme(rhyme.getRhyme());
+
+                if (rhymeResponse == null)
+                {
+                    rhymeResponse = wordParser.getDefaultRhyme();
+                }
+
                 setModel(rhymeResponse);
             }
             catch (Exception ex)

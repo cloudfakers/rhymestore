@@ -23,6 +23,7 @@
 package com.rhymestore.store;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.io.IOException;
@@ -48,7 +49,7 @@ public class RhymeStoreTest
     public void setUp() throws IOException
     {
         store = new TestRhymeStore();
-        store.add("Ya son veintid¡ós!!");
+        store.add("Ya son veintidós!!");
         store.add("Me escondo y no me ves");
     }
 
@@ -67,8 +68,9 @@ public class RhymeStoreTest
     @Test
     public void testGetRhyme() throws IOException
     {
+        assertNull(store.getRhyme("no hay rima"));
         assertEquals(store.getRhyme("¿Hay algo que rime con tres?"), "Me escondo y no me ves");
-        assertEquals(store.getRhyme("Nada rima con dos"), "Ya son veintid¡ós!!");
+        assertEquals(store.getRhyme("Nada rima con dos"), "Ya son veintidós!!");
     }
 
     @Test
@@ -87,7 +89,7 @@ public class RhymeStoreTest
     @Test
     public void testDeleteExistingRhyme() throws IOException
     {
-        store.delete("Ya son veintid¡ós!!");
+        store.delete("Ya son veintidós!!");
         assertEquals(store.findAll().size(), 1);
 
         store.delete("Me escondo y no me ves");

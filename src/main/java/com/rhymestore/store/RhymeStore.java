@@ -268,8 +268,8 @@ public class RhymeStore
 
         if (rhymes.isEmpty())
         {
-            // If no rhyme is found, return the default rhyme
-            return wordParser.getDefaultRhyme();
+            // If no rhyme is found, return null
+            return null;
         }
         else
         {
