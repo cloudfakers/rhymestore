@@ -34,6 +34,14 @@
         <welcome-file>jsp/index.jsp</welcome-file>
     </welcome-file-list>
     
+    <!-- Taglibs -->
+    <jsp-config>
+        <taglib>
+            <taglib-uri>http://rhymestore.com/taglib/rhymestore</taglib-uri>
+            <taglib-location>/WEB-INF/tld/rhymestore.tld</taglib-location>
+        </taglib>
+    </jsp-config>
+    
     <!-- Security -->
     <security-constraint>
         <web-resource-collection>
