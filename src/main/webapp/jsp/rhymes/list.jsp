@@ -1,11 +1,14 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@taglib uri="http://rhymestore.com/taglib/rhymestore" prefix="rhymestore" %>
 <%@page import="com.rhymestore.twitter.util.TwitterUtils" %>
 
-<form action="<%= request.getContextPath() %>/web/rhymes/add" method="post">
-	<input id="ryhme" name="model.rhyme" type="text" class="input" size="90" maxlength="<%= TwitterUtils.MAX_TWEET_LENGTH %>" />
-	<input type="submit" value="Add it!" class="add" />
-</form>
+<rhymestore:auth roles="rhymestore-rw">
+	<form action="<%= request.getContextPath() %>/web/rhymes/add" method="post">
+		<input id="ryhme" name="model.rhyme" type="text" class="input" size="90" maxlength="<%= TwitterUtils.MAX_TWEET_LENGTH %>" />
+		<input type="submit" value="Add it!" class="add" />
+	</form>
+</rhymestore:auth>
 
 <table id="rhymes">
 	<thead>
@@ -24,11 +27,13 @@
 		<tr class="tr<c:out value="${status.count % 2}"/>">
 			<td class="left"><c:out value="${rhyme}" /></td>
 			<td class="right">
-			   <form action="<%= request.getContextPath() %>/web/rhymes/delete" method="post">
-			       <input type="submit" value="Delete" class="delete"/>
-			       <input name="model.rhyme" type="hidden" value="<c:out value="${rhyme}" />" />
-                      </form>
-                  </td>
+                <rhymestore:auth roles="rhymestore-rw">
+	                <form action="<%= request.getContextPath() %>/web/rhymes/delete" method="post">
+				       <input type="submit" value="Delete" class="delete"/>
+				       <input name="model.rhyme" type="hidden" value="<c:out value="${rhyme}" />" />
+	                </form>
+                </rhymestore:auth>
+            </td>
 		</tr>
 	</c:forEach>
 	<c:if test="${empty model}">
