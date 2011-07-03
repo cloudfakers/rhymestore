@@ -81,6 +81,17 @@ The WordParser implementation to use can be configured in the `rhymestore.proper
 Any contribution to the project is welcome. Feel free to check
 it out from the [Project site](https://github.com/nacx/rhymestore) and play with it.
 
+
+Note on patches/pull requests
+-----------------------------
+ 
+ * Fork the project.
+ * Make your feature addition or bug fix.
+ * Add tests for it. This is important so I don't break it in a future version unintentionally.
+ * Commit
+ * Send me a pull request. Bonus points for topic branches.
+
+
 Issue Tracking
 --------------
 
