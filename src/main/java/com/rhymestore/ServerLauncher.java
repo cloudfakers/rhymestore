@@ -20,54 +20,50 @@
  * THE SOFTWARE.
  */
 
-package com.rhymestore.web.taglib;
+package com.rhymestore;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.TagSupport;
+import org.mortbay.jetty.Server;
+import org.mortbay.jetty.webapp.WebAppContext;
 
 /**
- * Taglib to perform authentication checks.
+ * Main application.
+ * <p>
+ * Starts the Jetty Server that will be exposed.
  * 
  * @author Ignasi Barrera
+ * 
  */
-public class AuthTag extends TagSupport
+public class ServerLauncher
 {
-    /** Serial UID. */
-    private static final long serialVersionUID = 1L;
+	public static void main(String[] args) throws Exception
+	{
+		String webappDirLocation = "src/main/webapp/";
 
-    /** The list of roles, separated by ','. This variable will be set in the JSP. */
-    private String roles;
+		String webPort = System.getenv("PORT");
+		if (webPort == null || webPort.isEmpty())
+		{
+			webPort = "8080";
+		}
 
-    @Override
-    public int doStartTag() throws JspException
-    {
-//        HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-//
-//        String[] roleList = roles.split(",");
-//
-//        for (int i = 0; i < roleList.length; i++)
-//        {
-//            if (request.isUserInRole(roleList[i]))
-//            {
-//                return EVAL_BODY_INCLUDE;
-//            }
-//        }
-//
-//        return SKIP_BODY;
-    	return EVAL_BODY_INCLUDE;
-    }
+		// Web application
+		WebAppContext root = new WebAppContext();
+		root.setContextPath("/");
+		root.setDescriptor(webappDirLocation + "/WEB-INF/web.xml");
+		root.setResourceBase(webappDirLocation);
+		root.setParentLoaderPriority(true);
 
-    // Getters and setters
+		// Security
+		// URL realmConfig = Thread.currentThread().getContextClassLoader()
+		// .getResource("realm.properties");
+		//
+		// HashUserRealm userRealm = new HashUserRealm("Basic Authentication",
+		// realmConfig.toString());
 
-    public String getRoles()
-    {
-        return roles;
-    }
+		Server server = new Server(Integer.valueOf(webPort));
+		server.setHandler(root);
+		// server.setUserRealms(new UserRealm[] { userRealm });
 
-    public void setRoles(String roles)
-    {
-        this.roles = roles;
-    }
-
+		server.start();
+		server.join();
+	}
 }

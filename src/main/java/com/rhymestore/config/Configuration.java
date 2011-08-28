@@ -47,6 +47,9 @@ public class Configuration
 
     /** Name of the property that holds the Redis port. */
     public static final String REDIS_PORT_PROPERTY = "rhymestore.redis.port";
+    
+    /** Name of the property that holds the Redis password. */
+    public static final String REDIS_PASSWORD_PROPERTY = "rhymestore.redis.password";
 
     /** Name of the property that holds the {@link WordParser} implementation class. */
     public static final String WORDPARSER_PROPERTY = "rhymestore.wordparser.class";

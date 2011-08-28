@@ -8,7 +8,7 @@
     <!-- Configure if twitter communication is enabled -->
     <context-param>
         <param-name>TWITTER_ENABLED</param-name>
-        <param-value>true</param-value>
+        <param-value>false</param-value>
     </context-param>
 
     <!-- Startup ContextListener -->
@@ -43,6 +43,7 @@
     </jsp-config>
     
     <!-- Security -->
+    <!-- 
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Rhymestore Administration</web-resource-name>
@@ -75,5 +76,6 @@
     <security-role>
         <role-name>rhymestore-ro</role-name>
     </security-role>
+    -->
 
 </web-app>
