@@ -286,11 +286,13 @@
 						</goals>
 						<configuration>
 							<assembleDirectory>target</assembleDirectory>
-							<generateRepository>false</generateRepository>
+                            <generateRepository>false</generateRepository>
+                            <!--
 							<extraJvmArguments>-Dtwitter4j.oauth.consumerKey=${twitter.consumerKey}
 								-Dtwitter4j.oauth.consumerSecret=${twitter.consumerSecret}
 								-Dtwitter4j.oauth.accessToken=${twitter.accessToken}
-								-Dtwitter4j.oauth.accessTokenSecret=${twitter.accessTokenSecret}</extraJvmArguments>
+                                -Dtwitter4j.oauth.accessTokenSecret=${twitter.accessTokenSecret}</extraJvmArguments>
+                            -->
 							<programs>
 								<program>
 									<mainClass>com.rhymestore.ServerLauncher</mainClass>
