@@ -285,10 +285,7 @@
 						<configuration>
 							<assembleDirectory>target</assembleDirectory>
 							<generateRepository>false</generateRepository>
-							<extraJvmArguments>-Dtwitter4j.oauth.consumerKey=${env.TWITTER_CONSUMERKEY}
-								-Dtwitter4j.oauth.consumerSecret=${env.TWITTER_CONSUMERSECRET}
-								-Dtwitter4j.oauth.accessToken=${env.TWITTER_ACCESSTOKEN}
-								-Dtwitter4j.oauth.accessTokenSecret=${env.TWITTER_ACCESSTOKENSECRET}</extraJvmArguments>
+							<extraJvmArguments>-Dtwitter4j.oauth.consumerKey=${env.TWITTER_CONSUMERKEY} -Dtwitter4j.oauth.consumerSecret=${env.TWITTER_CONSUMERSECRET} -Dtwitter4j.oauth.accessToken=${env.TWITTER_ACCESSTOKEN} -Dtwitter4j.oauth.accessTokenSecret=${env.TWITTER_ACCESSTOKENSECRET}</extraJvmArguments>
 							<programs>
 								<program>
 									<mainClass>com.rhymestore.ServerLauncher</mainClass>
