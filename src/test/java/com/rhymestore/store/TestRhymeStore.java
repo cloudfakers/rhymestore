@@ -32,25 +32,25 @@ import java.net.UnknownHostException;
  */
 public class TestRhymeStore extends RhymeStore
 {
-    /** The Redis test database. */
-    public static final int TEST_DATABASE = 1;
+	/** The Redis test database. */
+	public static final int TEST_DATABASE = 1;
 
-    @Override
-    protected void connect() throws UnknownHostException, IOException
-    {
-        super.connect();
-        redis.select(TEST_DATABASE);
-    }
+	@Override
+	protected void connect() throws UnknownHostException, IOException
+	{
+		super.connect();
+		// redis.select(TEST_DATABASE);
+	}
 
-    /**
-     * Cleans the selected database.
-     * 
-     * @throws IOException If the database cannot be cleaned.
-     */
-    public void cleanDB() throws IOException
-    {
-        connect();
-        redis.flushDB();
-        disconnect();
-    }
+	/**
+	 * Cleans the selected database.
+	 * 
+	 * @throws IOException If the database cannot be cleaned.
+	 */
+	public void cleanDB() throws IOException
+	{
+		// connect();
+		// redis.flushDB();
+		// disconnect();
+	}
 }
