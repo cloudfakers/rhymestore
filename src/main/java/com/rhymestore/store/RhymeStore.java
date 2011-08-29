@@ -295,8 +295,6 @@ public class RhymeStore
         {
             redis.connect();
 
-            // String password =
-            // Configuration.getConfigValue(Configuration.REDIS_PASSWORD_PROPERTY);
             String password = System.getenv("REDISPASS");
             if (password != null)
             {

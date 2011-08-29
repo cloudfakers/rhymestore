@@ -47,6 +47,13 @@ public class TwitterIT
     @BeforeMethod
     public void setUp()
     {
+        System.setProperty("twitter4j.oauth.consumerKey", System.getenv("TWITTER_CONSUMERKEY"));
+        System.setProperty("twitter4j.oauth.consumerSecret",
+            System.getenv("TWITTER_CONSUMERSECRET"));
+        System.setProperty("twitter4j.oauth.accessToken", System.getenv("TWITTER_ACCESSTOKEN"));
+        System.setProperty("twitter4j.oauth.accessTokenSecret",
+            System.getenv("TWITTER_ACCESSTOKENSECRET"));
+
         twitter = new TwitterFactory().getInstance();
     }
 

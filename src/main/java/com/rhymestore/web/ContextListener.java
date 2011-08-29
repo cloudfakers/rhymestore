@@ -35,7 +35,6 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 
-import com.rhymestore.config.Configuration;
 import com.rhymestore.store.RhymeLoader;
 import com.rhymestore.twitter.TwitterScheduler;
 import com.rhymestore.util.SSLUtils;
@@ -138,7 +137,7 @@ public class ContextListener implements ServletContextListener
     private void loadDefaultRhymes()
     {
         // Load the rhymes URI
-        String rhymesURI = Configuration.getConfigValue(Configuration.DEFAULT_RHYMES_URI_PROPERTY);
+        String rhymesURI = System.getenv("DEFAULT_RHYMES");
 
         if (rhymesURI != null)
         {
