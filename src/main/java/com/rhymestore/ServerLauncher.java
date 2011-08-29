@@ -54,8 +54,11 @@ public class ServerLauncher
         root.setParentLoaderPriority(true);
 
         HashUserRealm userRealm = new HashUserRealm("Basic Authentication");
+
         userRealm.put("admin", System.getenv("ADMINPASS"));
         userRealm.put("guest", System.getenv("GUESTPASS"));
+        userRealm.addUserToRole("admin", "rhymestore-rw");
+        userRealm.addUserToRole("guest", "rhymestore-ro");
 
         Server server = new Server(Integer.valueOf(webPort));
         server.setHandler(root);
