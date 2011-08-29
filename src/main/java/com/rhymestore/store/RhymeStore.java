@@ -38,7 +38,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import redis.clients.jedis.Client;
 import redis.clients.jedis.Jedis;
 
 import com.rhymestore.config.Configuration;
@@ -103,7 +102,7 @@ public class RhymeStore
     {
         String host = Configuration.getRequiredConfigValue(Configuration.REDIS_HOST_PROPERTY);
         String port = Configuration.getRequiredConfigValue(Configuration.REDIS_PORT_PROPERTY);
-        
+
         redis = new Jedis(host, Integer.valueOf(port));
         wordParser = WordParserFactory.getWordParser();
     }
@@ -295,11 +294,13 @@ public class RhymeStore
         if (!redis.isConnected())
         {
             redis.connect();
-            
-            String password = Configuration.getConfigValue(Configuration.REDIS_PASSWORD_PROPERTY);
+
+            // String password =
+            // Configuration.getConfigValue(Configuration.REDIS_PASSWORD_PROPERTY);
+            String password = System.getenv("REDISPASS");
             if (password != null)
             {
-            	redis.auth(password);
+                redis.auth(password);
             }
         }
     }
