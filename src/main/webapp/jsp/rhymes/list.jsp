@@ -2,6 +2,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib uri="http://rhymestore.com/taglib/rhymestore" prefix="rhymestore" %>
 <%@page import="com.rhymestore.twitter.util.TwitterUtils" %>
+<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <rhymestore:auth roles="rhymestore-rw">
 	<form action="<%= request.getContextPath() %>/web/rhymes/add" method="post">
