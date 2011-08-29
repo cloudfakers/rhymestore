@@ -23,6 +23,8 @@
 package com.rhymestore;
 
 import org.mortbay.jetty.Server;
+import org.mortbay.jetty.security.HashUserRealm;
+import org.mortbay.jetty.security.UserRealm;
 import org.mortbay.jetty.webapp.WebAppContext;
 
 /**
@@ -31,39 +33,35 @@ import org.mortbay.jetty.webapp.WebAppContext;
  * Starts the Jetty Server that will be exposed.
  * 
  * @author Ignasi Barrera
- * 
  */
 public class ServerLauncher
 {
-	public static void main(String[] args) throws Exception
-	{
-		String webappDirLocation = "src/main/webapp/";
+    public static void main(final String[] args) throws Exception
+    {
+        String webappDirLocation = "src/main/webapp/";
 
-		String webPort = System.getenv("PORT");
-		if (webPort == null || webPort.isEmpty())
-		{
-			webPort = "8080";
-		}
+        String webPort = System.getenv("PORT");
+        if (webPort == null || webPort.isEmpty())
+        {
+            webPort = "8080";
+        }
 
-		// Web application
-		WebAppContext root = new WebAppContext();
-		root.setContextPath("/");
-		root.setDescriptor(webappDirLocation + "/WEB-INF/web.xml");
-		root.setResourceBase(webappDirLocation);
-		root.setParentLoaderPriority(true);
+        // Web application
+        WebAppContext root = new WebAppContext();
+        root.setContextPath("/");
+        root.setDescriptor(webappDirLocation + "/WEB-INF/web.xml");
+        root.setResourceBase(webappDirLocation);
+        root.setParentLoaderPriority(true);
 
-		// Security
-		// URL realmConfig = Thread.currentThread().getContextClassLoader()
-		// .getResource("realm.properties");
-		//
-		// HashUserRealm userRealm = new HashUserRealm("Basic Authentication",
-		// realmConfig.toString());
+        HashUserRealm userRealm = new HashUserRealm("Basic Authentication");
+        userRealm.put("admin", System.getenv("ADMINPASS"));
+        userRealm.put("guest", System.getenv("GUESTPASS"));
 
-		Server server = new Server(Integer.valueOf(webPort));
-		server.setHandler(root);
-		// server.setUserRealms(new UserRealm[] { userRealm });
+        Server server = new Server(Integer.valueOf(webPort));
+        server.setHandler(root);
+        server.setUserRealms(new UserRealm[] {userRealm});
 
-		server.start();
-		server.join();
-	}
+        server.start();
+        server.join();
+    }
 }

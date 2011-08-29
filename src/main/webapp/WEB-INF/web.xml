@@ -43,7 +43,6 @@
     </jsp-config>
     
     <!-- Security -->
-    <!-- 
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Rhymestore Administration</web-resource-name>
@@ -76,6 +75,5 @@
     <security-role>
         <role-name>rhymestore-ro</role-name>
     </security-role>
-    -->
 
 </web-app>
