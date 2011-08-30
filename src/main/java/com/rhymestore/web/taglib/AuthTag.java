@@ -42,20 +42,19 @@ public class AuthTag extends TagSupport
     @Override
     public int doStartTag() throws JspException
     {
-//        HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-//
-//        String[] roleList = roles.split(",");
-//
-//        for (int i = 0; i < roleList.length; i++)
-//        {
-//            if (request.isUserInRole(roleList[i]))
-//            {
-//                return EVAL_BODY_INCLUDE;
-//            }
-//        }
-//
-//        return SKIP_BODY;
-    	return EVAL_BODY_INCLUDE;
+        HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+
+        String[] roleList = roles.split(",");
+
+        for (String element : roleList)
+        {
+            if (request.isUserInRole(element))
+            {
+                return EVAL_BODY_INCLUDE;
+            }
+        }
+
+        return SKIP_BODY;
     }
 
     // Getters and setters
@@ -65,7 +64,7 @@ public class AuthTag extends TagSupport
         return roles;
     }
 
-    public void setRoles(String roles)
+    public void setRoles(final String roles)
     {
         this.roles = roles;
     }

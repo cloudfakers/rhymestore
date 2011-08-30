@@ -53,16 +53,6 @@
             <role-name>rhymestore-rw</role-name>
         </auth-constraint>
     </security-constraint>
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>Rhymestore Readonly</web-resource-name>
-            <url-pattern>/*</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>rhymestore-ro</role-name>
-            <role-name>rhymestore-rw</role-name>
-        </auth-constraint>
-    </security-constraint>
 
     <login-config>
         <auth-method>BASIC</auth-method>
@@ -72,8 +62,6 @@
     <security-role>
         <role-name>rhymestore-rw</role-name>
     </security-role>
-    <security-role>
-        <role-name>rhymestore-ro</role-name>
-    </security-role>
+    
 
 </web-app>
