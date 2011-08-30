@@ -39,95 +39,73 @@ import org.testng.annotations.Test;
  */
 public class RhymeStoreTest
 {
-	/** The Redis test database. */
-	public static final int TEST_DATABASE = 1;
+    /** The Redis test database. */
+    public static final int TEST_DATABASE = 1;
 
-	/** The store to test. */
-	private RhymeStore store;
+    /** The store to test. */
+    private RhymeStore store;
 
-	@BeforeMethod
-	public void setUp() throws IOException
-	{
-		store = new TestRhymeStore();
-		store.add("Ya son veintidós!!");
-		store.add("Me escondo y no me ves");
-	}
+    @BeforeMethod
+    public void setUp() throws IOException
+    {
+        store = new TestRhymeStore();
+        store.add("Ya son veintidós!!");
+        store.add("Me escondo y no me ves");
+    }
 
-	@AfterMethod
-	public void tearDown() throws IOException
-	{
-		// ((TestRhymeStore) store).cleanDB();
-		deleteIgnoringErrors("Ya son veintidós!!");
-		deleteIgnoringErrors("Me escondo y no me ves");
-	}
+    @AfterMethod
+    public void tearDown() throws IOException
+    {
+        ((TestRhymeStore) store).cleanDB();
+    }
 
-	@Test
-	public void testFindAll() throws IOException
-	{
-		assertEquals(store.findAll().size(), 2);
-	}
+    @Test
+    public void testFindAll() throws IOException
+    {
+        assertEquals(store.findAll().size(), 2);
+    }
 
-	@Test
-	public void testGetRhyme() throws IOException
-	{
-		assertNull(store.getRhyme("no hay rima"));
-		assertEquals(store.getRhyme("¿Hay algo que rime con tres?"),
-				"Me escondo y no me ves");
-		assertEquals(store.getRhyme("Nada rima con dos"), "Ya son veintidós!!");
-	}
+    @Test
+    public void testGetRhyme() throws IOException
+    {
+        assertNull(store.getRhyme("no hay rima"));
+        assertEquals(store.getRhyme("¿Hay algo que rime con tres?"), "Me escondo y no me ves");
+        assertEquals(store.getRhyme("Nada rima con dos"), "Ya son veintidós!!");
+    }
 
-	@Test
-	public void testDeleteWithoutText() throws IOException
-	{
-		store.delete(null);
-		store.delete("");
-	}
+    @Test
+    public void testDeleteWithoutText() throws IOException
+    {
+        store.delete(null);
+        store.delete("");
+    }
 
-	@Test(expectedExceptions = IOException.class)
-	public void testDeleteUnexistingRhyme() throws IOException
-	{
-		store.delete("Unexisting");
-	}
+    @Test(expectedExceptions = IOException.class)
+    public void testDeleteUnexistingRhyme() throws IOException
+    {
+        store.delete("Unexisting");
+    }
 
-	@Test
-	public void testDeleteExistingRhyme() throws IOException
-	{
-		store.delete("Ya son veintidós!!");
-		assertEquals(store.findAll().size(), 1);
+    @Test
+    public void testDeleteExistingRhyme() throws IOException
+    {
+        store.delete("Ya son veintidós!!");
+        assertEquals(store.findAll().size(), 1);
 
-		store.delete("Me escondo y no me ves");
-		assertTrue(store.findAll().isEmpty());
-	}
+        store.delete("Me escondo y no me ves");
+        assertTrue(store.findAll().isEmpty());
+    }
 
-	@Test
-	public void testGetRhymeForNumber() throws IOException
-	{
-		store.add("Os digo que os comportéis");
-		store.add("Me apetece un montón");
-		store.add("Dile que apriete");
+    @Test
+    public void testGetRhymeForNumber() throws IOException
+    {
+        store.add("Os digo que os comportéis");
+        store.add("Me apetece un montón");
+        store.add("Dile que apriete");
 
-		assertEquals(store.getRhyme("Nada rima con 6"),
-				"Os digo que os comportéis");
-		assertEquals(store.getRhyme("Nada rima con 16"),
-				"Os digo que os comportéis");
-		assertEquals(store.getRhyme("Nada rima con 1000000"),
-				"Me apetece un montón");
-		assertEquals(store.getRhyme("Nada rima con 7!"), "Dile que apriete");
-
-		store.delete("Os digo que os comportéis");
-		store.delete("Me apetece un montón");
-		store.delete("Dile que apriete");
-	}
-
-	private void deleteIgnoringErrors(String rhyme)
-	{
-		try
-		{
-			store.delete(rhyme);
-		}
-		catch (IOException e)
-		{
-			// Ignore error
-		}
-	}
+        assertEquals(store.getRhyme("Nada rima con 6"), "Os digo que os comportéis");
+        assertEquals(store.getRhyme("Nada rima con 16"), "Os digo que os comportéis");
+        assertEquals(store.getRhyme("Nada rima con 1000000"), "Me apetece un montón");
+        assertEquals(store.getRhyme("Nada rima con 7!"), "Dile que apriete");
+    }
 }

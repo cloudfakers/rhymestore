@@ -22,10 +22,7 @@
 
 package com.rhymestore;
 
-import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.Server;
-import org.mortbay.jetty.handler.DefaultHandler;
-import org.mortbay.jetty.handler.HandlerCollection;
 import org.mortbay.jetty.security.HashUserRealm;
 import org.mortbay.jetty.security.UserRealm;
 import org.mortbay.jetty.webapp.WebAppContext;
@@ -50,11 +47,11 @@ public class ServerLauncher
         }
 
         // Web application
-        WebAppContext root = new WebAppContext();
-        root.setContextPath("/");
-        root.setDescriptor(webappDirLocation + "/WEB-INF/web.xml");
-        root.setResourceBase(webappDirLocation);
-        root.setParentLoaderPriority(true);
+        WebAppContext webappContext = new WebAppContext();
+        webappContext.setContextPath("/");
+        webappContext.setDescriptor(webappDirLocation + "/WEB-INF/web.xml");
+        webappContext.setResourceBase(webappDirLocation);
+        webappContext.setParentLoaderPriority(true);
 
         HashUserRealm userRealm = new HashUserRealm("Basic Authentication");
 
@@ -65,10 +62,7 @@ public class ServerLauncher
 
         Server server = new Server(Integer.valueOf(webPort));
 
-        HandlerCollection handlers = new HandlerCollection();
-        handlers.setHandlers(new Handler[] {root, new DefaultHandler()});
-
-        server.setHandler(handlers);
+        server.setHandler(webappContext);
         server.setUserRealms(new UserRealm[] {userRealm});
 
         server.start();
