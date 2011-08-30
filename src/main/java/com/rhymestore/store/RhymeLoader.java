@@ -60,7 +60,7 @@ public class RhymeLoader
      * @param file The file with the rhymes to add.
      * @throws IOException If the rhymes cannot be loaded.
      */
-    public void load(File file) throws IOException
+    public void load(final File file) throws IOException
     {
         if (!file.exists())
         {
@@ -76,9 +76,9 @@ public class RhymeLoader
      * @param in The stream with the rhymes to add.
      * @throws IOException If the rhymes cannot be loaded.
      */
-    public void load(InputStream in) throws IOException
+    public void load(final InputStream in) throws IOException
     {
-        BufferedReader br = new BufferedReader(new InputStreamReader(in));
+        BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
         String line = br.readLine();
         int numLines = 0;
 
@@ -97,7 +97,7 @@ public class RhymeLoader
      * 
      * @param args The absolute path of the file containing the rhymes.
      */
-    public static void main(String... args)
+    public static void main(final String... args)
     {
         if (args.length < 1)
         {
