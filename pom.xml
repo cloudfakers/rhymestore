@@ -254,8 +254,12 @@
                             <generateRepository>false</generateRepository>
                             <programs>
                                 <program>
-                                    <mainClass>com.rhymestore.ServerLauncher</mainClass>
+                                    <mainClass>com.rhymestore.proc.ServerLauncher</mainClass>
                                     <name>webapp</name>
+                                </program>
+                                <program>
+                                    <mainClass>com.rhymestore.proc.TwitterListener</mainClass>
+                                    <name>twitter</name>
                                 </program>
                             </programs>
                         </configuration>

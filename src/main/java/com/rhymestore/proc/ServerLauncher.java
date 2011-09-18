@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  */
 
-package com.rhymestore;
+package com.rhymestore.proc;
 
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.security.HashUserRealm;
@@ -28,7 +28,7 @@ import org.mortbay.jetty.security.UserRealm;
 import org.mortbay.jetty.webapp.WebAppContext;
 
 /**
- * Main application.
+ * Web application process.
  * <p>
  * Starts the Jetty Server that will be exposed.
  * 
@@ -36,34 +36,34 @@ import org.mortbay.jetty.webapp.WebAppContext;
  */
 public class ServerLauncher
 {
-    public static void main(final String[] args) throws Exception
-    {
-        String webappDirLocation = "src/main/webapp/";
+	public static void main(final String[] args) throws Exception
+	{
+		String webappDirLocation = "src/main/webapp/";
 
-        String webPort = System.getenv("PORT");
-        if (webPort == null || webPort.isEmpty())
-        {
-            webPort = "8080";
-        }
+		String webPort = System.getenv("PORT");
+		if (webPort == null || webPort.isEmpty())
+		{
+			webPort = "8080";
+		}
 
-        // Web application
-        WebAppContext webappContext = new WebAppContext();
-        webappContext.setContextPath("/");
-        webappContext.setDescriptor(webappDirLocation + "/WEB-INF/web.xml");
-        webappContext.setResourceBase(webappDirLocation);
-        webappContext.setParentLoaderPriority(true);
+		// Web application
+		WebAppContext webappContext = new WebAppContext();
+		webappContext.setContextPath("/");
+		webappContext.setDescriptor(webappDirLocation + "/WEB-INF/web.xml");
+		webappContext.setResourceBase(webappDirLocation);
+		webappContext.setParentLoaderPriority(true);
 
-        HashUserRealm userRealm = new HashUserRealm("Basic Authentication");
+		HashUserRealm userRealm = new HashUserRealm("Basic Authentication");
 
-        userRealm.put("admin", System.getenv("ADMINPASS"));
-        userRealm.addUserToRole("admin", "rhymestore-rw");
+		userRealm.put("admin", System.getenv("ADMINPASS"));
+		userRealm.addUserToRole("admin", "rhymestore-rw");
 
-        Server server = new Server(Integer.valueOf(webPort));
+		Server server = new Server(Integer.valueOf(webPort));
 
-        server.setHandler(webappContext);
-        server.setUserRealms(new UserRealm[] {userRealm});
+		server.setHandler(webappContext);
+		server.setUserRealms(new UserRealm[] { userRealm });
 
-        server.start();
-        server.join();
-    }
+		server.start();
+		server.join();
+	}
 }
