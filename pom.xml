@@ -274,7 +274,7 @@
                             <programs>
                                 <program>
                                     <mainClass>com.rhymestore.proc.ServerLauncher</mainClass>
-                                    <name>web</name>
+                                    <name>webapp</name>
                                 </program>
                                 <program>
                                     <mainClass>com.rhymestore.proc.TwitterListener</mainClass>

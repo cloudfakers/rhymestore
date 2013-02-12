@@ -1,1 +1,2 @@
-$PROC: sh target/bin/$PROC
+web: sh target/bin/webapp
+twitter: sh target/bin/twitter
