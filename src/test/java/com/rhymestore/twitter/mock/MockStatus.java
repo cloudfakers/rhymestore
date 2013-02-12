@@ -24,9 +24,9 @@ package com.rhymestore.twitter.mock;
 
 import java.util.Date;
 
-import twitter4j.Annotations;
 import twitter4j.GeoLocation;
 import twitter4j.HashtagEntity;
+import twitter4j.MediaEntity;
 import twitter4j.Place;
 import twitter4j.RateLimitStatus;
 import twitter4j.Status;
@@ -48,7 +48,7 @@ public class MockStatus implements Status
 
     // Methods used in tests
 
-    public MockStatus(String text)
+    public MockStatus(final String text)
     {
         super();
         this.text = text;
@@ -73,18 +73,6 @@ public class MockStatus implements Status
     }
 
     // Unused methods
-
-    @Override
-    public Annotations getAnnotations()
-    {
-        return null;
-    }
-
-    @Override
-    public String[] getContributors()
-    {
-        return null;
-    }
 
     @Override
     public Date getCreatedAt()
@@ -183,7 +171,7 @@ public class MockStatus implements Status
     }
 
     @Override
-    public int compareTo(Status arg0)
+    public int compareTo(final Status arg0)
     {
         return 0;
     }
@@ -192,6 +180,36 @@ public class MockStatus implements Status
     public RateLimitStatus getRateLimitStatus()
     {
         return null;
+    }
+
+    @Override
+    public int getAccessLevel()
+    {
+        return 0;
+    }
+
+    @Override
+    public MediaEntity[] getMediaEntities()
+    {
+        return null;
+    }
+
+    @Override
+    public long[] getContributors()
+    {
+        return null;
+    }
+
+    @Override
+    public long getCurrentUserRetweetId()
+    {
+        return 0;
+    }
+
+    @Override
+    public boolean isPossiblySensitive()
+    {
+        return false;
     }
 
 }
