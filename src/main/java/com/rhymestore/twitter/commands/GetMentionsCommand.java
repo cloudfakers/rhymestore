@@ -77,7 +77,7 @@ public class GetMentionsCommand implements TwitterCommand
     {
         // Get last mentions
         Paging paging = lastTweetId < 0 ? new Paging() : new Paging(lastTweetId);
-        ResponseList<Status> mentions = twitter.getMentions(paging);
+        ResponseList<Status> mentions = twitter.getMentionsTimeline(paging);
 
         // Reply only if the lastTweetId existed before calling this method
         // (only reply to mentions made since the application is running)
@@ -134,7 +134,7 @@ public class GetMentionsCommand implements TwitterCommand
      * @return Boolean indicating if the given user is the current Twitter user.
      * @throws TwitterException If an error occurs while checking user name.
      */
-    private boolean isCurrentUser(Twitter twitter, User user) throws TwitterException
+    private boolean isCurrentUser(final Twitter twitter, final User user) throws TwitterException
     {
         return user.getScreenName().equalsIgnoreCase(twitter.getScreenName());
     }
@@ -145,7 +145,7 @@ public class GetMentionsCommand implements TwitterCommand
      * @param mention The mention to check.
      * @return Boolean indicating if the given mention is a valid mention.
      */
-    private boolean isValidMention(Status mention)
+    private boolean isValidMention(final Status mention)
     {
         String lastWord = WordUtils.getLastWord(mention.getText());
         return wordParser.isWord(lastWord);

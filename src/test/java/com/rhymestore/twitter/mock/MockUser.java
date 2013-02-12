@@ -27,6 +27,7 @@ import java.util.Date;
 
 import twitter4j.RateLimitStatus;
 import twitter4j.Status;
+import twitter4j.URLEntity;
 import twitter4j.User;
 
 /**
@@ -121,12 +122,6 @@ public class MockUser implements User
     }
 
     @Override
-    public URL getProfileImageURL()
-    {
-        return null;
-    }
-
-    @Override
     public String getProfileLinkColor()
     {
         return null;
@@ -164,12 +159,6 @@ public class MockUser implements User
 
     @Override
     public String getTimeZone()
-    {
-        return null;
-    }
-
-    @Override
-    public URL getURL()
     {
         return null;
     }
@@ -235,13 +224,139 @@ public class MockUser implements User
     }
 
     @Override
-    public int compareTo(User arg0)
+    public int compareTo(final User arg0)
     {
         return 0;
     }
 
     @Override
     public RateLimitStatus getRateLimitStatus()
+    {
+        return null;
+    }
+
+    @Override
+    public int getAccessLevel()
+    {
+        return 0;
+    }
+
+    @Override
+    public String getProfileImageURL()
+    {
+        return null;
+    }
+
+    @Override
+    public String getBiggerProfileImageURL()
+    {
+        return null;
+    }
+
+    @Override
+    public String getMiniProfileImageURL()
+    {
+        return null;
+    }
+
+    @Override
+    public String getOriginalProfileImageURL()
+    {
+        return null;
+    }
+
+    @Override
+    public URL getProfileImageUrlHttps()
+    {
+        return null;
+    }
+
+    @Override
+    public String getProfileImageURLHttps()
+    {
+        return null;
+    }
+
+    @Override
+    public String getBiggerProfileImageURLHttps()
+    {
+        return null;
+    }
+
+    @Override
+    public String getMiniProfileImageURLHttps()
+    {
+        return null;
+    }
+
+    @Override
+    public String getOriginalProfileImageURLHttps()
+    {
+        return null;
+    }
+
+    @Override
+    public String getURL()
+    {
+        return null;
+    }
+
+    @Override
+    public String getProfileBackgroundImageURL()
+    {
+        return null;
+    }
+
+    @Override
+    public String getProfileBackgroundImageUrlHttps()
+    {
+        return null;
+    }
+
+    @Override
+    public String getProfileBannerURL()
+    {
+        return null;
+    }
+
+    @Override
+    public String getProfileBannerRetinaURL()
+    {
+        return null;
+    }
+
+    @Override
+    public String getProfileBannerIPadURL()
+    {
+        return null;
+    }
+
+    @Override
+    public String getProfileBannerIPadRetinaURL()
+    {
+        return null;
+    }
+
+    @Override
+    public String getProfileBannerMobileURL()
+    {
+        return null;
+    }
+
+    @Override
+    public String getProfileBannerMobileRetinaURL()
+    {
+        return null;
+    }
+
+    @Override
+    public URLEntity[] getDescriptionURLEntities()
+    {
+        return null;
+    }
+
+    @Override
+    public URLEntity getURLEntity()
     {
         return null;
     }
