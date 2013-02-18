@@ -68,7 +68,7 @@ public class TwitterListener
         twitterScheduler = new TwitterScheduler(twitter);
         twitterScheduler.start(); // Start processing the command queue
 
-        LOGGER.info("Starting to reading the user stream");
+        LOGGER.info("Starting the Twitter stream listener");
         stream.addListener(new GetMentionsListener(twitter, twitterScheduler));
         stream.user(); // Start reading to user stream
     }
