@@ -113,7 +113,7 @@ public class TwitterScheduler implements Runnable
     {
         try
         {
-            if (commandQueue.isEmpty())
+            if (!commandQueue.isEmpty())
             {
                 LOGGER.trace("Running command from queue...");
 
