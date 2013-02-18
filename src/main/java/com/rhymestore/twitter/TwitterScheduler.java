@@ -84,6 +84,8 @@ public class TwitterScheduler implements Runnable
                 / TwitterUtils.RATE_LIMIT_API_CALLS_IN_WINDOW);
         long interval = (long) Math.floor(60 / callsPerMinute);
 
+        LOGGER.info("Twitter scheduler running every {} seconds", interval);
+
         scheduler.scheduleAtFixedRate(this, 0, interval, TimeUnit.SECONDS);
     }
 
