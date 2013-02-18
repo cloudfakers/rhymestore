@@ -1,2 +1,2 @@
-twitter: sh target/bin/twitter
+web: sh target/bin/webapp
 
