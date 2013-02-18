@@ -34,15 +34,14 @@ import org.slf4j.LoggerFactory;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-import com.rhymestore.twitter.commands.GetMentionsCommand;
 import com.rhymestore.twitter.commands.TwitterCommand;
 import com.rhymestore.twitter.util.TwitterUtils;
 
 /**
  * Schedules Twitter API calls to execute them in order.
  * <p>
- * Twitter only allows {@link TwitterUtils#MAX_API_CALLS_PER_HOUR} calls per hour. This class will
- * enqueue and run all requested API calls when possible.
+ * This class will enqueue and run all requested API calls when possible, taking care of not passing
+ * the Twitter API rate limit.
  * 
  * @author Ignasi Barrera
  * @see TwitterCommand
@@ -61,9 +60,6 @@ public class TwitterScheduler implements Runnable
     /** The Twitter account where the API calls will be performed. */
     private Twitter twitter;
 
-    /** The command used to get mentions, */
-    private TwitterCommand getMentionsCommand;
-
     /**
      * Creates a new {@link TwitterScheduler}.
      * 
@@ -75,7 +71,6 @@ public class TwitterScheduler implements Runnable
 
         this.twitter = twitter;
         commandQueue = new LinkedBlockingDeque<TwitterCommand>(); // Thread-safe
-        getMentionsCommand = new GetMentionsCommand(commandQueue);
         scheduler = Executors.newSingleThreadScheduledExecutor();
     }
 
@@ -84,8 +79,10 @@ public class TwitterScheduler implements Runnable
      */
     public void start()
     {
-        double callsPerMinute = Math.floor(TwitterUtils.MAX_API_CALLS_PER_HOUR / 60);
-        long interval = (long) Math.ceil(60 / callsPerMinute);
+        double callsPerMinute =
+            Math.floor(TwitterUtils.RATE_LIMIT_WINDOW_MINUTES
+                / TwitterUtils.RATE_LIMIT_API_CALLS_IN_WINDOW);
+        long interval = (long) Math.floor(60 / callsPerMinute);
 
         scheduler.scheduleAtFixedRate(this, 0, interval, TimeUnit.SECONDS);
     }
@@ -99,6 +96,16 @@ public class TwitterScheduler implements Runnable
     }
 
     /**
+     * Adds a command to the command queue.
+     * 
+     * @param command The command to add to the queue.
+     */
+    public void addCommand(final TwitterCommand command)
+    {
+        commandQueue.add(command);
+    }
+
+    /**
      * Executes the enqueued Twitter API calls.
      */
     @Override
@@ -107,12 +114,6 @@ public class TwitterScheduler implements Runnable
         try
         {
             if (commandQueue.isEmpty())
-            {
-                LOGGER.trace("Running GetMentions API call...");
-
-                getMentionsCommand.execute(twitter);
-            }
-            else
             {
                 LOGGER.trace("Running command from queue...");
 

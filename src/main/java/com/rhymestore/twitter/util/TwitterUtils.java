@@ -35,8 +35,11 @@ public class TwitterUtils
     /** Maximum length for the tweets. */
     public static final int MAX_TWEET_LENGTH = 140;
 
-    /** Maximum number of API calls that can be performed in an hour. */
-    public static final int MAX_API_CALLS_PER_HOUR = 150;
+    /** The rate limit time window in minutes. */
+    public static final int RATE_LIMIT_WINDOW_MINUTES = 15;
+
+    /** Number of APi calls allowed in the rate limit window. */
+    public static final int RATE_LIMIT_API_CALLS_IN_WINDOW = 15;
 
     /** The error produced when attempting to send duplicate tweets. */
     public static final String DUPLICATE_TWEET_ERROR = "Status is a duplicate.";

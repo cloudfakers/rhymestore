@@ -23,7 +23,6 @@
 package com.rhymestore.twitter.commands;
 
 import java.io.IOException;
-import java.util.Queue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +51,7 @@ public class ReplyCommand implements TwitterCommand
     private static final Logger LOGGER = LoggerFactory.getLogger(ReplyCommand.class);
 
     /** The queue with the pending commands. */
-    private final Queue<TwitterCommand> commandQueue;
+    private final TwitterScheduler scheduler;
 
     /** The status to reply. */
     private final Status status;
@@ -67,13 +66,13 @@ public class ReplyCommand implements TwitterCommand
      * Creates a new {@link ReplyCommand} for the given status.
      * 
      * @param status The status to reply.
-     * @param commandQueue The queue with the pending commands.
+     * @param scheduler The command scheduler.
      */
-    public ReplyCommand(final Status status, final Queue<TwitterCommand> commandQueue)
+    public ReplyCommand(final Status status, final TwitterScheduler scheduler)
     {
         super();
         this.status = status;
-        this.commandQueue = commandQueue;
+        this.scheduler = scheduler;
         this.rhymeStore = RhymeStore.getInstance();
         this.wordParser = WordParserFactory.getWordParser();
     }
@@ -133,7 +132,7 @@ public class ReplyCommand implements TwitterCommand
             {
                 LOGGER.debug("Enqueuing the reply to try again later...");
 
-                commandQueue.add(this);
+                scheduler.addCommand(this);
             }
         }
     }

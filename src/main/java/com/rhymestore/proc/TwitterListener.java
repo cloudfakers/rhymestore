@@ -28,9 +28,12 @@ import org.slf4j.LoggerFactory;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
+import twitter4j.TwitterStream;
+import twitter4j.TwitterStreamFactory;
 
 import com.rhymestore.config.Configuration;
 import com.rhymestore.twitter.TwitterScheduler;
+import com.rhymestore.twitter.stream.GetMentionsListener;
 
 /**
  * Main Twitter listener process.
@@ -39,64 +42,74 @@ import com.rhymestore.twitter.TwitterScheduler;
  */
 public class TwitterListener
 {
-	/** The logger. */
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(TwitterListener.class);
+    /** The logger. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(TwitterListener.class);
 
-	/** The Twitter API call scheduler. */
-	private TwitterScheduler twitterScheduler;
+    /** The Twitter API call scheduler. */
+    private TwitterScheduler twitterScheduler;
 
-	/** The Twitter API client. */
-	private Twitter twitter;
+    /** The Twitter API client. */
+    private Twitter twitter;
 
-	/**
-	 * Start listening to tweets.
-	 */
-	public void start() throws IllegalStateException, TwitterException
-	{
-		twitter = new TwitterFactory().getInstance();
+    /** The Twitter streaming API. */
+    private TwitterStream stream;
 
-		LOGGER.info("Connected to Twitter as: {}", twitter.getScreenName());
-		LOGGER.info("Starting the Twitter API scheduler");
+    /**
+     * Start listening to tweets.
+     */
+    public void start() throws IllegalStateException, TwitterException
+    {
+        twitter = new TwitterFactory().getInstance();
+        stream = new TwitterStreamFactory().getInstance();
 
-		twitterScheduler = new TwitterScheduler(twitter);
-		twitterScheduler.start();
-	}
+        LOGGER.info("Connected to Twitter as: {}", twitter.getScreenName());
 
-	/**
-	 * Shutdown hook to close the connection to Twitter.
-	 */
-	private static class TwitterShutdown extends Thread
-	{
-		/** The listener to shutdown. */
-		private TwitterListener listener;
+        LOGGER.info("Starting the Twitter API scheduler");
+        twitterScheduler = new TwitterScheduler(twitter);
+        twitterScheduler.start(); // Start processing the command queue
 
-		public TwitterShutdown(TwitterListener listener)
-		{
-			super();
-			this.listener = listener;
-		}
+        LOGGER.info("Starting to reading the user stream");
+        stream.addListener(new GetMentionsListener(twitter, twitterScheduler));
+        stream.user(); // Start reading to user stream
+    }
 
-		@Override
-		public void run()
-		{
-			LOGGER.info("Shutting down the Twitter API scheduler");
-			listener.twitterScheduler.shutdown(); // Stop scheduler
+    /**
+     * Shutdown hook to close the connection to Twitter.
+     */
+    private static class TwitterShutdown extends Thread
+    {
+        /** The listener to shutdown. */
+        private TwitterListener listener;
 
-			LOGGER.info("Disconnecting from Twitter");
-			listener.twitter.shutdown(); // Disconnect from Twitter
-		}
-	}
+        public TwitterShutdown(final TwitterListener listener)
+        {
+            super();
+            this.listener = listener;
+        }
 
-	public static void main(final String[] args) throws Exception
-	{
-		Configuration.loadTwitterConfig();
+        @Override
+        public void run()
+        {
+            LOGGER.info("Shutting down the Twitter API scheduler");
+            listener.twitterScheduler.shutdown(); // Stop scheduler
 
-		// Start the Twitter listener
-		TwitterListener listener = new TwitterListener();
-		listener.start();
+            LOGGER.info("Disconnecting from the Twitter streaming API");
+            listener.stream.shutdown();
 
-		// Register the shutdown hook to close the connection properly
-		Runtime.getRuntime().addShutdownHook(new TwitterShutdown(listener));
-	}
+            LOGGER.info("Disconnecting from Twitter");
+            listener.twitter.shutdown();
+        }
+    }
+
+    public static void main(final String[] args) throws Exception
+    {
+        Configuration.loadTwitterConfig();
+
+        // Start the Twitter listener
+        TwitterListener listener = new TwitterListener();
+        listener.start();
+
+        // Register the shutdown hook to close the connection properly
+        Runtime.getRuntime().addShutdownHook(new TwitterShutdown(listener));
+    }
 }
