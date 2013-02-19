@@ -22,24 +22,32 @@
 
 package com.rhymestore.twitter.commands;
 
-import org.apache.jasper.tagplugins.jstl.If;
-
-import twitter4j.TwitterException;
+import twitter4j.Twitter;
 
 import com.rhymestore.twitter.TwitterScheduler;
 
 /**
- * Executes Twitter API calls.
+ * Base class for all commands that perform API calls that are rate-limited by the Twitter API.
  * 
  * @author Ignasi Barrera
- * @see TwitterScheduler
  */
-public interface TwitterCommand
+public abstract class RateLimitedCommand extends AbstracTwitterCommand
 {
+    /** The Twitter scheduler used to respect the rate limit. */
+    private final TwitterScheduler scheduler;
+
+    public RateLimitedCommand(final Twitter twitter, final TwitterScheduler scheduler)
+    {
+        super(twitter);
+        this.scheduler = scheduler;
+    }
+
     /**
-     * Executes a Twitter API call in the given account.
-     * 
-     * @throws If the API call returns an error.
+     * Schedules the command to be executed once the rate limit allows it.
      */
-    public void execute() throws TwitterException;
+    public void schedule()
+    {
+        scheduler.addCommand(this);
+    }
+
 }

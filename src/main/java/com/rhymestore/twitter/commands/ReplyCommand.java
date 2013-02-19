@@ -45,13 +45,10 @@ import com.rhymestore.twitter.util.TwitterUtils;
  * @see Twitter
  * @see TwitterScheduler
  */
-public class ReplyCommand implements TwitterCommand
+public class ReplyCommand extends AbstracTwitterCommand
 {
     /** The logger. */
     private static final Logger LOGGER = LoggerFactory.getLogger(ReplyCommand.class);
-
-    /** The queue with the pending commands. */
-    private final TwitterScheduler scheduler;
 
     /** The status to reply. */
     private final Status status;
@@ -65,20 +62,19 @@ public class ReplyCommand implements TwitterCommand
     /**
      * Creates a new {@link ReplyCommand} for the given status.
      * 
+     * @param twitter The Twitter sync API.
      * @param status The status to reply.
-     * @param scheduler The command scheduler.
      */
-    public ReplyCommand(final Status status, final TwitterScheduler scheduler)
+    public ReplyCommand(final Twitter twitter, final Status status)
     {
-        super();
+        super(twitter);
         this.status = status;
-        this.scheduler = scheduler;
         this.rhymeStore = RhymeStore.getInstance();
         this.wordParser = WordParserFactory.getWordParser();
     }
 
     @Override
-    public void execute(final Twitter twitter) throws TwitterException
+    public void execute() throws TwitterException
     {
         String rhyme = null;
         String targetUser = status.getUser().getScreenName();
@@ -125,15 +121,6 @@ public class ReplyCommand implements TwitterCommand
         catch (TwitterException ex)
         {
             LOGGER.error("Could not send reply to tweet " + status.getId(), ex);
-
-            // If it is not a duplicate tweet, enqueue the API call again, to
-            // retry it later
-            if (!TwitterUtils.isDuplicateTweetError(ex))
-            {
-                LOGGER.debug("Enqueuing the reply to try again later...");
-
-                scheduler.addCommand(this);
-            }
         }
     }
 }

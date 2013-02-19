@@ -31,7 +31,6 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 import com.rhymestore.twitter.commands.TwitterCommand;
@@ -57,21 +56,15 @@ public class TwitterScheduler implements Runnable
     /** The queue with the pending commands. */
     private Queue<TwitterCommand> commandQueue;
 
-    /** The Twitter account where the API calls will be performed. */
-    private Twitter twitter;
-
     /**
      * Creates a new {@link TwitterScheduler}.
      * 
      * @param twitter The Twitter account where the API calls will be performed.
      */
-    public TwitterScheduler(final Twitter twitter)
+    public TwitterScheduler()
     {
-        super();
-
-        this.twitter = twitter;
-        commandQueue = new LinkedBlockingDeque<TwitterCommand>(); // Thread-safe
-        scheduler = Executors.newSingleThreadScheduledExecutor();
+        this.commandQueue = new LinkedBlockingDeque<TwitterCommand>(); // Thread-safe
+        this.scheduler = Executors.newSingleThreadScheduledExecutor();
     }
 
     /**
@@ -120,7 +113,7 @@ public class TwitterScheduler implements Runnable
                 LOGGER.trace("Running command from queue...");
 
                 TwitterCommand cmd = commandQueue.poll();
-                cmd.execute(twitter);
+                cmd.execute();
             }
         }
         catch (TwitterException ex)

@@ -22,24 +22,21 @@
 
 package com.rhymestore.twitter.commands;
 
-import org.apache.jasper.tagplugins.jstl.If;
-
-import twitter4j.TwitterException;
-
-import com.rhymestore.twitter.TwitterScheduler;
+import twitter4j.Twitter;
 
 /**
- * Executes Twitter API calls.
+ * Base class for all twitter commands.
  * 
  * @author Ignasi Barrera
- * @see TwitterScheduler
  */
-public interface TwitterCommand
+public abstract class AbstracTwitterCommand implements TwitterCommand
 {
-    /**
-     * Executes a Twitter API call in the given account.
-     * 
-     * @throws If the API call returns an error.
-     */
-    public void execute() throws TwitterException;
+    /** The Twitter sync API. */
+    protected final Twitter twitter;
+
+    public AbstracTwitterCommand(final Twitter twitter)
+    {
+        this.twitter = twitter;
+    }
+
 }

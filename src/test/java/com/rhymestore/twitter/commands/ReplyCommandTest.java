@@ -30,6 +30,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 import com.rhymestore.store.RhymeStore;
@@ -71,8 +72,8 @@ public class ReplyCommandTest
     @Test
     public void testExecuteWithExistingRhyme() throws TwitterException
     {
-        ReplyCommand replyCommand = createReplyCommand("Este test es casi perfecto");
-        replyCommand.execute(twitter);
+        ReplyCommand replyCommand = createReplyCommand(twitter, "Este test es casi perfecto");
+        replyCommand.execute();
 
         assertTrue(twitter.getLastUpdatedStatus().contains("Rima por defecto"));
     }
@@ -80,15 +81,15 @@ public class ReplyCommandTest
     @Test
     public void testExecuteWithScreenNameRhyme() throws TwitterException
     {
-        ReplyCommand replyCommand = createReplyCommand("Rima esto con el usuario");
-        replyCommand.execute(twitter);
+        ReplyCommand replyCommand = createReplyCommand(twitter, "Rima esto con el usuario");
+        replyCommand.execute();
 
         assertTrue(twitter.getLastUpdatedStatus().contains("Esta rima es infame"));
     }
 
-    private ReplyCommand createReplyCommand(String status)
+    private ReplyCommand createReplyCommand(final Twitter twitter, final String status)
     {
-        ReplyCommand replyCommand = new ReplyCommand(new MockStatus(status), null);
+        ReplyCommand replyCommand = new ReplyCommand(twitter, new MockStatus(status));
         replyCommand.rhymeStore = store;
         return replyCommand;
     }

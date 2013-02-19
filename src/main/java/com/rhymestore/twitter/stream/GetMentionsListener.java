@@ -54,15 +54,11 @@ public class GetMentionsListener extends UserStreamAdapter
     /** The Twitter sync api. */
     private final Twitter twitter;
 
-    /** The command scheduler. */
-    private final TwitterScheduler scheduler;
-
-    public GetMentionsListener(final Twitter twitter, final TwitterScheduler scheduler)
+    public GetMentionsListener(final Twitter twitter)
     {
         super();
         this.wordParser = WordParserFactory.getWordParser();
         this.twitter = twitter;
-        this.scheduler = scheduler;
     }
 
     @Override
@@ -85,8 +81,8 @@ public class GetMentionsListener extends UserStreamAdapter
                             LOGGER.debug("Adding tweet {} from {}", status.getId(), status
                                 .getUser().getScreenName());
 
-                            ReplyCommand reply = new ReplyCommand(status, scheduler);
-                            scheduler.addCommand(reply);
+                            ReplyCommand reply = new ReplyCommand(twitter, status);
+                            reply.execute();
                         }
                         else
                         {

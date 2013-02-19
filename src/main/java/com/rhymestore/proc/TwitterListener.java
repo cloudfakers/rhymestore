@@ -32,7 +32,6 @@ import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
 
 import com.rhymestore.config.Configuration;
-import com.rhymestore.twitter.TwitterScheduler;
 import com.rhymestore.twitter.stream.GetMentionsListener;
 
 /**
@@ -44,9 +43,6 @@ public class TwitterListener
 {
     /** The logger. */
     private static final Logger LOGGER = LoggerFactory.getLogger(TwitterListener.class);
-
-    /** The Twitter API call scheduler. */
-    private TwitterScheduler twitterScheduler;
 
     /** The Twitter API client. */
     private Twitter twitter;
@@ -64,12 +60,8 @@ public class TwitterListener
 
         LOGGER.info("Connected to Twitter as: {}", twitter.getScreenName());
 
-        LOGGER.info("Starting the Twitter API scheduler");
-        twitterScheduler = new TwitterScheduler(twitter);
-        twitterScheduler.start(); // Start processing the command queue
-
         LOGGER.info("Starting the Twitter stream listener");
-        stream.addListener(new GetMentionsListener(twitter, twitterScheduler));
+        stream.addListener(new GetMentionsListener(twitter));
         stream.user(); // Start reading to user stream
     }
 
@@ -90,9 +82,6 @@ public class TwitterListener
         @Override
         public void run()
         {
-            LOGGER.info("Shutting down the Twitter API scheduler");
-            listener.twitterScheduler.shutdown(); // Stop scheduler
-
             LOGGER.info("Disconnecting from the Twitter streaming API");
             listener.stream.shutdown();
 
