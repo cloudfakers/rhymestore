@@ -78,7 +78,7 @@ public class GetMentionsListener extends UserStreamAdapter
                         if (isValidMention(status)
                             && !isCurrentUser(twitter, status.getUser().getScreenName()))
                         {
-                            LOGGER.debug("Adding tweet {} from {}", status.getId(), status
+                            LOGGER.debug("Processing tweet {} from {}", status.getId(), status
                                 .getUser().getScreenName());
 
                             ReplyCommand reply = new ReplyCommand(twitter, status);
