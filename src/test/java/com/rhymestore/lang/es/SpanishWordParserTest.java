@@ -122,6 +122,10 @@ public class SpanishWordParserTest extends AbstractWordParserTest
 		assertTrue(wordParser.rhyme("cantar.", "pescar"));
 		assertTrue(wordParser.rhyme("calor!", "motor?"));
 		assertTrue(wordParser.rhyme("calor  ", "motor&;'?="));
+		assertTrue(wordParser.rhyme("#cantar", "pescar"));
+		assertTrue(wordParser.rhyme("@cantar", "pescar"));
+		assertTrue(wordParser.rhyme("#cantar!", "pescar"));
+		assertTrue(wordParser.rhyme("@cantar!", "pescar"));
 	}
 
 	@Override
@@ -174,19 +178,27 @@ public class SpanishWordParserTest extends AbstractWordParserTest
 		assertTrue(wordParser.isWord("valid!"));
 		assertTrue(wordParser.isWord("logroño"));
 		assertTrue(wordParser.isWord("LOGROÑO"));
-
+		assertTrue(wordParser.isWord("#palabra"));
+		assertTrue(wordParser.isWord("@palabra"));
+		
 		// Valid numbers
 		assertTrue(wordParser.isWord("-1500"));
 		assertTrue(wordParser.isWord("-1"));
 		assertTrue(wordParser.isWord("0"));
 		assertTrue(wordParser.isWord("25"));
 		assertTrue(wordParser.isWord("123456789"));
-
+		assertTrue(wordParser.isWord("#123456789"));
+		assertTrue(wordParser.isWord("@123456789"));
+		
 		// Invalid words
 		assertFalse(wordParser.isWord("-1-2"));
 		assertFalse(wordParser.isWord("-abc"));
 		assertFalse(wordParser.isWord("hola.adios"));
 		assertFalse(wordParser.isWord("ab23cd"));
+		assertFalse(wordParser.isWord("##ab23cd"));
+		assertFalse(wordParser.isWord("@#ab23cd"));
+		assertFalse(wordParser.isWord("####ab23cd"));
+		assertFalse(wordParser.isWord("@@ab23cd"));
 	}
 
 	@Override
