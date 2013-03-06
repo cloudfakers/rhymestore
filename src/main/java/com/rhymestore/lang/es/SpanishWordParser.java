@@ -743,7 +743,7 @@ public class SpanishWordParser implements WordParser
 	@Override
 	public StressType stressType(final String word)
 	{
-		String withoutPunctuation = removeTrailingPunctuation(word);
+		String withoutPunctuation = removeTwitterChars(removeTrailingPunctuation(word));
 
 		// If it is a number, just translate its phonetic part
 		if (WordUtils.isNumber(withoutPunctuation))
@@ -787,8 +787,8 @@ public class SpanishWordParser implements WordParser
 	@Override
 	public String phoneticRhymePart(final String word)
 	{
-		String withoutPunctuation = removeTrailingPunctuation(word);
-
+		String withoutPunctuation = removeTwitterChars(removeTrailingPunctuation(word));
+	
 		// If it is a number, just translate its phonetic part
 		if (WordUtils.isNumber(withoutPunctuation))
 		{
@@ -831,7 +831,7 @@ public class SpanishWordParser implements WordParser
 				result.append("ll");
 				break;
 
-			// h => añadirla solo si es una 'ch'
+                // h => añadirla solo si es una 'ch'
 			case 'h':
 				if (i > 0 && letters[i - 1] == 'c')
 				{
@@ -861,8 +861,20 @@ public class SpanishWordParser implements WordParser
 
 		return result.toString();
 	}
+	
+    /**
+     * Removes twitter chars (@, #). <br>
+     * Does not remove double @ nor double # nor mixins.
+     * 
+     * @param word
+     * @return word with no leading @ nor #.
+     */
+	private String removeTwitterChars(String word)
+    {
+        return word.replaceFirst("[@#]", "");
+    }
 
-	@Override
+    @Override
 	public boolean isLetter(final char letter)
 	{
 		boolean isLetter = letter >= 97 && letter <= 122; // a-z
@@ -899,7 +911,7 @@ public class SpanishWordParser implements WordParser
 	@Override
 	public boolean isWord(final String text)
 	{
-		String withoutPunctuation = removeTrailingPunctuation(text);
+		String withoutPunctuation = removeTwitterChars(removeTrailingPunctuation(text));
 		boolean negative = false;
 
 		// Ignore the sign if we are verifying a number
