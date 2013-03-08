@@ -62,8 +62,6 @@ public class RhymeModule extends AbstractModule
             Configuration.getRequiredConfigValue(Configuration.REDIS_HOST));
         bind(Integer.class).annotatedWith(Names.named(REDIS_PORT)).toInstance(
             Integer.valueOf(Configuration.getRequiredConfigValue(Configuration.REDIS_PORT)));
-
-        Configuration.loadTwitterConfig();
     }
 
     protected void bindWordParser()

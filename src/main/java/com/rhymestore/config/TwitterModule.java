@@ -46,7 +46,7 @@ public class TwitterModule extends AbstractModule
     @Override
     protected void configure()
     {
-
+        Configuration.loadTwitterConfig();
     }
 
     @Provides
