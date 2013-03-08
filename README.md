@@ -15,6 +15,13 @@ can download it from: [http://redis.io](http://redis.io)
 Refer to Redis installation instructions if you need any
 help installing it.
 
+If you prefer you can also sign up for a Redis account in
+[Redis To Go](http://redistogo.com/) and configure the following
+properties in the *rhymestore.properties* file:
+
+    rhymestore.redis.host
+    rhymestore.redis.port
+
 Compiling Rhymestore
 --------------------
 
@@ -29,23 +36,18 @@ You will need a running Redis instance while compiling, since unit tests
 will test persistence.
 
 To run the integration tests to test Twitter and default rhyme downloading,
-you need to configure the Twitter credentials. You can set the following
-profile in your Maven `settings.xml` file:
-
-    <profile>
-        <id>rhymestore</id>
-        <properties>
-            <twitter.consumerKey>your_consumer_key</twitter.consumerKey>
-            <twitter.consumerSecret>your_consumer_secret</twitter.consumerSecret>
-            <twitter.accessToken>your_access_token</twitter.accessToken>
-            <twitter.accessTokenSecret>your_access_token_secret</twitter.accessTokenSecret>
-        </properties>
-    </profile>
+you need to configure the Twitter credentials. You will need to export the
+following environment variables with the appropriate values:
+    
+    TWITTER_ACCESSTOKEN
+    TWITTER_ACCESSTOKENSECRET
+    TWITTER_CONSUMERKEY
+    TWITTER_CONSUMERSECRET
     
 Once the Twitter credentials have been configured, you can build and run the
 integration tests as follows:
 
-    mvn clean verify -P rhymestore
+    mvn clean verify
     
 If you don't have your accessToken and accessTokenSecret, you can use the
 `com.rhymestore.twitter.AccessTokenGenerator` main class to generate them.
@@ -55,13 +57,13 @@ Deploying
 
 The generated *rhymestore.war* file can be deployed to any servlet container.
 
-In order to connect to Twitter, you will need to configure the following system
-properties:
+In order to connect to Twitter, you will need to configure the same environment
+variables:
 
-    -Dtwitter4j.oauth.consumerKey=your_consumer_key
-    -Dtwitter4j.oauth.consumerSecret=your_consumer_secret
-    -Dtwitter4j.oauth.accessToken=your_access_token
-    -Dtwitter4j.oauth.accessTokenSecret=your_access_token_secret
+    TWITTER_ACCESSTOKEN
+    TWITTER_ACCESSTOKENSECRET
+    TWITTER_CONSUMERKEY
+    TWITTER_CONSUMERSECRET
 
 Once the application is started, you need to have a running Redis instance and
 Internet access to let the application connect to the configured Twitter account.
@@ -76,7 +78,6 @@ Customizing and Contributing
 Currently, there is only support for the Spanish language. Support for rhymes in other
 languages can be added by implementing the `com.rhymestore.lang.WordParser` interface
 and adding a unit test class that extends the base class: `com.rhymestore.lang.AbstractWordParserTest`.
-The WordParser implementation to use can be configured in the `rhymestore.properties` file.
 
 Any contribution to the project is welcome. Feel free to check
 it out from the [Project site](https://github.com/nacx/rhymestore) and play with it.
@@ -85,11 +86,12 @@ it out from the [Project site](https://github.com/nacx/rhymestore) and play with
 Note on patches/pull requests
 -----------------------------
  
- * Fork the project.
- * Make your feature addition or bug fix.
- * Add tests for it. This is important so I don't break it in a future version unintentionally.
- * Commit.
- * Send me a pull request. Bonus points for topic branches.
+    * Fork the project.
+    * Create a topic branch for your feature or bug fix.
+    * Develop in the just created feature/bug branch.
+    * Add tests for your changes. This is important so I don't break them in a future version unintentionally.
+    * Commit.
+    * Send me a pull request. 
 
 
 Issue Tracking
