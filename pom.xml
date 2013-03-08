@@ -45,21 +45,6 @@
         </developer>
     </developers>
     
-    <!-- Snapshot reposiroty for SJVMC -->
-    <repositories>
-        <repository>
-            <id>oss-sonatype-snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
-        </repository>
-    </repositories>
-    
     <!-- Dependencies -->
     <dependencies>
         
@@ -91,7 +76,7 @@
         <dependency>
             <groupId>org.sjmvc</groupId>
             <artifactId>sjmvc</artifactId>
-            <version>1.1-SNAPSHOT</version>
+            <version>1.2</version>
         </dependency>
         
         <!-- Logging -->
