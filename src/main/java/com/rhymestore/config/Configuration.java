@@ -27,8 +27,6 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.rhymestore.lang.WordParser;
-
 /**
  * Global application configuration.
  * 
@@ -36,125 +34,108 @@ import com.rhymestore.lang.WordParser;
  */
 public class Configuration
 {
-	/** The logger. */
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(Configuration.class);
+    /** The logger. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(Configuration.class);
 
-	/** The main configuration file. */
-	public static final String CONFIG_FILE = "rhymestore.properties";
+    /** The main configuration file. */
+    public static final String CONFIG_FILE = "rhymestore.properties";
 
-	/** Name of the property that holds the Redis host. */
-	public static final String REDIS_HOST_PROPERTY = "rhymestore.redis.host";
+    /** Name of the property that holds the Redis host. */
+    public static final String REDIS_HOST = "rhymestore.redis.host";
 
-	/** Name of the property that holds the Redis port. */
-	public static final String REDIS_PORT_PROPERTY = "rhymestore.redis.port";
+    /** Name of the property that holds the Redis port. */
+    public static final String REDIS_PORT = "rhymestore.redis.port";
 
-	/** Name of the property that holds the Redis password. */
-	public static final String REDIS_PASSWORD_PROPERTY = "rhymestore.redis.password";
+    /** Name of the property that holds the default rhymes to use. */
+    public static final String DEFAULT_RHYMES = "rhymestore.wordparser.default";
 
-	/**
-	 * Name of the property that holds the {@link WordParser} implementation
-	 * class.
-	 */
-	public static final String WORDPARSER_PROPERTY = "rhymestore.wordparser.class";
+    /** The singleton instance of the configuration object. */
+    private static Configuration instance;
 
-	/** Name of the property that holds the default rhymes to use. */
-	public static final String DEFAULT_RHYME_PROPERTY = "rhymestore.wordparser.default";
+    /** The configuration properties. */
+    private Properties properties;
 
-	/** Name of the property that holds the default rhymes URI. */
-	public static final String DEFAULT_RHYMES_URI_PROPERTY = "rhymestore.store.rhymes.defaulturi";
+    /**
+     * Private constructor. This class should ot be instantiated.
+     */
+    private Configuration()
+    {
+        super();
+    }
 
-	/** The singleton instance of the configuration object. */
-	private static Configuration instance;
+    /**
+     * Gets the configuration properties.
+     * 
+     * @return The configuration properties.
+     */
+    /* package */static Properties getConfiguration()
+    {
+        if (instance == null)
+        {
+            instance = new Configuration();
 
-	/** The configuration properties. */
-	private Properties properties;
+            LOGGER.debug("Loading configuration from {}", CONFIG_FILE);
 
-	/**
-	 * Private constructor. This class should ot be instantiated.
-	 */
-	private Configuration()
-	{
-		super();
-	}
+            // Load properties
+            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            instance.properties = new Properties();
 
-	/**
-	 * Gets the configuration properties.
-	 * 
-	 * @return The configuration properties.
-	 */
-	public static Properties getConfiguration()
-	{
-		if (instance == null)
-		{
-			instance = new Configuration();
+            try
+            {
+                instance.properties.load(cl.getResourceAsStream(CONFIG_FILE));
+            }
+            catch (Exception ex)
+            {
+                throw new ConfigurationException("Could not load configuration file: "
+                    + ex.getMessage());
+            }
 
-			LOGGER.debug("Loading configuration from {}", CONFIG_FILE);
+            LOGGER.debug("Loaded {} configuration properties", instance.properties.size());
+        }
 
-			// Load properties
-			ClassLoader cl = Thread.currentThread().getContextClassLoader();
-			instance.properties = new Properties();
+        return instance.properties;
+    }
 
-			try
-			{
-				instance.properties.load(cl.getResourceAsStream(CONFIG_FILE));
-			}
-			catch (Exception ex)
-			{
-				throw new ConfigurationException(
-						"Could not load configuration file: " + ex.getMessage());
-			}
+    /**
+     * Get the configuration value for the given property name.
+     * 
+     * @return The value for the given property.
+     * @throws ConfigurationException If the property does not exist.
+     */
+    /* package */static String getRequiredConfigValue(final String propertyName)
+    {
+        String value = getConfiguration().getProperty(propertyName);
 
-			LOGGER.debug("Loaded {} configuration properties",
-					instance.properties.size());
-		}
+        if (value == null)
+        {
+            throw new ConfigurationException("Te requested property [" + propertyName
+                + "] was not set.");
+        }
 
-		return instance.properties;
-	}
+        return value;
+    }
 
-	/**
-	 * Get the configuration value for the given property name.
-	 * 
-	 * @return The value for the given property.
-	 * @throws ConfigurationException If the property does not exist.
-	 */
-	public static String getRequiredConfigValue(final String propertyName)
-	{
-		String value = getConfiguration().getProperty(propertyName);
+    /**
+     * Get the configuration value for the given property name.
+     * 
+     * @return The value for the given property or <code>null</code> if the value is not defined.
+     */
+    /* package */static String getConfigValue(final String propertyName)
+    {
+        return getConfiguration().getProperty(propertyName);
+    }
 
-		if (value == null)
-		{
-			throw new ConfigurationException("Te requested property ["
-					+ propertyName + "] was not set.");
-		}
-
-		return value;
-	}
-
-	/**
-	 * Get the configuration value for the given property name.
-	 * 
-	 * @return The value for the given property or <code>null</code> if the
-	 *         value is not defined.
-	 */
-	public static String getConfigValue(final String propertyName)
-	{
-		return getConfiguration().getProperty(propertyName);
-	}
-
-	/**
-	 * Load Twitter configuration.
-	 */
-	public static void loadTwitterConfig()
-	{
-		System.setProperty("twitter4j.oauth.consumerKey",
-				System.getenv("TWITTER_CONSUMERKEY"));
-		System.setProperty("twitter4j.oauth.consumerSecret",
-				System.getenv("TWITTER_CONSUMERSECRET"));
-		System.setProperty("twitter4j.oauth.accessToken",
-				System.getenv("TWITTER_ACCESSTOKEN"));
-		System.setProperty("twitter4j.oauth.accessTokenSecret",
-				System.getenv("TWITTER_ACCESSTOKENSECRET"));
-	}
+    /**
+     * Load Twitter configuration.
+     */
+    /* package */static void loadTwitterConfig()
+    {
+        System.setProperty("twitter4j.oauth.consumerKey", System.getenv("TWITTER_CONSUMERKEY"));
+        System.setProperty("twitter4j.oauth.consumerSecret",
+            System.getenv("TWITTER_CONSUMERSECRET"));
+        System.setProperty("twitter4j.oauth.accessToken", System.getenv("TWITTER_ACCESSTOKEN"));
+        System.setProperty("twitter4j.oauth.accessTokenSecret",
+            System.getenv("TWITTER_ACCESSTOKENSECRET"));
+    }
 
 }

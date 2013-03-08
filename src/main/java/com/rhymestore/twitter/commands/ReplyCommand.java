@@ -33,8 +33,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 import com.rhymestore.lang.WordParser;
-import com.rhymestore.lang.WordParserFactory;
-import com.rhymestore.store.RhymeStore;
+import com.rhymestore.store.RedisStore;
 import com.rhymestore.twitter.TwitterScheduler;
 import com.rhymestore.twitter.util.TwitterUtils;
 
@@ -57,20 +56,15 @@ public class ReplyCommand extends AbstracTwitterCommand
     private final WordParser wordParser;
 
     /** The Rhyme Store. */
-    /* package */RhymeStore rhymeStore;
+    private final RedisStore rhymeStore;
 
-    /**
-     * Creates a new {@link ReplyCommand} for the given status.
-     * 
-     * @param twitter The Twitter sync API.
-     * @param status The status to reply.
-     */
-    public ReplyCommand(final Twitter twitter, final Status status)
+    public ReplyCommand(final Twitter twitter, final WordParser wordParser,
+        final RedisStore rhymeStore, final Status status)
     {
         super(twitter);
+        this.rhymeStore = rhymeStore;
+        this.wordParser = wordParser;
         this.status = status;
-        this.rhymeStore = RhymeStore.getInstance();
-        this.wordParser = WordParserFactory.getWordParser();
     }
 
     @Override
@@ -123,4 +117,5 @@ public class ReplyCommand extends AbstracTwitterCommand
             LOGGER.error("Could not send reply to tweet " + status.getId(), ex);
         }
     }
+
 }

@@ -32,8 +32,12 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.rhymestore.config.RhymeModule;
+
 /**
- * Unit tests for the {@link RhymeStore} class.
+ * Unit tests for the {@link RedisStore} class.
  * 
  * @author Enric Ruiz
  */
@@ -43,12 +47,14 @@ public class RhymeStoreTest
     public static final int TEST_DATABASE = 1;
 
     /** The store to test. */
-    private RhymeStore store;
+    private RedisStore store;
 
     @BeforeMethod
     public void setUp() throws IOException
     {
-        store = new TestRhymeStore();
+        Injector injector = Guice.createInjector(new RhymeModule());
+        store = injector.getInstance(TestRhymeStore.class);
+
         store.add("Ya son veintidós!!");
         store.add("Me escondo y no me ves");
     }

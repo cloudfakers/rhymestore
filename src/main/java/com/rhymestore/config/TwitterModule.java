@@ -20,27 +20,49 @@
  * THE SOFTWARE.
  */
 
-package com.rhymestore.lang;
+package com.rhymestore.config;
 
-import static org.testng.Assert.assertTrue;
+import javax.inject.Singleton;
 
-import org.testng.annotations.Test;
+import twitter4j.Twitter;
+import twitter4j.TwitterFactory;
+import twitter4j.TwitterStream;
+import twitter4j.TwitterStreamFactory;
 
-import com.rhymestore.lang.es.SpanishWordParser;
+import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
+import com.rhymestore.twitter.stream.GetMentionsListener;
 
 /**
- * Unit tests for the {@link WordParserFactory} class.
+ * Configures the Twitter access.
  * 
  * @author Ignasi Barrera
  */
-public class WordParserFactoryTest
+public class TwitterModule extends AbstractModule
 {
-    @Test
-    public void testGetWordParser()
-    {
-        WordParser wordParser = WordParserFactory.getWordParser();
+    /** The Twitter user. */
+    public static final String TWITTER_USER = "rimamelo";
 
-        assertTrue(WordParserFactory.getWordParser() != null);
-        assertTrue(wordParser instanceof SpanishWordParser);
+    @Override
+    protected void configure()
+    {
+
     }
+
+    @Provides
+    @Singleton
+    public Twitter provideTwitter()
+    {
+        return new TwitterFactory().getInstance();
+    }
+
+    @Provides
+    @Singleton
+    public TwitterStream provideTwitterStream(final GetMentionsListener mentionListener)
+    {
+        TwitterStream stream = new TwitterStreamFactory().getInstance();
+        stream.addListener(mentionListener);
+        return stream;
+    }
+
 }

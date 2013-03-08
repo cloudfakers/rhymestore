@@ -29,6 +29,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,22 +39,22 @@ import org.slf4j.LoggerFactory;
  * Utility class to load rhymes from a file.
  * 
  * @author Ignasi Barrera
- * @see RhymeStore
+ * @see RedisStore
  */
+@Singleton
 public class RhymeLoader
 {
     /** The logger. */
     private static final Logger LOGGER = LoggerFactory.getLogger(RhymeLoader.class);
 
     /** The backend rhyme store. */
-    private final RhymeStore store;
+    private final RedisStore store;
 
-    /**
-     * Default constructor.
-     */
-    public RhymeLoader()
+    @Inject
+    public RhymeLoader(final RedisStore store)
     {
-        store = RhymeStore.getInstance();
+        super();
+        this.store = store;
     }
 
     /**
@@ -90,30 +93,5 @@ public class RhymeLoader
         }
 
         LOGGER.info("Loaded {} rhymes", numLines);
-    }
-
-    /**
-     * Adds the rhymes in the given file to the rhyme store.
-     * 
-     * @param args The absolute path of the file containing the rhymes.
-     */
-    public static void main(final String... args)
-    {
-        if (args.length < 1)
-        {
-            throw new IllegalArgumentException("The file path is required");
-        }
-
-        RhymeLoader loader = new RhymeLoader();
-        File file = new File(args[0]);
-
-        try
-        {
-            loader.load(file);
-        }
-        catch (IOException ex)
-        {
-            LOGGER.error("Could not load rhymes: " + ex.getMessage(), ex);
-        }
     }
 }

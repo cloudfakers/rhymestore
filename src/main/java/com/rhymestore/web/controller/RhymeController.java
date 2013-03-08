@@ -36,11 +36,12 @@ import org.sjmvc.controller.MethodInvokingController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.rhymestore.config.RhymeStore;
+import com.rhymestore.config.TwitterModule;
 import com.rhymestore.lang.WordUtils;
 import com.rhymestore.model.Rhyme;
-import com.rhymestore.store.RhymeStore;
+import com.rhymestore.store.RedisStore;
 import com.rhymestore.twitter.util.TwitterUtils;
-import com.rhymestore.web.ContextListener;
 
 /**
  * Controller to manage stored rhymes.
@@ -53,14 +54,14 @@ public class RhymeController extends MethodInvokingController
     private static final Logger LOGGER = LoggerFactory.getLogger(RhymeController.class);
 
     /** The Rhyme store. */
-    private final RhymeStore store;
+    private final RedisStore store;
 
     /**
      * Default constructor.
      */
     public RhymeController()
     {
-        store = RhymeStore.getInstance();
+        store = RhymeStore.getRedisStore();
     }
 
     /**
@@ -104,8 +105,7 @@ public class RhymeController extends MethodInvokingController
         // Add the rhyme only if there are no binding or validation errors
         if (!errors())
         {
-            String twitterUser = getTwitterUser(request, response);
-            if (twitterUser != null && rhyme.getRhyme().contains(TwitterUtils.user(twitterUser)))
+            if (rhyme.getRhyme().contains(TwitterUtils.user(TwitterModule.TWITTER_USER)))
             {
                 error("Cannot add a rhyme that contains the Twitter user name");
             }
@@ -203,20 +203,6 @@ public class RhymeController extends MethodInvokingController
             error("Could not get rhymes: " + ex.getMessage());
             setView("list");
         }
-    }
-
-    /**
-     * Gets the Twitter user.
-     * 
-     * @param request The request.
-     * @param response The response.
-     * @return The Twitter user name.
-     */
-    private String getTwitterUser(final HttpServletRequest request,
-        final HttpServletResponse response)
-    {
-        return (String) request.getSession().getServletContext().getAttribute(
-            ContextListener.TWITTER_USER_NAME);
     }
 
 }

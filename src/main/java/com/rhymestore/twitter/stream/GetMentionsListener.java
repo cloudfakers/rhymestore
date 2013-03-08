@@ -22,6 +22,9 @@
 
 package com.rhymestore.twitter.stream;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,9 +34,10 @@ import twitter4j.TwitterException;
 import twitter4j.UserMentionEntity;
 import twitter4j.UserStreamAdapter;
 
+import com.google.inject.Injector;
 import com.rhymestore.lang.WordParser;
-import com.rhymestore.lang.WordParserFactory;
 import com.rhymestore.lang.WordUtils;
+import com.rhymestore.store.RedisStore;
 import com.rhymestore.twitter.TwitterScheduler;
 import com.rhymestore.twitter.commands.ReplyCommand;
 
@@ -43,6 +47,7 @@ import com.rhymestore.twitter.commands.ReplyCommand;
  * @author Ignasi Barrera
  * @see TwitterScheduler
  */
+@Singleton
 public class GetMentionsListener extends UserStreamAdapter
 {
     /** The logger. */
@@ -54,11 +59,17 @@ public class GetMentionsListener extends UserStreamAdapter
     /** The Twitter sync api. */
     private final Twitter twitter;
 
-    public GetMentionsListener(final Twitter twitter)
+    /** The Rhyme Store. */
+    private RedisStore rhymeStore;
+
+    @Inject
+    public GetMentionsListener(final Injector injector, final WordParser wordParser,
+        final Twitter twitter, final RedisStore rhymeStore)
     {
         super();
-        this.wordParser = WordParserFactory.getWordParser();
+        this.wordParser = wordParser;
         this.twitter = twitter;
+        this.rhymeStore = rhymeStore;
     }
 
     @Override
@@ -81,7 +92,8 @@ public class GetMentionsListener extends UserStreamAdapter
                             LOGGER.debug("Processing tweet {} from {}", status.getId(), status
                                 .getUser().getScreenName());
 
-                            ReplyCommand reply = new ReplyCommand(twitter, status);
+                            ReplyCommand reply =
+                                new ReplyCommand(twitter, wordParser, rhymeStore, status);
                             reply.execute();
                         }
                         else

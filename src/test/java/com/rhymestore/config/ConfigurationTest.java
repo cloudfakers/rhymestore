@@ -22,7 +22,7 @@
 
 package com.rhymestore.config;
 
-import static com.rhymestore.config.Configuration.REDIS_HOST_PROPERTY;
+import static com.rhymestore.config.Configuration.REDIS_HOST;
 import static com.rhymestore.config.Configuration.getConfigValue;
 import static com.rhymestore.config.Configuration.getRequiredConfigValue;
 import static org.testng.Assert.assertEquals;
@@ -41,13 +41,13 @@ public class ConfigurationTest
     public void testGetConfigValue()
     {
         assertNull(getConfigValue("unexisting"));
-        assertEquals(getConfigValue(REDIS_HOST_PROPERTY), "localhost");
+        assertEquals(getConfigValue(REDIS_HOST), "localhost");
     }
 
     @Test
     public void testGetRequiredConfigValue()
     {
-        assertEquals(getRequiredConfigValue(REDIS_HOST_PROPERTY), "localhost");
+        assertEquals(getRequiredConfigValue(REDIS_HOST), "localhost");
     }
 
     @Test(expectedExceptions = ConfigurationException.class)

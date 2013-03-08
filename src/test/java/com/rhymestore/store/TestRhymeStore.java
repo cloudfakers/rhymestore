@@ -25,15 +25,31 @@ package com.rhymestore.store;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+import redis.clients.jedis.Jedis;
+
+import com.rhymestore.lang.WordParser;
+
 /**
  * Store that uses an alternate database to run the tests.
  * 
  * @author Ignasi Barrera
  */
-public class TestRhymeStore extends RhymeStore
+@Singleton
+public class TestRhymeStore extends RedisStore
 {
     /** The Redis test database. */
     public static final int TEST_DATABASE = 1;
+
+    @Inject
+    public TestRhymeStore(@Named("sentence") final Keymaker sentencens,
+        @Named("index") final Keymaker indexns, final WordParser wordParser, final Jedis redis)
+    {
+        super(sentencens, indexns, wordParser, redis);
+    }
 
     @Override
     protected void connect() throws UnknownHostException, IOException

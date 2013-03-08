@@ -122,6 +122,13 @@
             <version>1.4</version>
         </dependency>
         
+        <!-- IoC -->
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>3.0</version>
+        </dependency>
+        
         <!-- Jetty -->
         <dependency>
             <groupId>org.mortbay.jetty</groupId>
