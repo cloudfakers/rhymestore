@@ -86,12 +86,12 @@ it out from the [Project site](https://github.com/nacx/rhymestore) and play with
 Note on patches/pull requests
 -----------------------------
  
-    * Fork the project.
-    * Create a topic branch for your feature or bug fix.
-    * Develop in the just created feature/bug branch.
-    * Add tests for your changes. This is important so I don't break them in a future version unintentionally.
-    * Commit.
-    * Send me a pull request. 
+* Fork the project.
+* Create a topic branch for your feature or bug fix.
+* Develop in the just created feature/bug branch.
+* Add tests for your changes. This is important so I don't break them in a future version unintentionally.
+* Commit.
+* Send me a pull request. 
 
 
 Issue Tracking
