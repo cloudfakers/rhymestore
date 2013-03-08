@@ -30,10 +30,13 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-import com.rhymestore.store.RhymeStore;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.rhymestore.config.RhymeModule;
+import com.rhymestore.lang.WordParser;
+import com.rhymestore.store.RedisStore;
 import com.rhymestore.store.TestRhymeStore;
 import com.rhymestore.twitter.mock.MockStatus;
 import com.rhymestore.twitter.mock.MockTwitter;
@@ -49,13 +52,19 @@ public class ReplyCommandTest
     private MockTwitter twitter;
 
     /** The store with the rhymes. */
-    private RhymeStore store;
+    private RedisStore store;
+
+    /** The word parser. */
+    private WordParser wordParser;
 
     @BeforeMethod
     public void setUp() throws IOException
     {
         // Add the rhymes
-        store = new TestRhymeStore();
+        Injector injector = Guice.createInjector(new RhymeModule());
+        wordParser = injector.getInstance(WordParser.class);
+        store = injector.getInstance(TestRhymeStore.class);
+
         store.add("Rima por defecto");
         store.add("Esta rima es infame"); // Rhymes with the mock screen name
 
@@ -72,7 +81,7 @@ public class ReplyCommandTest
     @Test
     public void testExecuteWithExistingRhyme() throws TwitterException
     {
-        ReplyCommand replyCommand = createReplyCommand(twitter, "Este test es casi perfecto");
+        ReplyCommand replyCommand = createReplyCommand("Este test es casi perfecto");
         replyCommand.execute();
 
         assertTrue(twitter.getLastUpdatedStatus().contains("Rima por defecto"));
@@ -81,16 +90,14 @@ public class ReplyCommandTest
     @Test
     public void testExecuteWithScreenNameRhyme() throws TwitterException
     {
-        ReplyCommand replyCommand = createReplyCommand(twitter, "Rima esto con el usuario");
+        ReplyCommand replyCommand = createReplyCommand("Rima esto con el usuario");
         replyCommand.execute();
 
         assertTrue(twitter.getLastUpdatedStatus().contains("Esta rima es infame"));
     }
 
-    private ReplyCommand createReplyCommand(final Twitter twitter, final String status)
+    private ReplyCommand createReplyCommand(final String status)
     {
-        ReplyCommand replyCommand = new ReplyCommand(twitter, new MockStatus(status));
-        replyCommand.rhymeStore = store;
-        return replyCommand;
+        return new ReplyCommand(twitter, wordParser, store, new MockStatus(status));
     }
 }

@@ -5,12 +5,6 @@
 
     <display-name>The Rhymestore Project</display-name>
 
-    <!-- Configure if twitter communication is enabled -->
-    <context-param>
-        <param-name>TWITTER_ENABLED</param-name>
-        <param-value>true</param-value>
-    </context-param>
-
     <!-- Startup ContextListener -->
     <listener>
         <listener-class>com.rhymestore.web.ContextListener</listener-class>

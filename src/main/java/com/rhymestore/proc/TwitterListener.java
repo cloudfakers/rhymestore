@@ -25,14 +25,11 @@ package com.rhymestore.proc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.TwitterStream;
-import twitter4j.TwitterStreamFactory;
 
-import com.rhymestore.config.Configuration;
-import com.rhymestore.twitter.stream.GetMentionsListener;
+import com.rhymestore.config.RhymeModule;
+import com.rhymestore.config.RhymeStore;
+import com.rhymestore.config.TwitterModule;
 
 /**
  * Main Twitter listener process.
@@ -44,25 +41,17 @@ public class TwitterListener
     /** The logger. */
     private static final Logger LOGGER = LoggerFactory.getLogger(TwitterListener.class);
 
-    /** The Twitter API client. */
-    private Twitter twitter;
-
-    /** The Twitter streaming API. */
-    private TwitterStream stream;
-
     /**
      * Start listening to tweets.
      */
     public void start() throws IllegalStateException, TwitterException
     {
-        twitter = new TwitterFactory().getInstance();
-        stream = new TwitterStreamFactory().getInstance();
+        RhymeStore.create(new RhymeModule(), new TwitterModule());
 
-        LOGGER.info("Connected to Twitter as: {}", twitter.getScreenName());
-
+        LOGGER.info("Connected to Twitter as: {}", RhymeStore.getTwitter().getScreenName());
         LOGGER.info("Starting the Twitter stream listener");
-        stream.addListener(new GetMentionsListener(twitter));
-        stream.user(); // Start reading to user stream
+
+        RhymeStore.getTwitterStream().user(); // Start reading to user stream
     }
 
     /**
@@ -70,35 +59,24 @@ public class TwitterListener
      */
     private static class TwitterShutdown extends Thread
     {
-        /** The listener to shutdown. */
-        private TwitterListener listener;
-
-        public TwitterShutdown(final TwitterListener listener)
-        {
-            super();
-            this.listener = listener;
-        }
-
         @Override
         public void run()
         {
             LOGGER.info("Disconnecting from the Twitter streaming API");
-            listener.stream.shutdown();
+            RhymeStore.getTwitterStream().shutdown();
 
             LOGGER.info("Disconnecting from Twitter");
-            listener.twitter.shutdown();
+            RhymeStore.getTwitter().shutdown();
         }
     }
 
     public static void main(final String[] args) throws Exception
     {
-        Configuration.loadTwitterConfig();
-
         // Start the Twitter listener
         TwitterListener listener = new TwitterListener();
         listener.start();
 
         // Register the shutdown hook to close the connection properly
-        Runtime.getRuntime().addShutdownHook(new TwitterShutdown(listener));
+        Runtime.getRuntime().addShutdownHook(new TwitterShutdown());
     }
 }

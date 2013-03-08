@@ -37,8 +37,8 @@ import javax.validation.Payload;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.rhymestore.config.RhymeStore;
 import com.rhymestore.lang.WordParser;
-import com.rhymestore.lang.WordParserFactory;
 import com.rhymestore.lang.WordUtils;
 
 /**
@@ -48,7 +48,7 @@ import com.rhymestore.lang.WordUtils;
  */
 @Documented
 @Constraint(validatedBy = ValidWord.Validator.class)
-@Target( {METHOD, FIELD})
+@Target({METHOD, FIELD})
 @Retention(RUNTIME)
 public @interface ValidWord
 {
@@ -67,14 +67,14 @@ public @interface ValidWord
         private ValidWord validWord;
 
         @Override
-        public void initialize(ValidWord constraintAnnotation)
+        public void initialize(final ValidWord constraintAnnotation)
         {
-            wordParser = WordParserFactory.getWordParser();
+            wordParser = RhymeStore.getWordParser();
             validWord = constraintAnnotation;
         }
 
         @Override
-        public boolean isValid(String value, ConstraintValidatorContext context)
+        public boolean isValid(final String value, final ConstraintValidatorContext context)
         {
             if (StringUtils.isEmpty(value))
             {

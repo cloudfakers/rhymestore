@@ -34,16 +34,18 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import redis.clients.jedis.Jedis;
 
-import com.rhymestore.config.Configuration;
 import com.rhymestore.lang.StressType;
 import com.rhymestore.lang.WordParser;
-import com.rhymestore.lang.WordParserFactory;
 import com.rhymestore.lang.WordUtils;
 
 /**
@@ -54,25 +56,23 @@ import com.rhymestore.lang.WordUtils;
  * @see Jedis
  * @see WordParser
  */
-public class RhymeStore
+@Singleton
+public class RedisStore
 {
     /** The logger. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(RhymeStore.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RedisStore.class);
 
     /** The key used to store the next id value. */
     private static final String NEXT_ID_KEY = "next.id";
 
+    /** The character encoding to use. */
+    private static final String ENCODING = "UTF-8";
+
     /** Redis namespace for sentences. */
-    private final Keymaker sentencens = new Keymaker("sentence");
+    private final Keymaker sentencens;
 
     /** Redis namespace for index. */
-    private final Keymaker indexns = new Keymaker("index");
-
-    /** The character encoding to use. */
-    private final String encoding = "UTF-8";
-
-    /** The singleton instance of the store. */
-    private static RhymeStore instance;
+    private final Keymaker indexns;
 
     /** Parses the words to get the part used to rhyme. */
     private final WordParser wordParser;
@@ -80,31 +80,18 @@ public class RhymeStore
     /** The Redis database API. */
     protected final Jedis redis;
 
-    /**
-     * Gets the singleton instance of the store.
-     * 
-     * @return The singleton instance of the store.
-     */
-    public static RhymeStore getInstance()
+    private final String redisPassword;
+
+    @Inject
+    public RedisStore(@Named("sentence") final Keymaker sentencens,
+        @Named("index") final Keymaker indexns, final WordParser wordParser, final Jedis redis)
     {
-        if (instance == null)
-        {
-            instance = new RhymeStore();
-        }
-
-        return instance;
-    }
-
-    /**
-     * Creates a new <code>RhymeStore</code> connecting to the configured Redis database.
-     */
-    protected RhymeStore()
-    {
-        String host = Configuration.getRequiredConfigValue(Configuration.REDIS_HOST_PROPERTY);
-        String port = Configuration.getRequiredConfigValue(Configuration.REDIS_PORT_PROPERTY);
-
-        redis = new Jedis(host, Integer.valueOf(port));
-        wordParser = WordParserFactory.getWordParser();
+        super();
+        this.sentencens = sentencens;
+        this.indexns = indexns;
+        this.wordParser = wordParser;
+        this.redis = redis;
+        this.redisPassword = System.getenv("REDISPASS");
     }
 
     /**
@@ -139,7 +126,7 @@ public class RhymeStore
         }
 
         // Insert sentence
-        redis.set(sentenceKey, URLEncoder.encode(sentence, encoding));
+        redis.set(sentenceKey, URLEncoder.encode(sentence, ENCODING));
 
         // Index sentence
         String indexKey = getUniqueId(indexns, buildUniqueToken(rhyme, type));
@@ -235,7 +222,7 @@ public class RhymeStore
 
                 if (redis.exists(id) == 1)
                 {
-                    rhymes.add(URLDecoder.decode(redis.get(id), encoding));
+                    rhymes.add(URLDecoder.decode(redis.get(id), ENCODING));
                 }
             }
         }
@@ -295,10 +282,9 @@ public class RhymeStore
         {
             redis.connect();
 
-            String password = System.getenv("REDISPASS");
-            if (password != null)
+            if (redisPassword != null)
             {
-                redis.auth(password);
+                redis.auth(redisPassword);
             }
         }
     }
@@ -342,7 +328,7 @@ public class RhymeStore
                 {
                     if (redis.exists(sentenceKey) == 1)
                     {
-                        rhymes.add(URLDecoder.decode(redis.get(sentenceKey), encoding));
+                        rhymes.add(URLDecoder.decode(redis.get(sentenceKey), ENCODING));
                     }
                 }
             }

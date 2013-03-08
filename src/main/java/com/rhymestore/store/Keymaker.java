@@ -26,13 +26,13 @@ package com.rhymestore.store;
  * Generates the keys used to store the rhymes.
  * 
  * @author Enric Ruiz
- * @see RhymeStore
+ * @see RedisStore
  */
 public class Keymaker
 {
-    String namespace;
+    private String namespace;
 
-    public Keymaker(String namespace)
+    public Keymaker(final String namespace)
     {
         if (namespace == null)
         {
@@ -42,7 +42,7 @@ public class Keymaker
         this.namespace = namespace;
     }
 
-    public Keymaker build(String... namespaces)
+    public Keymaker build(final String... namespaces)
     {
         StringBuilder builder = new StringBuilder(this.namespace);
 
