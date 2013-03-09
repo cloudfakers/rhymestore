@@ -82,7 +82,7 @@
                             <programs>
                                 <program>
                                     <mainClass>com.rhymestore.web.ServerLauncher</mainClass>
-                                    <name>webapp</name>
+                                    <name>web</name>
                                 </program>
                             </programs>
                         </configuration>
