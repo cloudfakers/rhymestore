@@ -5,7 +5,7 @@
 	<!-- Tag library information -->
 	<uri>http://rhymestore.com/taglib/rhymestore</uri>
 	<description>Utility tags for the Rhymestore pages</description>
-	<tlib-version>${project.version}</tlib-version>
+	<tlib-version>1.1</tlib-version>
 
 	<!-- Auth tag -->
 	<tag>
