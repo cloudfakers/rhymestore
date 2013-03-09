@@ -38,7 +38,7 @@ public class ServerLauncher
 {
     public static void main(final String[] args) throws Exception
     {
-        String webappDirLocation = "src/main/webapp/";
+        String webappDirLocation = "web/src/main/webapp/";
 
         String webPort = System.getenv("PORT");
         if (webPort == null || webPort.isEmpty())
