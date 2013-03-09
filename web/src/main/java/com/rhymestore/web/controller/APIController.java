@@ -89,9 +89,9 @@ public class APIController extends HttpMethodController
 
         if (errors())
         {
-            setView("errors");
+            response.sendError(500);
         }
 
-        response.setContentType("text/xml; charset=ISO-8859-1");
+        response.setContentType("text/plain; charset=ISO-8859-1");
     }
 }

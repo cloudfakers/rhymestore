@@ -6,7 +6,7 @@
 
 <rhymestore:auth roles="rhymestore-rw">
 	<form action="<%= request.getContextPath() %>/web/rhymes/add" method="post">
-		<input id="ryhme" name="model.rhyme" type="text" class="input" size="90" maxlength="<%=TwitterUtilss.MAX_TWEET_LENGTH%>" />
+		<input id="ryhme" name="model.rhyme" type="text" class="input" size="90" maxlength="<%=TwitterUtils.MAX_TWEET_LENGTH%>" />
 		<input type="submit" value="Add it!" class="add" />
 	</form>
 </rhymestore:auth>

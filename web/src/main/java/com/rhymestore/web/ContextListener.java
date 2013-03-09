@@ -49,7 +49,6 @@ public class ContextListener implements ServletContextListener
     public void contextInitialized(final ServletContextEvent sce)
     {
         // Initialize the IoC. No need for Twitter module here
-        LOGGER.info("Loading configuration...");
         RhymeStore.create(new RhymeModule());
 
         // Load the rhymes URI
