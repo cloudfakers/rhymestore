@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
+import java.nio.charset.Charset;
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
 import java.util.ArrayList;
@@ -38,12 +39,14 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import redis.clients.jedis.Jedis;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Optional;
+import com.google.common.hash.Hashing;
 import com.rhymestore.lang.StressType;
 import com.rhymestore.lang.WordParser;
 import com.rhymestore.lang.WordUtils;
@@ -66,7 +69,7 @@ public class RedisStore
     private static final String NEXT_ID_KEY = "next.id";
 
     /** The character encoding to use. */
-    private static final String ENCODING = "UTF-8";
+    private final Charset encoding;
 
     /** Redis namespace for sentences. */
     private final Keymaker sentencens;
@@ -80,18 +83,22 @@ public class RedisStore
     /** The Redis database API. */
     protected final Jedis redis;
 
-    private final String redisPassword;
+    /** The password used to access Redis. */
+    private final Optional<String> redisPassword;
 
     @Inject
     public RedisStore(@Named("sentence") final Keymaker sentencens,
-        @Named("index") final Keymaker indexns, final WordParser wordParser, final Jedis redis)
+        @Named("index") final Keymaker indexns, final WordParser wordParser, final Jedis redis,
+        final Optional<String> redisPassword, final Charset encoding)
     {
         super();
         this.sentencens = sentencens;
         this.indexns = indexns;
         this.wordParser = wordParser;
         this.redis = redis;
-        this.redisPassword = System.getenv("REDISPASS");
+        this.redisPassword = redisPassword;
+        this.encoding = encoding;
+
     }
 
     /**
@@ -126,7 +133,7 @@ public class RedisStore
         }
 
         // Insert sentence
-        redis.set(sentenceKey, URLEncoder.encode(sentence, ENCODING));
+        redis.set(sentenceKey, URLEncoder.encode(sentence, encoding.displayName()));
 
         // Index sentence
         String indexKey = getUniqueId(indexns, buildUniqueToken(rhyme, type));
@@ -222,7 +229,7 @@ public class RedisStore
 
                 if (redis.exists(id) == 1)
                 {
-                    rhymes.add(URLDecoder.decode(redis.get(id), ENCODING));
+                    rhymes.add(URLDecoder.decode(redis.get(id), encoding.displayName()));
                 }
             }
         }
@@ -282,9 +289,9 @@ public class RedisStore
         {
             redis.connect();
 
-            if (redisPassword != null)
+            if (redisPassword.isPresent())
             {
-                redis.auth(redisPassword);
+                redis.auth(redisPassword.get());
             }
         }
     }
@@ -328,7 +335,8 @@ public class RedisStore
                 {
                     if (redis.exists(sentenceKey) == 1)
                     {
-                        rhymes.add(URLDecoder.decode(redis.get(sentenceKey), ENCODING));
+                        rhymes
+                            .add(URLDecoder.decode(redis.get(sentenceKey), encoding.displayName()));
                     }
                 }
             }
@@ -407,9 +415,10 @@ public class RedisStore
      * @param value The text to sum.
      * @return The md5 sum of the given text.
      */
-    private String sum(final String value)
+    @VisibleForTesting
+    String sum(final String value)
     {
-        return DigestUtils.md5Hex(value.getBytes());
+        return Hashing.md5().hashString(value, encoding).toString();
     }
 
     /**

@@ -22,14 +22,22 @@
 
 package com.rhymestore.twitter;
 
-import org.testng.Assert;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+
+import org.testng.SkipException;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import twitter4j.Twitter;
-import twitter4j.TwitterFactory;
 import twitter4j.User;
+
+import com.google.common.base.Supplier;
+import com.rhymestore.config.RhymeModule;
+import com.rhymestore.config.RhymeStore;
+import com.rhymestore.twitter.config.TwitterConfig;
+import com.rhymestore.twitter.config.TwitterModule;
 
 /**
  * Twitter API client integration tests.
@@ -38,23 +46,23 @@ import twitter4j.User;
  */
 public class TwitterTest
 {
-    /** The twitter user name. */
-    private static final String TWITTER_USER_NAME = "rimamelo";
-
     /** The Twitter API client. */
     private Twitter twitter;
 
     @BeforeMethod
     public void setUp()
     {
-        System.setProperty("twitter4j.oauth.consumerKey", System.getenv("TWITTER_CONSUMERKEY"));
-        System.setProperty("twitter4j.oauth.consumerSecret",
-            System.getenv("TWITTER_CONSUMERSECRET"));
-        System.setProperty("twitter4j.oauth.accessToken", System.getenv("TWITTER_ACCESSTOKEN"));
-        System.setProperty("twitter4j.oauth.accessTokenSecret",
-            System.getenv("TWITTER_ACCESSTOKENSECRET"));
+        try
+        {
+            RhymeStore.create(new RhymeModule(), new TwitterModule());
+        }
+        catch (Exception ex)
+        {
+            // Skip this test where the environment is not configured
+            throw new SkipException("Twitter environment is not configured");
+        }
 
-        twitter = new TwitterFactory().getInstance();
+        twitter = TwitterConfig.getTwitter();
     }
 
     @AfterMethod
@@ -66,7 +74,15 @@ public class TwitterTest
     @Test
     public void testTwitterConnect() throws Exception
     {
+        assertNotNull(twitter.verifyCredentials());
+    }
+
+    @Test
+    public void testSuppliedUser() throws Exception
+    {
+        Supplier<String> userSupplier = TwitterConfig.getTwitterUser();
         User user = twitter.verifyCredentials();
-        Assert.assertEquals(TWITTER_USER_NAME, user.getScreenName());
+
+        assertEquals(userSupplier.get(), user.getScreenName());
     }
 }

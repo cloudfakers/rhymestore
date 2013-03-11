@@ -76,7 +76,7 @@ public class TwitterUtils
      */
     public static String user(final String user)
     {
-        return "@" + user;
+        return user.startsWith("@") ? user : "@" + user;
     }
 
     /**

@@ -24,6 +24,7 @@ package com.rhymestore.store;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.nio.charset.Charset;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -31,6 +32,7 @@ import javax.inject.Singleton;
 
 import redis.clients.jedis.Jedis;
 
+import com.google.common.base.Optional;
 import com.rhymestore.lang.WordParser;
 
 /**
@@ -46,9 +48,10 @@ public class TestRhymeStore extends RedisStore
 
     @Inject
     public TestRhymeStore(@Named("sentence") final Keymaker sentencens,
-        @Named("index") final Keymaker indexns, final WordParser wordParser, final Jedis redis)
+        @Named("index") final Keymaker indexns, final WordParser wordParser, final Jedis redis,
+        final Optional<String> redisPassword, final Charset encoding)
     {
-        super(sentencens, indexns, wordParser, redis);
+        super(sentencens, indexns, wordParser, redis, redisPassword, encoding);
     }
 
     @Override

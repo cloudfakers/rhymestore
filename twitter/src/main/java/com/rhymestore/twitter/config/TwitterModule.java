@@ -25,10 +25,14 @@ package com.rhymestore.twitter.config;
 import javax.inject.Singleton;
 
 import twitter4j.Twitter;
+import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
+import com.google.common.base.Throwables;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.rhymestore.twitter.stream.GetMentionsListener;
@@ -40,9 +44,6 @@ import com.rhymestore.twitter.stream.GetMentionsListener;
  */
 public class TwitterModule extends AbstractModule
 {
-    /** The Twitter user. */
-    public static final String TWITTER_USER = "rimamelo";
-
     @Override
     protected void configure()
     {
@@ -58,16 +59,37 @@ public class TwitterModule extends AbstractModule
     @Singleton
     public Twitter provideTwitter()
     {
-        return new TwitterFactory().getInstance();
+        return TwitterFactory.getSingleton();
     }
 
     @Provides
     @Singleton
     public TwitterStream provideTwitterStream(final GetMentionsListener mentionListener)
     {
-        TwitterStream stream = new TwitterStreamFactory().getInstance();
+        TwitterStream stream = TwitterStreamFactory.getSingleton();
         stream.addListener(mentionListener);
         return stream;
+    }
+
+    @Provides
+    @Singleton
+    public Supplier<String> provideTwitterUser(final Twitter twitter)
+    {
+        return Suppliers.memoize(new Supplier<String>()
+        {
+            @Override
+            public String get()
+            {
+                try
+                {
+                    return twitter.getScreenName();
+                }
+                catch (TwitterException ex)
+                {
+                    throw Throwables.propagate(ex);
+                }
+            }
+        });
     }
 
 }

@@ -24,6 +24,7 @@ package com.rhymestore.config;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Stage;
 import com.rhymestore.lang.WordParser;
@@ -61,6 +62,11 @@ public class RhymeStore
     public static <T> T get(final Class<T> clazz)
     {
         return getInstance().injector.getInstance(clazz);
+    }
+
+    public static <T> T get(final Key<T> key)
+    {
+        return getInstance().injector.getInstance(key);
     }
 
     private RhymeStore(final Module... modules)

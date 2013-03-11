@@ -26,6 +26,7 @@ import static com.rhymestore.config.Configuration.DEFAULT_RHYMES;
 import static com.rhymestore.config.Configuration.REDIS_HOST;
 import static com.rhymestore.config.Configuration.REDIS_PORT;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +35,8 @@ import javax.inject.Singleton;
 
 import redis.clients.jedis.Jedis;
 
+import com.google.common.base.Charsets;
+import com.google.common.base.Optional;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.name.Names;
@@ -51,13 +54,14 @@ public class RhymeModule extends AbstractModule
     @Override
     protected void configure()
     {
-        bindProperties();
+        bindRedisConfiguration();
         bindWordParser();
         bindRedisNamespaces();
     }
 
-    protected void bindProperties()
+    protected void bindRedisConfiguration()
     {
+        bind(Charset.class).toInstance(Charsets.UTF_8);
         bind(String.class).annotatedWith(Names.named(REDIS_HOST)).toInstance(
             Configuration.getRequiredConfigValue(Configuration.REDIS_HOST));
         bind(Integer.class).annotatedWith(Names.named(REDIS_PORT)).toInstance(
@@ -74,6 +78,13 @@ public class RhymeModule extends AbstractModule
         bind(Keymaker.class).annotatedWith(Names.named("sentence")).toInstance(
             new Keymaker("sentence"));
         bind(Keymaker.class).annotatedWith(Names.named("index")).toInstance(new Keymaker("index"));
+    }
+
+    @Provides
+    @Singleton
+    public Optional<String> provideRedisPassword()
+    {
+        return Optional.fromNullable(System.getenv("REDISPASS"));
     }
 
     @Provides

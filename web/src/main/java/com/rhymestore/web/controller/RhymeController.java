@@ -36,10 +36,11 @@ import org.sjmvc.controller.MethodInvokingController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Supplier;
 import com.rhymestore.config.RhymeStore;
 import com.rhymestore.lang.WordUtils;
 import com.rhymestore.store.RedisStore;
-import com.rhymestore.twitter.config.TwitterModule;
+import com.rhymestore.twitter.config.TwitterConfig;
 import com.rhymestore.twitter.util.TwitterUtils;
 import com.rhymestore.web.model.Rhyme;
 
@@ -56,12 +57,16 @@ public class RhymeController extends MethodInvokingController
     /** The Rhyme store. */
     private final RedisStore store;
 
+    /** The Twitter user name. */
+    private final Supplier<String> twitterUser;
+
     /**
      * Default constructor.
      */
     public RhymeController()
     {
         store = RhymeStore.getRedisStore();
+        twitterUser = TwitterConfig.getTwitterUser();
     }
 
     /**
@@ -105,7 +110,7 @@ public class RhymeController extends MethodInvokingController
         // Add the rhyme only if there are no binding or validation errors
         if (!errors())
         {
-            if (rhyme.getRhyme().contains(TwitterUtils.user(TwitterModule.TWITTER_USER)))
+            if (rhyme.getRhyme().contains(TwitterUtils.user(twitterUser.get())))
             {
                 error("Cannot add a rhyme that contains the Twitter user name");
             }

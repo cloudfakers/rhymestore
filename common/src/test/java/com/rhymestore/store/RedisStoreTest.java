@@ -41,7 +41,7 @@ import com.rhymestore.config.RhymeModule;
  * 
  * @author Enric Ruiz
  */
-public class RhymeStoreTest
+public class RedisStoreTest
 {
     /** The Redis test database. */
     public static final int TEST_DATABASE = 1;
@@ -113,5 +113,12 @@ public class RhymeStoreTest
         assertEquals(store.getRhyme("Nada rima con 16"), "Os digo que os comportéis");
         assertEquals(store.getRhyme("Nada rima con 1000000"), "Me apetece un montón");
         assertEquals(store.getRhyme("Nada rima con 7!"), "Dile que apriete");
+    }
+
+    @Test
+    public void testSum()
+    {
+        assertEquals(store.sum("foo"), "acbd18db4cc2f85cedef654fccc4a4d8");
+        assertEquals(store.sum("bar"), "37b51d194a7513e45b56f6524f2d51f2");
     }
 }
