@@ -1,5 +1,7 @@
 THE RHYMESTORE PROJECT
 ======================
+
+[![Build Status](https://travis-ci.org/nacx/rhymestore.png?branch=master)](https://travis-ci.org/nacx/rhymestore)
        
 The Rhymestore Project provides an easy way to create Twitter
 bots that respond to user mentions with a sentence that rhymes
