@@ -23,7 +23,9 @@
 package com.rhymestore.config;
 
 import static com.rhymestore.config.Configuration.DEFAULT_RHYMES;
+import static com.rhymestore.config.Configuration.FALLBACK_RHYMES;
 import static com.rhymestore.config.Configuration.REDIS_HOST;
+import static com.rhymestore.config.Configuration.REDIS_PASSWORD;
 import static com.rhymestore.config.Configuration.REDIS_PORT;
 
 import java.nio.charset.Charset;
@@ -82,6 +84,7 @@ public class RhymeModule extends AbstractModule
 
     @Provides
     @Singleton
+    @Named(REDIS_PASSWORD)
     public Optional<String> provideRedisPassword()
     {
         return Optional.fromNullable(System.getenv("REDISPASS"));
@@ -89,7 +92,7 @@ public class RhymeModule extends AbstractModule
 
     @Provides
     @Singleton
-    @Named(DEFAULT_RHYMES)
+    @Named(FALLBACK_RHYMES)
     public List<String> provideDefaultRhymes()
     {
         List<String> defaultRhymes = new ArrayList<String>();
@@ -97,13 +100,21 @@ public class RhymeModule extends AbstractModule
         for (Object prop : Configuration.getConfiguration().keySet())
         {
             String propertyName = (String) prop;
-            if (propertyName.startsWith(DEFAULT_RHYMES))
+            if (propertyName.startsWith(FALLBACK_RHYMES))
             {
                 defaultRhymes.add(Configuration.getRequiredConfigValue(propertyName));
             }
         }
 
         return defaultRhymes;
+    }
+
+    @Provides
+    @Singleton
+    @Named(DEFAULT_RHYMES)
+    public Optional<String> provideDefaultRhymesURL()
+    {
+        return Optional.fromNullable(System.getenv("DEFAULT_RHYMES"));
     }
 
     @Provides

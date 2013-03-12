@@ -31,8 +31,10 @@ import javax.servlet.ServletContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Optional;
 import com.rhymestore.config.RhymeModule;
 import com.rhymestore.config.RhymeStore;
+import com.rhymestore.twitter.config.TwitterModule;
 import com.rhymestore.web.util.SSLUtils;
 
 /**
@@ -49,20 +51,20 @@ public class ContextListener implements ServletContextListener
     public void contextInitialized(final ServletContextEvent sce)
     {
         // Initialize the IoC. No need for Twitter module here
-        RhymeStore.create(new RhymeModule());
+        RhymeStore.create(new RhymeModule(), new TwitterModule());
 
         // Load the rhymes URI
-        String rhymesURI = System.getenv("DEFAULT_RHYMES");
+        Optional<String> rhymesURI = RhymeStore.getDefaultRhymesUri();
 
-        if (rhymesURI != null)
+        if (rhymesURI.isPresent())
         {
-            LOGGER.info("Adding rhymes from: {}", rhymesURI);
+            LOGGER.info("Adding rhymes from: {}", rhymesURI.get());
 
             try
             {
                 // Ensure there won't be SSL certificate issues
                 SSLUtils.installIgnoreCertTrustManager();
-                URL url = new URL(rhymesURI);
+                URL url = new URL(rhymesURI.get());
                 URLConnection conn = url.openConnection();
 
                 // Load the rhymes from the configured URI

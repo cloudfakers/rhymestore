@@ -22,7 +22,7 @@
 
 package com.rhymestore.lang.es;
 
-import static com.rhymestore.config.Configuration.DEFAULT_RHYMES;
+import static com.rhymestore.config.Configuration.FALLBACK_RHYMES;
 
 import java.util.List;
 
@@ -51,7 +51,7 @@ public class SpanishWordParser implements WordParser
     /* package */int lastUsedDefault = 0;
 
     @Inject
-    public SpanishWordParser(final @Named(DEFAULT_RHYMES) List<String> defaultRhymes)
+    public SpanishWordParser(final @Named(FALLBACK_RHYMES) List<String> defaultRhymes)
     {
         super();
         this.defaultRhymes = defaultRhymes;

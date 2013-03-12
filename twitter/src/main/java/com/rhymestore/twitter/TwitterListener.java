@@ -25,12 +25,11 @@ package com.rhymestore.twitter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.TwitterStream;
 
 import com.rhymestore.config.RhymeModule;
 import com.rhymestore.config.RhymeStore;
+import com.rhymestore.twitter.config.TwitterConfig;
 import com.rhymestore.twitter.config.TwitterModule;
 
 /**
@@ -49,13 +48,11 @@ public class TwitterListener
     public void start() throws IllegalStateException, TwitterException
     {
         RhymeStore.create(new RhymeModule(), new TwitterModule());
-        Twitter twitter = RhymeStore.get(Twitter.class);
-        TwitterStream stream = RhymeStore.get(TwitterStream.class);
 
-        LOGGER.info("Connected to Twitter as: {}", twitter.getScreenName());
+        LOGGER.info("Connected to Twitter as: {}", TwitterConfig.getTwitterUser().get());
         LOGGER.info("Starting the Twitter stream listener");
 
-        stream.user(); // Start reading to user stream
+        TwitterConfig.getTwitterStream().user(); // Start reading to user stream
     }
 
     /**
@@ -67,10 +64,10 @@ public class TwitterListener
         public void run()
         {
             LOGGER.info("Disconnecting from the Twitter streaming API");
-            RhymeStore.get(Twitter.class).shutdown();
+            TwitterConfig.getTwitterStream().shutdown();
 
             LOGGER.info("Disconnecting from Twitter");
-            RhymeStore.get(TwitterStream.class).shutdown();
+            TwitterConfig.getTwitter().shutdown();
         }
     }
 

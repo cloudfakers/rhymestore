@@ -46,8 +46,14 @@ public class Configuration
     /** Name of the property that holds the Redis port. */
     public static final String REDIS_PORT = "rhymestore.redis.port";
 
-    /** Name of the property that holds the default rhymes to use. */
-    public static final String DEFAULT_RHYMES = "rhymestore.wordparser.default";
+    /** Name of the property that holds the Redis password. */
+    public static final String REDIS_PASSWORD = "rhymestore.redis.password";
+
+    /** Name of the property that holds the FALLBACK rhymes to use. */
+    public static final String FALLBACK_RHYMES = "rhymestore.wordparser.fallback";
+
+    /** Name of the property that holds the FALLBACK rhymes to use. */
+    public static final String DEFAULT_RHYMES = "rhymestore.store.defaultrhymes";
 
     /** The singleton instance of the configuration object. */
     private static Configuration instance;

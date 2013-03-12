@@ -22,11 +22,16 @@
 
 package com.rhymestore.config;
 
+import static com.rhymestore.config.Configuration.DEFAULT_RHYMES;
+
+import com.google.common.base.Optional;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Stage;
+import com.google.inject.TypeLiteral;
+import com.google.inject.name.Names;
 import com.rhymestore.lang.WordParser;
 import com.rhymestore.store.RedisStore;
 import com.rhymestore.store.RhymeLoader;
@@ -44,26 +49,53 @@ public class RhymeStore
     /** Access to the IoC container. */
     private Injector injector;
 
+    /**
+     * Get the configured {@link WordParser}.
+     */
     public static WordParser getWordParser()
     {
         return get(WordParser.class);
     }
 
+    /**
+     * Get the configured {@link RedisStore}.
+     */
     public static RedisStore getRedisStore()
     {
         return get(RedisStore.class);
     }
 
+    /**
+     * Get the configured {@link RhymeLoader}.
+     */
     public static RhymeLoader getRhymeLoader()
     {
         return get(RhymeLoader.class);
     }
 
+    /**
+     * Get the configured URI for the default rhymes.
+     */
+    public static Optional<String> getDefaultRhymesUri()
+    {
+        TypeLiteral<Optional<String>> type = new TypeLiteral<Optional<String>>()
+        {
+        };
+
+        return get(Key.get(type, Names.named(DEFAULT_RHYMES)));
+    }
+
+    /**
+     * Get a configured instance for the given class.
+     */
     public static <T> T get(final Class<T> clazz)
     {
         return getInstance().injector.getInstance(clazz);
     }
 
+    /**
+     * Get a configured instance for the given injection key.
+     */
     public static <T> T get(final Key<T> key)
     {
         return getInstance().injector.getInstance(key);
@@ -83,6 +115,9 @@ public class RhymeStore
         return instance;
     }
 
+    /**
+     * Initialize the injector with the given modules.
+     */
     public static RhymeStore create(final Module... modules)
     {
         if (instance == null)

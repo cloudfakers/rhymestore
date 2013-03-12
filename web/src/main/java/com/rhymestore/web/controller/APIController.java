@@ -22,11 +22,15 @@
 
 package com.rhymestore.web.controller;
 
+import static com.google.common.base.Functions.toStringFunction;
+import static com.google.common.collect.Iterables.transform;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.sjmvc.controller.Controller;
 
+import com.google.common.base.Joiner;
 import com.rhymestore.config.RhymeStore;
 import com.rhymestore.lang.WordParser;
 import com.rhymestore.store.RedisStore;
@@ -89,7 +93,10 @@ public class APIController extends HttpMethodController
 
         if (errors())
         {
-            response.sendError(500);
+            Iterable<String> errorMessages =
+                transform(getMessages().getErrors().getErrors(), toStringFunction());
+
+            response.sendError(404, Joiner.on('\n').join(errorMessages));
         }
 
         response.setContentType("text/plain; charset=ISO-8859-1");

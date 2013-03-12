@@ -22,6 +22,8 @@
 
 package com.rhymestore.store;
 
+import static com.rhymestore.config.Configuration.REDIS_PASSWORD;
+
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -89,7 +91,7 @@ public class RedisStore
     @Inject
     public RedisStore(@Named("sentence") final Keymaker sentencens,
         @Named("index") final Keymaker indexns, final WordParser wordParser, final Jedis redis,
-        final Optional<String> redisPassword, final Charset encoding)
+        final @Named(REDIS_PASSWORD) Optional<String> redisPassword, final Charset encoding)
     {
         super();
         this.sentencens = sentencens;
