@@ -21,7 +21,7 @@
  */
 
 package com.rhymestore.store;
-
+import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Generates the keys used to store the rhymes.
  * 
@@ -34,12 +34,7 @@ public class Keymaker
 
     public Keymaker(final String namespace)
     {
-        if (namespace == null)
-        {
-            throw new IllegalArgumentException("Namespace cannot be null");
-        }
-
-        this.namespace = namespace;
+        this.namespace = checkNotNull(namespace, "Namespace cannot be null");
     }
 
     public Keymaker build(final String... namespaces)

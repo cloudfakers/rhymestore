@@ -45,13 +45,13 @@ public class KeymakerTest
         checkKeymaker("test:test2");
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expectedExceptions = NullPointerException.class)
     public void testInvalidkeymaker()
     {
         new Keymaker(null);
     }
 
-    private void checkKeymaker(String ns)
+    private void checkKeymaker(final String ns)
     {
         Keymaker km = new Keymaker(ns);
 
