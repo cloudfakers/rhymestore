@@ -65,7 +65,7 @@ public class TwitterUtils
      */
     public static String reply(final String user, final String tweet)
     {
-        return tweet(user(user) + " " + tweet);
+        return tweet("." + user(user) + " " + tweet);
     }
 
     /**
