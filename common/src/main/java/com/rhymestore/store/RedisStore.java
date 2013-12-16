@@ -48,6 +48,7 @@ import redis.clients.jedis.Jedis;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
+import com.google.common.collect.Sets;
 import com.google.common.hash.Hashing;
 import com.rhymestore.lang.StressType;
 import com.rhymestore.lang.WordParser;
@@ -125,27 +126,31 @@ public class RedisStore
 
         connect();
 
-        String sentenceKey = getUniqueId(sentencens, normalizeString(sentence));
-        sentenceKey = sentencens.build(sentenceKey).toString();
+        try
+        {
+            String sentenceKey = getUniqueId(sentencens, normalizeString(sentence));
+            sentenceKey = sentencens.build(sentenceKey).toString();
 
-        if (redis.exists(sentenceKey) == 1)
+            if (redis.exists(sentenceKey) == 1)
+            {
+                return;
+            }
+
+            // Insert sentence
+            redis.set(sentenceKey, URLEncoder.encode(sentence, encoding.displayName()));
+
+            // Index sentence
+            String indexKey = getUniqueId(indexns, buildUniqueToken(rhyme, type));
+            indexKey = indexns.build(indexKey).toString();
+
+            redis.sadd(indexKey, sentenceKey);
+
+            LOGGER.info("Added rhyme: {}", sentence);
+        }
+        finally
         {
             disconnect();
-            return;
         }
-
-        // Insert sentence
-        redis.set(sentenceKey, URLEncoder.encode(sentence, encoding.displayName()));
-
-        // Index sentence
-        String indexKey = getUniqueId(indexns, buildUniqueToken(rhyme, type));
-        indexKey = indexns.build(indexKey).toString();
-
-        redis.sadd(indexKey, sentenceKey);
-
-        disconnect();
-
-        LOGGER.info("Added rhyme: {}", sentence);
     }
 
     /**
@@ -168,43 +173,47 @@ public class RedisStore
 
         connect();
 
-        String sentenceKey = getUniqueIdKey(sentencens, normalizeString(sentence));
+        try
+        {
+            String sentenceKey = getUniqueIdKey(sentencens, normalizeString(sentence));
 
-        if (redis.exists(sentenceKey) == 0)
+            if (redis.exists(sentenceKey) == 0)
+            {
+                throw new IOException("The element to remove does not exist.");
+            }
+
+            String indexKey = getUniqueIdKey(indexns, buildUniqueToken(rhyme, type));
+            String sentenceId = redis.get(sentenceKey);
+            sentenceId = sentencens.build(sentenceId).toString();
+
+            // Remove the index
+            if (redis.exists(indexKey) == 1)
+            {
+                String indexId = redis.get(indexKey);
+                indexId = indexns.build(indexId).toString();
+
+                // Remove the sentence from the index
+                if (redis.exists(indexId) == 1)
+                {
+                    redis.srem(indexId, sentenceId);
+                }
+
+                // Remove the index if empty
+                if (redis.smembers(indexId).isEmpty())
+                {
+                    redis.del(indexId, indexKey);
+                }
+            }
+
+            // Remove the key
+            redis.del(sentenceId, sentenceKey);
+
+            LOGGER.info("Deleted rhyme: {}", sentence);
+        }
+        finally
         {
             disconnect();
-            throw new IOException("The element to remove does not exist.");
         }
-
-        String indexKey = getUniqueIdKey(indexns, buildUniqueToken(rhyme, type));
-        String sentenceId = redis.get(sentenceKey);
-        sentenceId = sentencens.build(sentenceId).toString();
-
-        // Remove the index
-        if (redis.exists(indexKey) == 1)
-        {
-            String indexId = redis.get(indexKey);
-            indexId = indexns.build(indexId).toString();
-
-            // Remove the sentence from the index
-            if (redis.exists(indexId) == 1)
-            {
-                redis.srem(indexId, sentenceId);
-            }
-
-            // Remove the index if empty
-            if (redis.smembers(indexId).isEmpty())
-            {
-                redis.del(indexId, indexKey);
-            }
-        }
-
-        // Remove the key
-        redis.del(sentenceId, sentenceKey);
-
-        disconnect();
-
-        LOGGER.info("Deleted rhyme: {}", sentence);
     }
 
     /**
@@ -219,24 +228,29 @@ public class RedisStore
 
         connect();
 
-        String lastId = getLastId(sentencens);
-
-        if (lastId != null)
+        try
         {
-            Integer n = Integer.parseInt(getLastId(sentencens));
+            String lastId = getLastId(sentencens);
 
-            for (int i = 1; i <= n; i++)
+            if (lastId != null)
             {
-                String id = sentencens.build(String.valueOf(i)).toString();
+                Integer n = Integer.parseInt(getLastId(sentencens));
 
-                if (redis.exists(id) == 1)
+                for (int i = 1; i <= n; i++)
                 {
-                    rhymes.add(URLDecoder.decode(redis.get(id), encoding.displayName()));
+                    String id = sentencens.build(String.valueOf(i)).toString();
+
+                    if (redis.exists(id) == 1)
+                    {
+                        rhymes.add(URLDecoder.decode(redis.get(id), encoding.displayName()));
+                    }
                 }
             }
         }
-
-        disconnect();
+        finally
+        {
+            disconnect();
+        }
 
         return rhymes;
     }
@@ -256,11 +270,18 @@ public class RedisStore
 
         LOGGER.debug("Finding rhymes for {}", sentence);
 
+        Set<String> rhymes = Sets.newHashSet();
+
         connect();
 
-        Set<String> rhymes = search(rhymepart, type);
-
-        disconnect();
+        try
+        {
+            rhymes.addAll(search(rhymepart, type));
+        }
+        finally
+        {
+            disconnect();
+        }
 
         if (rhymes.isEmpty())
         {
