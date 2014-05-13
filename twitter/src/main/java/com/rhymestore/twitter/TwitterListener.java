@@ -65,9 +65,6 @@ public class TwitterListener
         {
             LOGGER.info("Disconnecting from the Twitter streaming API");
             TwitterConfig.getTwitterStream().shutdown();
-
-            LOGGER.info("Disconnecting from Twitter");
-            TwitterConfig.getTwitter().shutdown();
         }
     }
 

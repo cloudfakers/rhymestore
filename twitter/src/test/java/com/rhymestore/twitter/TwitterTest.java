@@ -26,7 +26,6 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
 import org.testng.SkipException;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -63,12 +62,6 @@ public class TwitterTest
         }
 
         twitter = TwitterConfig.getTwitter();
-    }
-
-    @AfterMethod
-    public void tearDown()
-    {
-        twitter.shutdown();
     }
 
     @Test

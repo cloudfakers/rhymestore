@@ -22,7 +22,6 @@
 
 package com.rhymestore.twitter.mock;
 
-import java.net.URL;
 import java.util.Date;
 
 import twitter4j.RateLimitStatus;
@@ -111,12 +110,6 @@ public class MockUser implements User
 
     @Override
     public String getProfileBackgroundColor()
-    {
-        return null;
-    }
-
-    @Override
-    public String getProfileBackgroundImageUrl()
     {
         return null;
     }
@@ -261,12 +254,6 @@ public class MockUser implements User
 
     @Override
     public String getOriginalProfileImageURL()
-    {
-        return null;
-    }
-
-    @Override
-    public URL getProfileImageUrlHttps()
     {
         return null;
     }

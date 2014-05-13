@@ -22,8 +22,8 @@
 
 package com.rhymestore.twitter.util;
 
+import twitter4j.HttpResponseCode;
 import twitter4j.TwitterException;
-import twitter4j.internal.http.HttpResponseCode;
 
 /**
  * Utility methods to work with the Twitter API.

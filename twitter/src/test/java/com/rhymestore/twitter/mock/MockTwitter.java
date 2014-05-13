@@ -43,7 +43,6 @@ import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.RateLimitStatus;
 import twitter4j.RateLimitStatusListener;
-import twitter4j.RelatedResults;
 import twitter4j.Relationship;
 import twitter4j.ResponseList;
 import twitter4j.SavedSearch;
@@ -56,8 +55,23 @@ import twitter4j.TwitterAPIConfiguration;
 import twitter4j.TwitterException;
 import twitter4j.User;
 import twitter4j.UserList;
+import twitter4j.api.DirectMessagesResources;
+import twitter4j.api.FavoritesResources;
+import twitter4j.api.FriendsFollowersResources;
+import twitter4j.api.HelpResources;
+import twitter4j.api.ListsResources;
+import twitter4j.api.PlacesGeoResources;
+import twitter4j.api.SavedSearchesResources;
+import twitter4j.api.SearchResource;
+import twitter4j.api.SpamReportingResource;
+import twitter4j.api.SuggestedUsersResources;
+import twitter4j.api.TimelinesResources;
+import twitter4j.api.TrendsResources;
+import twitter4j.api.TweetsResources;
+import twitter4j.api.UsersResources;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.Authorization;
+import twitter4j.auth.OAuth2Token;
 import twitter4j.auth.RequestToken;
 import twitter4j.conf.Configuration;
 
@@ -152,6 +166,24 @@ public class MockTwitter implements Twitter
     }
 
     @Override
+    public OAuth2Token getOAuth2Token() throws TwitterException
+    {
+        return null;
+    }
+
+    @Override
+    public void setOAuth2Token(final OAuth2Token oauth2Token)
+    {
+
+    }
+
+    @Override
+    public void invalidateOAuth2Token() throws TwitterException
+    {
+
+    }
+
+    @Override
     public String getScreenName() throws TwitterException, IllegalStateException
     {
         return null;
@@ -182,25 +214,7 @@ public class MockTwitter implements Twitter
     }
 
     @Override
-    public void shutdown()
-    {
-
-    }
-
-    @Override
-    public ResponseList<Status> getMentions() throws TwitterException
-    {
-        return null;
-    }
-
-    @Override
     public ResponseList<Status> getMentionsTimeline() throws TwitterException
-    {
-        return null;
-    }
-
-    @Override
-    public ResponseList<Status> getMentions(final Paging paging) throws TwitterException
     {
         return null;
     }
@@ -275,6 +289,19 @@ public class MockTwitter implements Twitter
 
     @Override
     public ResponseList<Status> getRetweets(final long statusId) throws TwitterException
+    {
+        return null;
+    }
+
+    @Override
+    public IDs getRetweeterIds(final long statusId, final long cursor) throws TwitterException
+    {
+        return null;
+    }
+
+    @Override
+    public IDs getRetweeterIds(final long statusId, final int count, final long cursor)
+        throws TwitterException
     {
         return null;
     }
@@ -363,6 +390,12 @@ public class MockTwitter implements Twitter
     @Override
     public DirectMessage sendDirectMessage(final String screenName, final String text)
         throws TwitterException
+    {
+        return null;
+    }
+
+    @Override
+    public InputStream getDMImageAsStream(final String url) throws TwitterException
     {
         return null;
     }
@@ -517,6 +550,20 @@ public class MockTwitter implements Twitter
     @Override
     public PagableResponseList<User> getFollowersList(final String screenName, final long cursor)
         throws TwitterException
+    {
+        return null;
+    }
+
+    @Override
+    public PagableResponseList<User> getFollowersList(final long userId, final long cursor,
+        final int count) throws TwitterException
+    {
+        return null;
+    }
+
+    @Override
+    public PagableResponseList<User> getFollowersList(final String screenName, final long cursor,
+        final int count) throws TwitterException
     {
         return null;
     }
@@ -787,7 +834,7 @@ public class MockTwitter implements Twitter
     }
 
     @Override
-    public ResponseList<Status> getUserListStatuses(final int listId, final Paging paging)
+    public ResponseList<Status> getUserListStatuses(final long listId, final Paging paging)
         throws TwitterException
     {
         return null;
@@ -808,28 +855,42 @@ public class MockTwitter implements Twitter
     }
 
     @Override
-    public UserList destroyUserListMember(final int listId, final long userId)
+    public UserList destroyUserListMember(final long listId, final long userId)
         throws TwitterException
     {
         return null;
     }
 
     @Override
-    public UserList deleteUserListMember(final int listId, final long userId)
+    public UserList destroyUserListMember(final long listId, final String screenName)
         throws TwitterException
+    {
+        return null;
+    }
+
+    @Override
+    public UserList destroyUserListMembers(final long listId, final String[] screenNames)
+        throws TwitterException
+    {
+        return null;
+    }
+
+    @Override
+    public UserList destroyUserListMembers(final long listId, final long[] userIds)
+        throws TwitterException
+    {
+        return null;
+    }
+
+    @Override
+    public UserList destroyUserListMembers(final String ownerScreenName, final String slug,
+        final String[] screenNames) throws TwitterException
     {
         return null;
     }
 
     @Override
     public UserList destroyUserListMember(final long ownerId, final String slug, final long userId)
-        throws TwitterException
-    {
-        return null;
-    }
-
-    @Override
-    public UserList deleteUserListMember(final long ownerId, final String slug, final long userId)
         throws TwitterException
     {
         return null;
@@ -878,7 +939,7 @@ public class MockTwitter implements Twitter
     }
 
     @Override
-    public PagableResponseList<User> getUserListSubscribers(final int listId, final long cursor)
+    public PagableResponseList<User> getUserListSubscribers(final long listId, final long cursor)
         throws TwitterException
     {
         return null;
@@ -899,7 +960,7 @@ public class MockTwitter implements Twitter
     }
 
     @Override
-    public UserList createUserListSubscription(final int listId) throws TwitterException
+    public UserList createUserListSubscription(final long listId) throws TwitterException
     {
         return null;
     }
@@ -919,7 +980,7 @@ public class MockTwitter implements Twitter
     }
 
     @Override
-    public User showUserListSubscription(final int listId, final long userId)
+    public User showUserListSubscription(final long listId, final long userId)
         throws TwitterException
     {
         return null;
@@ -940,7 +1001,7 @@ public class MockTwitter implements Twitter
     }
 
     @Override
-    public UserList destroyUserListSubscription(final int listId) throws TwitterException
+    public UserList destroyUserListSubscription(final long listId) throws TwitterException
     {
         return null;
     }
@@ -960,14 +1021,7 @@ public class MockTwitter implements Twitter
     }
 
     @Override
-    public UserList createUserListMembers(final int listId, final long[] userIds)
-        throws TwitterException
-    {
-        return null;
-    }
-
-    @Override
-    public UserList addUserListMembers(final int listId, final long[] userIds)
+    public UserList createUserListMembers(final long listId, final long[] userIds)
         throws TwitterException
     {
         return null;
@@ -981,13 +1035,6 @@ public class MockTwitter implements Twitter
     }
 
     @Override
-    public UserList addUserListMembers(final long ownerId, final String slug, final long[] userIds)
-        throws TwitterException
-    {
-        return null;
-    }
-
-    @Override
     public UserList createUserListMembers(final String ownerScreenName, final String slug,
         final long[] userIds) throws TwitterException
     {
@@ -995,14 +1042,7 @@ public class MockTwitter implements Twitter
     }
 
     @Override
-    public UserList createUserListMembers(final int listId, final String[] screenNames)
-        throws TwitterException
-    {
-        return null;
-    }
-
-    @Override
-    public UserList addUserListMembers(final int listId, final String[] screenNames)
+    public UserList createUserListMembers(final long listId, final String[] screenNames)
         throws TwitterException
     {
         return null;
@@ -1016,13 +1056,6 @@ public class MockTwitter implements Twitter
     }
 
     @Override
-    public UserList addUserListMembers(final long ownerId, final String slug,
-        final String[] screenNames) throws TwitterException
-    {
-        return null;
-    }
-
-    @Override
     public UserList createUserListMembers(final String ownerScreenName, final String slug,
         final String[] screenNames) throws TwitterException
     {
@@ -1030,7 +1063,8 @@ public class MockTwitter implements Twitter
     }
 
     @Override
-    public User showUserListMembership(final int listId, final long userId) throws TwitterException
+    public User showUserListMembership(final long listId, final long userId)
+        throws TwitterException
     {
         return null;
     }
@@ -1050,7 +1084,7 @@ public class MockTwitter implements Twitter
     }
 
     @Override
-    public PagableResponseList<User> getUserListMembers(final int listId, final long cursor)
+    public PagableResponseList<User> getUserListMembers(final long listId, final long cursor)
         throws TwitterException
     {
         return null;
@@ -1071,27 +1105,14 @@ public class MockTwitter implements Twitter
     }
 
     @Override
-    public UserList createUserListMember(final int listId, final long userId)
+    public UserList createUserListMember(final long listId, final long userId)
         throws TwitterException
-    {
-        return null;
-    }
-
-    @Override
-    public UserList addUserListMember(final int listId, final long userId) throws TwitterException
     {
         return null;
     }
 
     @Override
     public UserList createUserListMember(final long ownerId, final String slug, final long userId)
-        throws TwitterException
-    {
-        return null;
-    }
-
-    @Override
-    public UserList addUserListMember(final long ownerId, final String slug, final long userId)
         throws TwitterException
     {
         return null;
@@ -1105,7 +1126,7 @@ public class MockTwitter implements Twitter
     }
 
     @Override
-    public UserList destroyUserList(final int listId) throws TwitterException
+    public UserList destroyUserList(final long listId) throws TwitterException
     {
         return null;
     }
@@ -1124,7 +1145,7 @@ public class MockTwitter implements Twitter
     }
 
     @Override
-    public UserList updateUserList(final int listId, final String newListName,
+    public UserList updateUserList(final long listId, final String newListName,
         final boolean isPublicList, final String newDescription) throws TwitterException
     {
         return null;
@@ -1153,7 +1174,7 @@ public class MockTwitter implements Twitter
     }
 
     @Override
-    public UserList showUserList(final int listId) throws TwitterException
+    public UserList showUserList(final long listId) throws TwitterException
     {
         return null;
     }
@@ -1174,6 +1195,20 @@ public class MockTwitter implements Twitter
     @Override
     public PagableResponseList<UserList> getUserListSubscriptions(final String listOwnerScreenName,
         final long cursor) throws TwitterException
+    {
+        return null;
+    }
+
+    @Override
+    public PagableResponseList<UserList> getUserListsOwnerships(final String listOwnerScreenName,
+        final int count, final long cursor) throws TwitterException
+    {
+        return null;
+    }
+
+    @Override
+    public PagableResponseList<UserList> getUserListsOwnerships(final long listOwnerId,
+        final int count, final long cursor) throws TwitterException
     {
         return null;
     }
@@ -1235,12 +1270,6 @@ public class MockTwitter implements Twitter
     }
 
     @Override
-    public Trends getLocationTrends(final int woeid) throws TwitterException
-    {
-        return null;
-    }
-
-    @Override
     public Trends getPlaceTrends(final int woeid) throws TwitterException
     {
         return null;
@@ -1248,13 +1277,6 @@ public class MockTwitter implements Twitter
 
     @Override
     public ResponseList<Location> getAvailableTrends() throws TwitterException
-    {
-        return null;
-    }
-
-    @Override
-    public ResponseList<Location> getAvailableTrends(final GeoLocation location)
-        throws TwitterException
     {
         return null;
     }
@@ -1316,8 +1338,87 @@ public class MockTwitter implements Twitter
     }
 
     @Override
-    public RelatedResults getRelatedResults(final long statusId) throws TwitterException
+    public TimelinesResources timelines()
     {
         return null;
     }
+
+    @Override
+    public TweetsResources tweets()
+    {
+        return null;
+    }
+
+    @Override
+    public SearchResource search()
+    {
+        return null;
+    }
+
+    @Override
+    public DirectMessagesResources directMessages()
+    {
+        return null;
+    }
+
+    @Override
+    public FriendsFollowersResources friendsFollowers()
+    {
+        return null;
+    }
+
+    @Override
+    public UsersResources users()
+    {
+        return null;
+    }
+
+    @Override
+    public SuggestedUsersResources suggestedUsers()
+    {
+        return null;
+    }
+
+    @Override
+    public FavoritesResources favorites()
+    {
+        return null;
+    }
+
+    @Override
+    public ListsResources list()
+    {
+        return null;
+    }
+
+    @Override
+    public SavedSearchesResources savedSearches()
+    {
+        return null;
+    }
+
+    @Override
+    public PlacesGeoResources placesGeo()
+    {
+        return null;
+    }
+
+    @Override
+    public TrendsResources trends()
+    {
+        return null;
+    }
+
+    @Override
+    public SpamReportingResource spamReporting()
+    {
+        return null;
+    }
+
+    @Override
+    public HelpResources help()
+    {
+        return null;
+    }
+
 }

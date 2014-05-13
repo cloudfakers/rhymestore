@@ -29,7 +29,9 @@ import twitter4j.HashtagEntity;
 import twitter4j.MediaEntity;
 import twitter4j.Place;
 import twitter4j.RateLimitStatus;
+import twitter4j.Scopes;
 import twitter4j.Status;
+import twitter4j.SymbolEntity;
 import twitter4j.URLEntity;
 import twitter4j.User;
 import twitter4j.UserMentionEntity;
@@ -114,12 +116,6 @@ public class MockStatus implements Status
     public Place getPlace()
     {
         return null;
-    }
-
-    @Override
-    public long getRetweetCount()
-    {
-        return 0;
     }
 
     @Override
@@ -210,6 +206,42 @@ public class MockStatus implements Status
     public boolean isPossiblySensitive()
     {
         return false;
+    }
+
+    @Override
+    public SymbolEntity[] getSymbolEntities()
+    {
+        return null;
+    }
+
+    @Override
+    public boolean isRetweeted()
+    {
+        return false;
+    }
+
+    @Override
+    public int getFavoriteCount()
+    {
+        return 0;
+    }
+
+    @Override
+    public int getRetweetCount()
+    {
+        return 0;
+    }
+
+    @Override
+    public String getLang()
+    {
+        return null;
+    }
+
+    @Override
+    public Scopes getScopes()
+    {
+        return null;
     }
 
 }

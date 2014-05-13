@@ -63,7 +63,5 @@ public class AccessTokenGenerator
 
         System.out.println("AccessToken Key: " + accessToken.getToken());
         System.out.println("AccessToken Secret: " + accessToken.getTokenSecret());
-
-        twitter.shutdown();
     }
 }
